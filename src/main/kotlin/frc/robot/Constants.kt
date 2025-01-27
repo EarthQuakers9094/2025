@@ -4,8 +4,11 @@
 package frc.robot
 
 import com.pathplanner.lib.config.PIDConstants
+import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.math.util.Units
+
+import edu.wpi.first.units.measure.Distance
 import swervelib.math.Matter
 
 /**
@@ -18,8 +21,10 @@ import swervelib.math.Matter
  * constants are needed, to reduce verbosity.
  */
 object Constants {
+
     class Elevator {
         companion object {
+            const val motorId: Int = -1
             const val TOLERANCE = 0.01
         }
 
@@ -27,7 +32,8 @@ object Constants {
 
     class Arm {
         companion object {
-            val TOLERANCE = 2.0
+            const val motorId: Int = -1
+            const val TOLERANCE = 2.0
         }
 
     }
@@ -61,9 +67,35 @@ object Constants {
     }
 
     object Drivebase {
-
         val MAX_TURNING_SPEEDS = 9.0
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
+    }
+    
+    object Poses {
+        val L1 = Pose(
+            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
+            Rotation2d.fromDegrees(-210.0),
+        );
+
+        val L2 = Pose(
+            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
+            Rotation2d.fromDegrees(-210.0),
+        );
+
+        val L3 = Pose(
+            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
+            Rotation2d.fromDegrees(-210.0),
+        );
+
+        val L4 = Pose(
+            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
+            Rotation2d.fromDegrees(-210.0),
+        );
+
+        val Pickup = Pose(
+            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
+            Rotation2d.fromDegrees(-45.0),
+        );
     }
 }

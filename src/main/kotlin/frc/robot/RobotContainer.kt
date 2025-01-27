@@ -15,7 +15,10 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
+import frc.robot.commands.GotoPoseCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
+import frc.robot.subsystems.ArmSubsystem
+import frc.robot.subsystems.ElevatorSubsystem
 import frc.robot.subsystems.SwerveSubsystem
 import swervelib.SwerveInputStream
 import java.io.File
@@ -31,6 +34,7 @@ import kotlin.math.sin
 class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     val driverXbox: CommandXboxController = CommandXboxController(0)
+    val operatorXbox: CommandXboxController = CommandXboxController(1)
 
     // The robot's subsystems and commands are defined here...
     private val drivebase = SwerveSubsystem(
@@ -39,6 +43,9 @@ class RobotContainer {
             "swerve/neo"
         )
     )
+
+    private val armSubsystem = ArmSubsystem(if (RobotBase.isReal()) {ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)} else { ArmSubsystem.ArmSimIO()})
+    private val elevatorSubsystem = ElevatorSubsystem(if (RobotBase.isReal()) {ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)} else {ElevatorSubsystem.ElevatorSimIO()})
 
     /**
      * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -110,6 +117,7 @@ class RobotContainer {
 
     var driveSetpointGenSim: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim)
 
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -161,11 +169,18 @@ class RobotContainer {
                     Pose2d(Translation2d(4.0, 4.0), Rotation2d.fromDegrees(0.0))
                 )
             )
-            driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2.0))
+            //driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2.0))
             driverXbox.start().whileTrue(Commands.none())
             driverXbox.back().whileTrue(Commands.none())
             driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverXbox.rightBumper().onTrue(Commands.none())
+
+            operatorXbox.y().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
+            operatorXbox.b().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
+            operatorXbox.x().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
+            operatorXbox.a().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
+            operatorXbox.povUp().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+
         }
 
         fun applyTeam(speed: Double):Double {
