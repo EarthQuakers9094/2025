@@ -9,7 +9,6 @@ import frc.robot.subsystems.ElevatorSubsystem
 class GotoPoseCommand(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose):
     Command() {
 
-
     init {
         // each subsystem used by the command must be passed into the addRequirements() method
         addRequirements(armSubsystem, elevatorSubsystem)

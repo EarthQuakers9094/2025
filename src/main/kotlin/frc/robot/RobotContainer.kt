@@ -16,9 +16,11 @@ import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.GotoPoseCommand
+import frc.robot.commands.LaunchCoralCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
+import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.SwerveSubsystem
 import swervelib.SwerveInputStream
 import java.io.File
@@ -32,6 +34,8 @@ import kotlin.math.sin
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
+
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
     val driverXbox: CommandXboxController = CommandXboxController(0)
     val operatorXbox: CommandXboxController = CommandXboxController(1)
@@ -44,8 +48,26 @@ class RobotContainer {
         )
     )
 
-    private val armSubsystem = ArmSubsystem(if (RobotBase.isReal()) {ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)} else { ArmSubsystem.ArmSimIO()})
-    private val elevatorSubsystem = ElevatorSubsystem(if (RobotBase.isReal()) {ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)} else {ElevatorSubsystem.ElevatorSimIO()})
+    private val armSubsystem = ArmSubsystem(
+        if (RobotBase.isReal()) {
+            ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)
+        } else {
+            ArmSubsystem.ArmSimIO()
+        })
+
+    private val elevatorSubsystem = ElevatorSubsystem(
+        if (RobotBase.isReal()) {
+            ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)
+        } else {
+            ElevatorSubsystem.ElevatorSimIO()
+        })
+
+    private val intakeSubsystem = IntakeSubsystem(
+        if (RobotBase.isReal()) {
+            IntakeSubsystem.IntakeNeoIO(Constants.Intake.MOTOR)
+        } else {
+            IntakeSubsystem.IntakeSym()
+        });
 
     /**
      * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -181,6 +203,8 @@ class RobotContainer {
             operatorXbox.a().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
             operatorXbox.povUp().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
+            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem));
+
         }
 
         fun applyTeam(speed: Double):Double {
@@ -200,7 +224,7 @@ class RobotContainer {
                 {
                     MathUtil.applyDeadband(
                         applyTeam(driverXbox.leftY),
-                        Constants.OperatorConstants.LEFT_Y_DEADBAND
+                        OperatorConstants.LEFT_Y_DEADBAND
                     )
                 }
 
@@ -209,14 +233,14 @@ class RobotContainer {
                 {
                     MathUtil.applyDeadband(
                         applyTeam(driverXbox.leftX),
-                        Constants.OperatorConstants.LEFT_X_DEADBAND
+                        OperatorConstants.LEFT_X_DEADBAND
                     )
                 };
 
         val omega = {
             MathUtil.applyDeadband(
                 driverXbox.rightX,
-                Constants.OperatorConstants.LEFT_X_DEADBAND
+                OperatorConstants.LEFT_X_DEADBAND
             )
         }
 
