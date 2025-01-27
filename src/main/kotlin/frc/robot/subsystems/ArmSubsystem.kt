@@ -41,7 +41,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     interface ArmIO {
         fun periodic()
         fun setSetpoint(loc: Double)
-        fun getAngitgle(): Double;
+        fun getAngle(): Double;
     }
 
     class ArmNeoIO(motor_id: Int):ArmIO {
