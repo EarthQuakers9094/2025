@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
+import frc.robot.commands.DevourCoralCommand
 import frc.robot.commands.GotoPoseCommand
 import frc.robot.commands.LaunchCoralCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
@@ -204,6 +205,8 @@ class RobotContainer {
             operatorXbox.povUp().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
             operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem));
+            operatorXbox.leftBumper().whileTrue(DevourCoralCommand(intakeSubsystem));
+
 
         }
 
