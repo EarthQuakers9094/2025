@@ -21,7 +21,6 @@ import swervelib.math.Matter
  * constants are needed, to reduce verbosity.
  */
 object Constants {
-
     class Elevator {
         companion object {
             // TODO FIND THE RIGHT HEIGHTS
@@ -40,6 +39,14 @@ object Constants {
             const val TOLERANCE = 2.0
         }
 
+    }
+
+    class Intake {
+        companion object {
+            const val INTAKE: Double = -0.5
+            const val MOTOR = -1;
+            const val OUTPUT: Double = 0.5
+        }
     }
 
     const val ROBOT_MASS: Double = (148 - 20.3) * 0.453592 // 32lbs * kg per pound
