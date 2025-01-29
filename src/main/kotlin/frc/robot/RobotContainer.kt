@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
-import frc.robot.commands.GotoPoseCommand
+import frc.robot.commands.gotoPoseCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
@@ -175,11 +175,11 @@ class RobotContainer {
             driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverXbox.rightBumper().onTrue(Commands.none())
 
-            operatorXbox.y().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
-            operatorXbox.b().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
-            operatorXbox.x().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
-            operatorXbox.a().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-            operatorXbox.povUp().onTrue(GotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
+            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
+            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
+            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
+            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
         }
 

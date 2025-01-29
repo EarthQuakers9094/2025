@@ -24,6 +24,9 @@ object Constants {
 
     class Elevator {
         companion object {
+            // TODO FIND THE RIGHT HEIGHTS
+            val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
+            val COLLISION_HEIGHT_HIGH = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
             const val motorId: Int = -1
             const val TOLERANCE = 0.01
         }
@@ -32,6 +35,7 @@ object Constants {
 
     class Arm {
         companion object {
+            val SAFE_ANGLE = Rotation2d.fromDegrees(-135.0)
             const val motorId: Int = -1
             const val TOLERANCE = 2.0
         }

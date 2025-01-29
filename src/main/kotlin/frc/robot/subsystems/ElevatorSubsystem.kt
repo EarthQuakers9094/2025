@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.units.Units
+import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj.simulation.ElevatorSim
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
@@ -19,13 +21,13 @@ import kotlin.math.absoluteValue
 class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     private var setpoint = 0.0;
 
-    fun getHeight(): Double {
-        return elevator.getHeight()
+    fun getHeight(): Distance {
+        return Distance.ofBaseUnits(elevator.getHeight(), Units.Meters)
     }
 
-    fun setSetpoint(loc: Double) {
-        setpoint = loc;
-        elevator.setSetpoint(loc)
+    fun setSetpoint(loc: Distance) {
+        setpoint = loc.`in`(Units.Meters);
+        elevator.setSetpoint(loc.`in`(Units.Meters))
     }
 
     fun atLocation(): Boolean {

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig
 import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,8 +19,8 @@ import kotlin.math.absoluteValue
 class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     private var setpoint = 0.0;
 
-    fun getAngle(): Double {
-        return arm.getAngle()
+    fun getAngle(): Rotation2d {
+        return Rotation2d.fromDegrees(arm.getAngle())
     }
 
     fun setSetpoint(loc: Double) {
