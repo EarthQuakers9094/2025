@@ -59,17 +59,6 @@ open class GotoAngle(private val armSubsystem: ArmSubsystem, private val angle: 
 }
 
 class GotoSafeAngle(private val armSubsystem: ArmSubsystem) : GotoAngle(armSubsystem, Constants.Arm.SAFE_ANGLE);
-//    init {
-//        addRequirements(armSubsystem)
-//    }
-//    override fun initialize() {
-//        armSubsystem.setSetpoint(Constants.Arm.SAFE_ANGLE.degrees)
-//    }
-//
-//    override fun isFinished(): Boolean {
-//        return armSubsystem.atLocation()
-//    }
-//}
 
 class ArmTrackingHeight(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose) : Command() {
     var startPosition: Rotation2d = Rotation2d.fromDegrees(0.0)
