@@ -25,7 +25,9 @@ object Constants {
         val MAX_HEIGHT = Distance.ofBaseUnits(2.0, edu.wpi.first.units.Units.Meters)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
-        val COLLISION_HEIGHT_HIGH = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
+        val COLLISION_HEIGHT_HIGH: Distance = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
+        val COLLISION_HEIGHT_LOW: Distance = Distance.ofBaseUnits(1.2, edu.wpi.first.units.Units.Meters)
+
         const val motorId: Int = -1
         const val TOLERANCE = 0.01
     }
