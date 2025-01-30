@@ -13,9 +13,6 @@ import frc.robot.Pose
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 
-
-// WILL NOT WORK IF THERE IS A POSE WITH AN ANGLE BETWEEN THE PICKUP LOCATION AND
-// SAFE ANGLE AND THE ELEVATOR HEIGHT IS GREATER THAN THE COLLISION HEIGHT LOW
 fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem, pose: Pose): Command {
     if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height >= Constants.Elevator.COLLISION_HEIGHT_LOW) {
         if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
@@ -61,7 +58,7 @@ open class GotoAngle(private val armSubsystem: ArmSubsystem, private val angle: 
 class GotoSafeAngle(private val armSubsystem: ArmSubsystem) : GotoAngle(armSubsystem, Constants.Arm.SAFE_ANGLE);
 
 class ArmTrackingHeight(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose) : Command() {
-    var startPosition: Rotation2d = Rotation2d.fromDegrees(0.0)
+    private var startPosition: Rotation2d = Rotation2d.fromDegrees(0.0)
     init {
         addRequirements(armSubsystem, elevatorSubsystem)
     }
