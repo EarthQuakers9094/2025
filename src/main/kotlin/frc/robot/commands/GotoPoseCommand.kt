@@ -3,6 +3,7 @@ package frc.robot.commands
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.units.Units.Meter
 import edu.wpi.first.units.Units.Meters
+import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
@@ -13,32 +14,62 @@ import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 
 
-
+// WILL NOT WORK IF THERE IS A POSE WITH AN ANGLE BETWEEN THE PICKUP LOCATION AND
+// SAFE ANGLE AND THE ELEVATOR HEIGHT IS GREATER THAN THE COLLISION HEIGHT LOW
 fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem, pose: Pose): Command {
     if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height >= Constants.Elevator.COLLISION_HEIGHT_LOW) {
         if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
-            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose))
+            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))
         }
         return ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose)
     } else if (elevatorSubsystem.getHeight() >= Constants.Elevator.COLLISION_HEIGHT_LOW && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH) {
+        if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
+            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose))
+        }
         return ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)
     } else {
         return GotoPoseSimple(armSubsystem,elevatorSubsystem, pose);
     }
 }
 
-class GotoSafeAngle(private val armSubsystem: ArmSubsystem) : Command() {
+class GotoHeight(private val elevatorSubsystem: ElevatorSubsystem, private val height: Distance) : Command() {
+    init {
+        addRequirements(elevatorSubsystem)
+    }
+    override fun initialize() {
+        elevatorSubsystem.setSetpoint(height)
+    }
+
+    override fun isFinished(): Boolean {
+        return elevatorSubsystem.atLocation()
+    }
+}
+
+open class GotoAngle(private val armSubsystem: ArmSubsystem, private val angle: Rotation2d) : Command() {
     init {
         addRequirements(armSubsystem)
     }
     override fun initialize() {
-        armSubsystem.setSetpoint(Constants.Arm.SAFE_ANGLE.degrees)
+        armSubsystem.setSetpoint(angle.degrees)
     }
 
     override fun isFinished(): Boolean {
         return armSubsystem.atLocation()
     }
 }
+
+class GotoSafeAngle(private val armSubsystem: ArmSubsystem) : GotoAngle(armSubsystem, Constants.Arm.SAFE_ANGLE);
+//    init {
+//        addRequirements(armSubsystem)
+//    }
+//    override fun initialize() {
+//        armSubsystem.setSetpoint(Constants.Arm.SAFE_ANGLE.degrees)
+//    }
+//
+//    override fun isFinished(): Boolean {
+//        return armSubsystem.atLocation()
+//    }
+//}
 
 class ArmTrackingHeight(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose) : Command() {
     var startPosition: Rotation2d = Rotation2d.fromDegrees(0.0)
