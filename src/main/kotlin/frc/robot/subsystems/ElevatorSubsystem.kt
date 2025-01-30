@@ -27,7 +27,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
 
     fun setSetpoint(loc: Distance) {
         setpoint = loc.`in`(Units.Meters);
-        elevator.setSetpoint(loc.`in`(Units.Meters))
+        elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
     }
 
     fun atLocation(): Boolean {

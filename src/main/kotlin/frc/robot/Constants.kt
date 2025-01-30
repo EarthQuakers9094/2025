@@ -21,32 +21,25 @@ import swervelib.math.Matter
  * constants are needed, to reduce verbosity.
  */
 object Constants {
-    class Elevator {
-        companion object {
-            // TODO FIND THE RIGHT HEIGHTS
-            val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
-            val COLLISION_HEIGHT_HIGH = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
-            const val motorId: Int = -1
-            const val TOLERANCE = 0.01
-        }
+    object Elevator {
+        val MAX_HEIGHT = Distance.ofBaseUnits(2.0, edu.wpi.first.units.Units.Meters)
 
+        // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
+        val COLLISION_HEIGHT_HIGH = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
+        const val motorId: Int = -1
+        const val TOLERANCE = 0.01
     }
 
-    class Arm {
-        companion object {
-            val SAFE_ANGLE = Rotation2d.fromDegrees(-135.0)
-            const val motorId: Int = -1
-            const val TOLERANCE = 2.0
-        }
-
+    object Arm {
+        val SAFE_ANGLE = Rotation2d.fromDegrees(-135.0)
+        const val motorId: Int = -1
+        const val TOLERANCE = 2.0
     }
 
-    class Intake {
-        companion object {
-            const val INTAKE: Double = -0.5
-            const val MOTOR = -1;
-            const val OUTPUT: Double = 0.5
-        }
+    object Intake {
+        const val INTAKE: Double = -0.5
+        const val MOTOR = -1;
+        const val OUTPUT: Double = 0.5
     }
 
     const val ROBOT_MASS: Double = (148 - 20.3) * 0.453592 // 32lbs * kg per pound
