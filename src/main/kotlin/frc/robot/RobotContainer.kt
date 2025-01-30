@@ -15,10 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
+import frc.robot.commands.LaunchCoralCommand
 import frc.robot.commands.gotoPoseCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
+import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.SwerveSubsystem
 import swervelib.SwerveInputStream
 import java.io.File
@@ -44,8 +46,26 @@ class RobotContainer {
         )
     )
 
-    private val armSubsystem = ArmSubsystem(if (RobotBase.isReal()) {ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)} else { ArmSubsystem.ArmSimIO()})
-    private val elevatorSubsystem = ElevatorSubsystem(if (RobotBase.isReal()) {ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)} else {ElevatorSubsystem.ElevatorSimIO()})
+    private val armSubsystem = ArmSubsystem(
+        if (RobotBase.isReal()) {
+            ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)
+        } else {
+            ArmSubsystem.ArmSimIO()
+        })
+
+    private val elevatorSubsystem = ElevatorSubsystem(
+        if (RobotBase.isReal()) {
+            ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)
+        } else {
+            ElevatorSubsystem.ElevatorSimIO()
+        })
+
+    private val intakeSubsystem = IntakeSubsystem(
+        if (RobotBase.isReal()) {
+            IntakeSubsystem.IntakeNeoIO(Constants.Intake.MOTOR)
+        } else {
+            IntakeSubsystem.IntakeSym()
+        })
 
     /**
      * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -181,6 +201,7 @@ class RobotContainer {
             operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
             operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
+            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
         }
 
         fun applyTeam(speed: Double):Double {
