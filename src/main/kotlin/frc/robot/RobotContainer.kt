@@ -25,6 +25,8 @@ import frc.robot.subsystems.SwerveSubsystem
 import swervelib.SwerveInputStream
 import java.io.File
 import java.util.*
+import kotlin.math.absoluteValue
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -37,6 +39,11 @@ class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     val driverXbox: CommandXboxController = CommandXboxController(0)
     val operatorXbox: CommandXboxController = CommandXboxController(1)
+
+     fun getScaleFactor(): Double {
+        val angle = atan2(driverXbox.leftY, driverXbox.leftX) % (Math.PI/2);
+        return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0)
+    }
 
     // The robot's subsystems and commands are defined here...
     private val drivebase = SwerveSubsystem(
@@ -72,8 +79,8 @@ class RobotContainer {
      */
     var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
-        { driverXbox.leftY * -1 },
-        { driverXbox.leftX * -1 })
+        { driverXbox.leftY * -1 * getScaleFactor()},
+        { driverXbox.leftX * -1 * getScaleFactor()})
         .withControllerRotationAxis { driverXbox.rightX }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
@@ -83,8 +90,8 @@ class RobotContainer {
      * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
      */
     var driveDirectAngle: SwerveInputStream = driveAngularVelocity.copy().withControllerHeadingAxis(
-        { driverXbox.rightX },
-        { driverXbox.rightY })
+        { driverXbox.rightX * getScaleFactor()},
+        { driverXbox.rightY * getScaleFactor()})
         .headingWhile(true)
 
 
@@ -104,10 +111,12 @@ class RobotContainer {
 
     var driveSetpointGen: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle)
 
+
+
     var driveAngularVelocitySim: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
-        { -driverXbox.leftY },
-        { -driverXbox.leftX })
+        { -driverXbox.leftY * getScaleFactor()},
+        { -driverXbox.leftX * getScaleFactor()})
         .withControllerRotationAxis { driverXbox.getRawAxis(2) }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
