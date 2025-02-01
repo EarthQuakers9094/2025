@@ -15,9 +15,9 @@ import frc.robot.subsystems.ElevatorSubsystem
 
 fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem, pose: Pose): Command {
     if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height >= Constants.Elevator.COLLISION_HEIGHT_LOW) {
-        if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
-            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))
-        }
+//        if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
+//            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))
+//        }
         return ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose)
     } else if (elevatorSubsystem.getHeight() >= Constants.Elevator.COLLISION_HEIGHT_LOW && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH) {
         if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {

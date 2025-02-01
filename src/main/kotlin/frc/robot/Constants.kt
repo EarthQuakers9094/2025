@@ -10,6 +10,7 @@ import edu.wpi.first.math.util.Units
 
 import edu.wpi.first.units.measure.Distance
 import swervelib.math.Matter
+import kotlin.math.PI
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -22,20 +23,26 @@ import swervelib.math.Matter
  */
 object Constants {
     object Elevator {
-        val MAX_HEIGHT = Distance.ofBaseUnits(2.0, edu.wpi.first.units.Units.Meters)
+        val MAX_HEIGHT = Distance.ofBaseUnits(71.25 - 39.25, edu.wpi.first.units.Units.Inches)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
-        val COLLISION_HEIGHT_HIGH: Distance = Distance.ofBaseUnits(1.4, edu.wpi.first.units.Units.Meters)
-        val COLLISION_HEIGHT_LOW: Distance = Distance.ofBaseUnits(1.2, edu.wpi.first.units.Units.Meters)
+        val COLLISION_HEIGHT_HIGH: Distance = Distance.ofBaseUnits(53.0-39.25, edu.wpi.first.units.Units.Inches)
+        val COLLISION_HEIGHT_LOW: Distance = Distance.ofBaseUnits(48.0-39.25, edu.wpi.first.units.Units.Meters)
 
         const val motorId: Int = -1
         const val TOLERANCE = 0.01
+        private val GEAR_CIRCUMFERENCE =
+            Distance.ofBaseUnits(1.790 * PI, edu.wpi.first.units.Units.Inch)
+                .`in`(edu.wpi.first.units.Units.Meters)
+        val CONVERSION_FACTOR = GEAR_CIRCUMFERENCE/9.0
     }
 
     object Arm {
-        val SAFE_ANGLE = Rotation2d.fromDegrees(-135.0)
+        val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = -1
         const val TOLERANCE = 2.0
+
+
     }
 
     object Intake {

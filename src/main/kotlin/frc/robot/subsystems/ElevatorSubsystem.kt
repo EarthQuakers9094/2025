@@ -57,11 +57,13 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
             motor.configure(
                 SparkMaxConfig()
                     .apply(
-                        EncoderConfig().positionConversionFactor(1.0))
+                        EncoderConfig().positionConversionFactor(Constants.Elevator.CONVERSION_FACTOR))
                     .apply(
                         ClosedLoopConfig().p(0.0).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
+
+            encoder.position = -90.0;
         }
 
         override fun periodic() {}
