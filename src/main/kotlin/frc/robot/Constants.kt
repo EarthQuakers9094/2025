@@ -23,6 +23,9 @@ import kotlin.math.PI
  */
 object Constants {
     object Elevator {
+        val MAX_VEL = 0.25;
+        val MAX_ACELERATION = 0.25;
+
         val MAX_HEIGHT = Distance.ofBaseUnits(71.25 - 39.25, edu.wpi.first.units.Units.Inches)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
@@ -38,11 +41,13 @@ object Constants {
     }
 
     object Arm {
+        val START_POSITION = 20.0;
+        val MAX_ACELERATION = 20.0;
+        const val MAX_VEL = 20.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = -1
         const val TOLERANCE = 2.0
-
-
+        const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
     }
 
     object Intake {

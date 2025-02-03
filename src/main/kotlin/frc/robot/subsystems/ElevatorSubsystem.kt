@@ -10,7 +10,9 @@ import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.units.Units
+import edu.wpi.first.units.Units.Meters
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj.simulation.ElevatorSim
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -20,6 +22,12 @@ import kotlin.math.absoluteValue
 
 class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     private var setpoint = 0.0;
+    private var profile = TrapezoidProfile(
+        TrapezoidProfile.Constraints(
+            Constants.Elevator.MAX_VEL,
+            Constants.Elevator.MAX_ACELERATION))
+
+    private var current_setpoint = TrapezoidProfile.State(0.0,0.0);
 
     fun getHeight(): Distance {
         return Distance.ofBaseUnits(elevator.getHeight(), Units.Meters)
@@ -38,6 +46,10 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         elevator.periodic()
     }
     override fun periodic() {
+        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+
+        elevator.setSetpoint(current_setpoint.position)
+
         elevator.periodic()
     }
 
@@ -82,7 +94,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
 
         private var setpoint = 0.0;
 
-        private val simulation = ElevatorSim(1.0,1.0, DCMotor.getNEO(1).withReduction(1.0),0.0,1.0,true,0.0);
+        private val simulation = ElevatorSim(1.0,1.0, DCMotor.getNEO(2).withReduction(40.0/12.0 * 16.0),0.0,Constants.Elevator.MAX_HEIGHT.`in`(Meters),true,0.0);
 
         override fun periodic() {
             simulation.setInputVoltage(controller.calculate(simulation.positionMeters,setpoint))

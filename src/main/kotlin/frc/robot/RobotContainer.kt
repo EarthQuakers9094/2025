@@ -3,7 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot
 
+import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
+import com.pathplanner.lib.commands.PathPlannerAuto
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -11,10 +13,12 @@ import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
+import frc.robot.commands.DevourCoralCommand
 import frc.robot.commands.LaunchCoralCommand
 import frc.robot.commands.gotoPoseCommand
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
@@ -25,6 +29,7 @@ import frc.robot.subsystems.SwerveSubsystem
 import swervelib.SwerveInputStream
 import java.io.File
 import java.util.*
+import java.util.stream.Stream
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -73,6 +78,18 @@ class RobotContainer {
         } else {
             IntakeSubsystem.IntakeSym()
         })
+
+    private val isCompetition = true;
+
+    private val autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+        { stream: Stream<PathPlannerAuto> ->
+            if (isCompetition) {
+                stream.filter({auto:PathPlannerAuto -> auto.getName().startsWith("comp")})
+            } else {
+                stream
+            }
+        });
+
 
     /**
      * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -154,7 +171,15 @@ class RobotContainer {
         // Configure the trigger bindings
         configureBindings()
         DriverStation.silenceJoystickConnectionWarning(true)
-        NamedCommands.registerCommand("test", Commands.print("I EXIST"))
+        NamedCommands.registerCommand("launch_coral", LaunchCoralCommand(intakeSubsystem))
+        NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem))
+        NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
+        NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
+        NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
+        NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
+
+        SmartDashboard.putData("Auto Chooser", autoChooser)
+
     }
 
     /**
@@ -265,13 +290,7 @@ class RobotContainer {
     }
 
     val autonomousCommand: Command
-        /**
-         * Use this to pass the autonomous command to the main [Robot] class.
-         *
-         * @return the command to run in autonomous
-         */
-        get() =// An example command will be run in autonomous
-            drivebase.getAutonomousCommand("New Auto")
+        get() = autoChooser.selected
 
     fun setDriveMode() {
         configureBindings()
