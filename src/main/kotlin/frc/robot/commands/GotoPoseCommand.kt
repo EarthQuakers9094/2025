@@ -109,7 +109,7 @@ class ElevatorTrackingAngle(private val armSubsystem: ArmSubsystem, private val 
     }
 }
 
-class GotoPoseSimple(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose):
+private class GotoPoseSimple(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose):
     Command() {
 
     init {
