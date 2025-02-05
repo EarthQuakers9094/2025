@@ -46,17 +46,22 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         elevator.periodic()
     }
     override fun periodic() {
-        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
-
-        elevator.setSetpoint(current_setpoint.position)
+//        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+//
+//        elevator.setSetpoint(current_setpoint.position)
 
         elevator.periodic()
+    }
+
+    fun setOutput(output: Double) {
+        elevator.setOutput(output)
     }
 
     interface ElevatorIO {
         fun periodic()
         fun setSetpoint(loc: Double)
         fun getHeight(): Double;
+        fun setOutput(output: Double)
     }
 
     class ElevatorNeoIO(motor_id: Int):ElevatorIO {
@@ -87,6 +92,10 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         override fun getHeight(): Double {
             return encoder.position
         }
+
+        override fun setOutput(output: Double) {
+            motor.set(output)
+        }
     }
 
     class ElevatorSimIO:ElevatorIO {
@@ -108,6 +117,10 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
 
         override fun getHeight(): Double {
             return simulation.positionMeters
+        }
+
+        override fun setOutput(output: Double) {
+            TODO("Not yet implemented")
         }
     }
 }

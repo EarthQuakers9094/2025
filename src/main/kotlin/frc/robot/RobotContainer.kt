@@ -18,9 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.Constants.OperatorConstants
-import frc.robot.commands.DevourCoralCommand
-import frc.robot.commands.LaunchCoralCommand
-import frc.robot.commands.gotoPoseCommand
+import frc.robot.commands.*
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
@@ -229,13 +227,19 @@ class RobotContainer {
             driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverXbox.rightBumper().onTrue(Commands.none())
 
-            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
-            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
-            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
-            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+            operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.05))
+            operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.05))
+            operatorXbox.b().whileTrue(MoveElevatorCommand(elevatorSubsystem,0.05))
+            operatorXbox.x().whileTrue(MoveElevatorCommand(elevatorSubsystem,-0.05))
 
-            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
+//            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
+//            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
+//            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
+//            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
+//            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+//
+//            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
+//
         }
 
         fun applyTeam(speed: Double):Double {

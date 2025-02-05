@@ -44,10 +44,14 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     override fun simulationPeriodic() {
         arm.periodic()
     }
-    override fun periodic() {
-        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
 
-        arm.setSetpoint(current_setpoint.position)
+    fun setoutput(output: Double) {
+        arm.setOutput(output)
+    }
+    override fun periodic() {
+//        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+
+//        arm.setSetpoint(current_setpoint.position)
 
         arm.periodic()
     }
@@ -56,6 +60,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         fun periodic()
         fun setSetpoint(loc: Double)
         fun getAngle(): Double;
+        fun setOutput(output: Double);
     }
 
     class ArmNeoIO(motor_id: Int):ArmIO {
@@ -86,6 +91,10 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         override fun getAngle(): Double {
             return encoder.position
         }
+
+        override fun setOutput(output: Double) {
+            motor.set(output)
+        }
     }
 
     class ArmSimIO:ArmIO {
@@ -107,6 +116,10 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
         override fun getAngle(): Double {
             return simulation.angleRads * 180.0 / Math.PI
+        }
+
+        override fun setOutput(output: Double) {
+            TODO("testing robot probaly never going to be implemented")
         }
     }
 }

@@ -56,7 +56,7 @@ object Constants {
         const val OUTPUT: Double = 0.5
     }
 
-    const val ROBOT_MASS: Double = (148 - 20.3) * 0.453592 // 32lbs * kg per pound
+    const val ROBOT_MASS: Double = (148.0 - 20.3) * 0.453592 // 32lbs * kg per pound
     @JvmField
     val CHASSIS: Matter = Matter(Translation3d(0.0, 0.0, Units.inchesToMeters(8.0)), ROBOT_MASS)
     const val LOOP_TIME: Double = 0.13 //s, 20ms + 110ms sprk max velocity lag
