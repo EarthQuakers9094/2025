@@ -64,8 +64,9 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         fun setOutput(output: Double)
     }
 
-    class ElevatorNeoIO(motor_id: Int):ElevatorIO {
+    class ElevatorNeoIO(motor_id: Int, motor2_id: Int):ElevatorIO {
         var motor: SparkMax;
+        var motor2: SparkMax;
         var encoder: RelativeEncoder;
 
         init {
@@ -79,6 +80,19 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
                         ClosedLoopConfig().p(0.0).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
+
+            motor2 = SparkMax(motor2_id, SparkLowLevel.MotorType.kBrushless)
+
+            motor2.configure(
+                SparkMaxConfig()
+                    .apply(
+                        EncoderConfig().positionConversionFactor(Constants.Elevator.CONVERSION_FACTOR))
+                    .apply(
+                        ClosedLoopConfig().p(0.0).i(0.0).d(0.0))
+                    .follow(motor_id),
+                ResetMode.kNoResetSafeParameters,
+                SparkBase.PersistMode.kPersistParameters,
+            )
 
             encoder.position = -90.0;
         }

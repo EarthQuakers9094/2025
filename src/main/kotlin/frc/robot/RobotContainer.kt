@@ -65,14 +65,14 @@ class RobotContainer {
 
     private val elevatorSubsystem = ElevatorSubsystem(
         if (RobotBase.isReal()) {
-            ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId)
+            ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId, Constants.Elevator.motorId2)
         } else {
             ElevatorSubsystem.ElevatorSimIO()
         })
 
     private val intakeSubsystem = IntakeSubsystem(
         if (RobotBase.isReal()) {
-            IntakeSubsystem.IntakeNeoIO(Constants.Intake.MOTOR)
+            IntakeSubsystem.IntakeNeoIO(Constants.Intake.MOTOR, Constants.Intake.MOTOR2)
         } else {
             IntakeSubsystem.IntakeSym()
         })

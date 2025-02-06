@@ -23,6 +23,7 @@ import kotlin.math.PI
  */
 object Constants {
     object Elevator {
+        val motorId2 = -1;
         val MAX_VEL = 0.25;
         val MAX_ACELERATION = 0.25;
 
@@ -51,6 +52,7 @@ object Constants {
     }
 
     object Intake {
+        const val MOTOR2 = -1;
         const val INTAKE: Double = -0.5
         const val MOTOR = -1;
         const val OUTPUT: Double = 0.5
