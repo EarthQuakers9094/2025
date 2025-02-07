@@ -13,13 +13,14 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 
 class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
-    private var setpoint = 0.0;
+    private var setpoint = -90.0;
 
     private var profile = TrapezoidProfile(
         TrapezoidProfile.Constraints(
@@ -34,7 +35,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
     fun setSetpoint(loc: Double) {
         setpoint = loc;
-        arm.setSetpoint(loc)
+        // arm.setSetpoint(loc)
     }
 
     fun atLocation(): Boolean {
@@ -49,9 +50,10 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         arm.setOutput(output)
     }
     override fun periodic() {
-//        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+       current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
 
-//        arm.setSetpoint(current_setpoint.position)
+       arm.setSetpoint(current_setpoint.position)
+        SmartDashboard.putNumber("arm angle",arm.getAngle())
 
         arm.periodic()
     }
@@ -75,7 +77,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
                     .apply(
                         EncoderConfig().positionConversionFactor(Constants.Arm.CONVERSION_FACTOR))
                     .apply(
-                        ClosedLoopConfig().p(0.0).i(0.0).d(0.0)),
+                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 

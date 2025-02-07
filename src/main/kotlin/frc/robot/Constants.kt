@@ -7,10 +7,12 @@ import com.pathplanner.lib.config.PIDConstants
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.units.Units.*
 
 import edu.wpi.first.units.measure.Distance
 import swervelib.math.Matter
 import kotlin.math.PI
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -23,38 +25,38 @@ import kotlin.math.PI
  */
 object Constants {
     object Elevator {
-        val motorId2 = -1;
-        val MAX_VEL = 0.25;
-        val MAX_ACELERATION = 0.25;
+        val motorId2 = 52;
+        val MAX_VEL = 1.0;
+        val MAX_ACELERATION = 1.0;
 
-        val MAX_HEIGHT = Distance.ofBaseUnits(71.25 - 39.25, edu.wpi.first.units.Units.Inches)
+        val MAX_HEIGHT = Meters.of(71.25 - 39.25)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
-        val COLLISION_HEIGHT_HIGH: Distance = Distance.ofBaseUnits(53.0-39.25, edu.wpi.first.units.Units.Inches)
-        val COLLISION_HEIGHT_LOW: Distance = Distance.ofBaseUnits(48.0-39.25, edu.wpi.first.units.Units.Meters)
+        val COLLISION_HEIGHT_HIGH: Distance = Inches.of(53.0 - 39.25)
+        val COLLISION_HEIGHT_LOW: Distance = Inches.of(48.0 - 39.25)
 
-        const val motorId: Int = -1
+        const val motorId: Int = 51
         const val TOLERANCE = 0.01
-        private val GEAR_CIRCUMFERENCE =
-            Distance.ofBaseUnits(1.790 * PI, edu.wpi.first.units.Units.Inch)
+        val GEAR_CIRCUMFERENCE =
+            Inches.of(1.790 * PI)
                 .`in`(edu.wpi.first.units.Units.Meters)
-        val CONVERSION_FACTOR = GEAR_CIRCUMFERENCE/9.0
+        val CONVERSION_FACTOR: Double = GEAR_CIRCUMFERENCE/9.0
     }
 
     object Arm {
-        val START_POSITION = 20.0;
-        val MAX_ACELERATION = 20.0;
-        const val MAX_VEL = 20.0;
+        val START_POSITION = -90.0;
+        val MAX_ACELERATION = 150.0;
+        const val MAX_VEL = 150.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
-        const val motorId: Int = -1
+        const val motorId: Int = 53
         const val TOLERANCE = 2.0
         const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
     }
 
     object Intake {
-        const val MOTOR2 = -1;
+        const val MOTOR2 = 62;
         const val INTAKE: Double = -0.5
-        const val MOTOR = -1;
+        const val MOTOR = 61;
         const val OUTPUT: Double = 0.5
     }
 
@@ -94,28 +96,38 @@ object Constants {
     
     object Poses {
         val L1 = Pose(
-            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
-            Rotation2d.fromDegrees(-210.0),
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-77.021),
         );
 
         val L2 = Pose(
-            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
-            Rotation2d.fromDegrees(-210.0),
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-204.373),
         );
 
         val L3 = Pose(
-            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
-            Rotation2d.fromDegrees(-210.0),
+            Meters.of(0.203),
+            Rotation2d.fromDegrees(-236.233),
         );
 
         val L4 = Pose(
-            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
-            Rotation2d.fromDegrees(-210.0),
+            Meters.of(0.782),
+            Rotation2d.fromDegrees(-243.950),
         );
 
         val Pickup = Pose(
-            Distance.ofBaseUnits(0.0, edu.wpi.first.units.Units.Meters),
-            Rotation2d.fromDegrees(-45.0),
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-49.762),
+        );
+
+        val Zero = Pose(
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-90.0),
+        );
+
+        val Barge = Pose(
+            Meters.of(0.782),
+            Rotation2d.fromDegrees(-277.099),
         );
     }
 }

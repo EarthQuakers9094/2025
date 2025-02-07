@@ -15,9 +15,11 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.Units.Meters
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj.simulation.ElevatorSim
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import kotlin.math.absoluteValue
+import edu.wpi.first.units.Units.*
 
 
 class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
@@ -30,12 +32,12 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     private var current_setpoint = TrapezoidProfile.State(0.0,0.0);
 
     fun getHeight(): Distance {
-        return Distance.ofBaseUnits(elevator.getHeight(), Units.Meters)
+        return Meters.of(elevator.getHeight())
     }
 
     fun setSetpoint(loc: Distance) {
         setpoint = loc.`in`(Units.Meters);
-        elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
+        // elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
     }
 
     fun atLocation(): Boolean {
@@ -45,10 +47,17 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     override fun simulationPeriodic() {
         elevator.periodic()
     }
+    
     override fun periodic() {
-//        current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
-//
-//        elevator.setSetpoint(current_setpoint.position)
+       current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+
+       elevator.setSetpoint(current_setpoint.position)
+
+        SmartDashboard.putNumber("elevator angle", elevator.getHeight())
+        SmartDashboard.putNumber("elevator setpoint", current_setpoint.position)
+        SmartDashboard.putNumber("elevator goal", setpoint)
+
+
 
         elevator.periodic()
     }
@@ -70,6 +79,10 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         var encoder: RelativeEncoder;
 
         init {
+            SmartDashboard.putNumber("conv factor", Constants.Elevator.CONVERSION_FACTOR)
+            SmartDashboard.putNumber("gear circum", Constants.Elevator.GEAR_CIRCUMFERENCE)
+
+
             motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
@@ -77,7 +90,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
                     .apply(
                         EncoderConfig().positionConversionFactor(Constants.Elevator.CONVERSION_FACTOR))
                     .apply(
-                        ClosedLoopConfig().p(0.0).i(0.0).d(0.0)),
+                        ClosedLoopConfig().p(6.0).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
@@ -89,15 +102,17 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
                         EncoderConfig().positionConversionFactor(Constants.Elevator.CONVERSION_FACTOR))
                     .apply(
                         ClosedLoopConfig().p(0.0).i(0.0).d(0.0))
-                    .follow(motor_id),
+                    .follow(motor_id, true),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters,
             )
 
-            encoder.position = -90.0;
+            encoder.position = 0.0;
         }
 
-        override fun periodic() {}
+        override fun periodic() {
+            SmartDashboard.putNumber("output", motor.appliedOutput)
+        }
 
         override fun setSetpoint(loc: Double) {
             motor.closedLoopController.setReference(loc, SparkBase.ControlType.kPosition)

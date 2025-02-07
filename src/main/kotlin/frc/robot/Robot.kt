@@ -111,12 +111,7 @@ class Robot : TimedRobot() {
      * This function is called periodically during operator control.
      */
     override fun teleopPeriodic() {
-        val scalefactor = m_robotContainer?.getScaleFactor();
-        val x = m_robotContainer?.driverXbox?.leftX!! * scalefactor!!;
-        val y = m_robotContainer?.driverXbox?.leftY!! * scalefactor;
 
-        SmartDashboard.putNumber("x joystick", x)
-        SmartDashboard.putNumber("y joystick", y)
     }
 
     override fun testInit() {

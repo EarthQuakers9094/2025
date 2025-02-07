@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.units.Units.*
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.*
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
@@ -227,16 +229,25 @@ class RobotContainer {
             driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverXbox.rightBumper().onTrue(Commands.none())
 
-            operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.05))
-            operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.05))
-            operatorXbox.b().whileTrue(MoveElevatorCommand(elevatorSubsystem,0.05))
-            operatorXbox.x().whileTrue(MoveElevatorCommand(elevatorSubsystem,-0.05))
+            operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.15))
+            operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.15))
 
-//            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
-//            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
-//            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
-//            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-//            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+            operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
+            operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
+
+           operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
+           operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
+           operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
+           operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
+           operatorXbox.povDown().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero))
+    
+           operatorXbox.rightBumper().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+
+           operatorXbox.leftBumper().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
+
+           operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
+           operatorXbox.rightTrigger(0.1).onTrue(DevourCoralCommand(intakeSubsystem))
+
 //
 //            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
 //
