@@ -91,77 +91,77 @@ class RobotContainer {
         });
 
 
-    /**
-     * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
-     */
-    var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
-        drivebase.swerveDrive,
-        { driverXbox.leftY * -1 * getScaleFactor()},
-        { driverXbox.leftX * -1 * getScaleFactor()})
-        .withControllerRotationAxis { driverXbox.rightX }
-        .deadband(OperatorConstants.DEADBAND)
-        .scaleTranslation(0.8)
-        .allianceRelativeControl(true)
+    // /**
+    //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
+    //  */
+    // var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
+    //     drivebase.swerveDrive,
+    //     { driverXbox.leftY * -1 * getScaleFactor()},
+    //     { driverXbox.leftX * -1 * getScaleFactor()})
+    //     .withControllerRotationAxis { driverXbox.rightX }
+    //     .deadband(OperatorConstants.DEADBAND)
+    //     .scaleTranslation(0.8)
+    //     .allianceRelativeControl(true)
 
-    /**
-     * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
-     */
-    var driveDirectAngle: SwerveInputStream = driveAngularVelocity.copy().withControllerHeadingAxis(
-        { driverXbox.rightX * getScaleFactor()},
-        { driverXbox.rightY * getScaleFactor()})
-        .headingWhile(true)
-
-
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the desired angle NOT angular rotation
-    var driveFieldOrientedDirectAngle: Command = drivebase.driveFieldOriented(driveDirectAngle)
-
-    // Applies deadbands and inverts controls because joysticks
-    // are back-right positive while robot
-    // controls are front-left positive
-    // left stick controls translation
-    // right stick controls the angular velocity of the robot
-    var driveFieldOrientedAnglularVelocity: Command = drivebase.driveFieldOriented(driveAngularVelocity)
-
-    var driveSetpointGen: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle)
+    // /**
+    //  * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
+    //  */
+    // var driveDirectAngle: SwerveInputStream = driveAngularVelocity.copy().withControllerHeadingAxis(
+    //     { driverXbox.rightX * getScaleFactor()},
+    //     { driverXbox.rightY * getScaleFactor()})
+    //     .headingWhile(true)
 
 
+    // // Applies deadbands and inverts controls because joysticks
+    // // are back-right positive while robot
+    // // controls are front-left positive
+    // // left stick controls translation
+    // // right stick controls the desired angle NOT angular rotation
+    // var driveFieldOrientedDirectAngle: Command = drivebase.driveFieldOriented(driveDirectAngle)
 
-    var driveAngularVelocitySim: SwerveInputStream = SwerveInputStream.of(
-        drivebase.swerveDrive,
-        { -driverXbox.leftY * getScaleFactor()},
-        { -driverXbox.leftX * getScaleFactor()})
-        .withControllerRotationAxis { driverXbox.getRawAxis(2) }
-        .deadband(OperatorConstants.DEADBAND)
-        .scaleTranslation(0.8)
-        .allianceRelativeControl(true)
+    // // Applies deadbands and inverts controls because joysticks
+    // // are back-right positive while robot
+    // // controls are front-left positive
+    // // left stick controls translation
+    // // right stick controls the angular velocity of the robot
+    // var driveFieldOrientedAnglularVelocity: Command = drivebase.driveFieldOriented(driveAngularVelocity)
 
-    // Derive the heading axis with math!
-    var driveDirectAngleSim: SwerveInputStream = driveAngularVelocitySim.copy()
-        .withControllerHeadingAxis(
-            {
-                sin(
-                    driverXbox.getRawAxis(
-                        2
-                    ) * Math.PI
-                ) * (Math.PI * 2)
-            },
-            {
-                cos(
-                    driverXbox.getRawAxis(
-                        2
-                    ) * Math.PI
-                ) *
-                        (Math.PI * 2)
-            })
-        .headingWhile(true)
+    // var driveSetpointGen: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle)
 
-    var driveFieldOrientedDirectAngleSim: Command = drivebase.driveFieldOriented(driveDirectAngleSim)
 
-    var driveSetpointGenSim: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim)
+
+    // var driveAngularVelocitySim: SwerveInputStream = SwerveInputStream.of(
+    //     drivebase.swerveDrive,
+    //     { -driverXbox.leftY * getScaleFactor()},
+    //     { -driverXbox.leftX * getScaleFactor()})
+    //     .withControllerRotationAxis { driverXbox.getRawAxis(2) }
+    //     .deadband(OperatorConstants.DEADBAND)
+    //     .scaleTranslation(0.8)
+    //     .allianceRelativeControl(true)
+
+    // // Derive the heading axis with math!
+    // var driveDirectAngleSim: SwerveInputStream = driveAngularVelocitySim.copy()
+    //     .withControllerHeadingAxis(
+    //         {
+    //             sin(
+    //                 driverXbox.getRawAxis(
+    //                     2
+    //                 ) * Math.PI
+    //             ) * (Math.PI * 2)
+    //         },
+    //         {
+    //             cos(
+    //                 driverXbox.getRawAxis(
+    //                     2
+    //                 ) * Math.PI
+    //             ) *
+    //                     (Math.PI * 2)
+    //         })
+    //     .headingWhile(true)
+
+    // var driveFieldOrientedDirectAngleSim: Command = drivebase.driveFieldOriented(driveDirectAngleSim)
+
+    // var driveSetpointGenSim: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim)
 
 
     /**
@@ -191,8 +191,8 @@ class RobotContainer {
      */
     private fun configureBindings() {
         // (Condition) ? Return-On-True : Return-on-False
-        drivebase.defaultCommand =
-            if (!RobotBase.isSimulation()) driveFieldOrientedDirectAngle else driveFieldOrientedDirectAngleSim
+        // drivebase.defaultCommand =
+        //     if (!RobotBase.isSimulation()) driveFieldOrientedDirectAngle else driveFieldOrientedDirectAngleSim
 
         if (RobotBase.isSimulation()) {
             driverXbox.start().onTrue(Commands.runOnce({
@@ -206,7 +206,7 @@ class RobotContainer {
             }))
         }
         if (DriverStation.isTest()) {
-            drivebase.defaultCommand = driveFieldOrientedAnglularVelocity // Overrides drive command above!
+            //drivebase.defaultCommand = driveFieldOrientedAnglularVelocity // Overrides drive command above!
 
             driverXbox.b().whileTrue(drivebase.sysIdAngleMotorCommand())
             driverXbox.x().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
@@ -246,7 +246,8 @@ class RobotContainer {
            operatorXbox.leftBumper().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
            operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
-           operatorXbox.rightTrigger(0.1).onTrue(DevourCoralCommand(intakeSubsystem))
+           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
+           //operatorXbox.leftTrigger(0.1)./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
 
 //
 //            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
@@ -268,7 +269,8 @@ class RobotContainer {
 
         val leftY =
                 {
-                    MathUtil.applyDeadband(
+                    
+                    -MathUtil.applyDeadband(
                         applyTeam(driverXbox.leftY),
                         Constants.OperatorConstants.LEFT_Y_DEADBAND
                     )
@@ -277,10 +279,11 @@ class RobotContainer {
 
         val leftX: () -> Double =
                 {
-                    MathUtil.applyDeadband(
+                    -MathUtil.applyDeadband(
                         applyTeam(driverXbox.leftX),
                         Constants.OperatorConstants.LEFT_X_DEADBAND
                     )
+                    
                 };
 
         val omega = {

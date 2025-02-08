@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.ClosedLoopConfig
 import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
+import com.revrobotics.spark.SparkFlex
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.trajectory.TrapezoidProfile
@@ -74,8 +75,8 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     }
 
     class ElevatorNeoIO(motor_id: Int, motor2_id: Int):ElevatorIO {
-        var motor: SparkMax;
-        var motor2: SparkMax;
+        var motor: SparkFlex;
+        var motor2: SparkFlex;
         var encoder: RelativeEncoder;
 
         init {
@@ -83,7 +84,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
             SmartDashboard.putNumber("gear circum", Constants.Elevator.GEAR_CIRCUMFERENCE)
 
 
-            motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
+            motor = SparkFlex(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
@@ -94,7 +95,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
-            motor2 = SparkMax(motor2_id, SparkLowLevel.MotorType.kBrushless)
+            motor2 = SparkFlex(motor2_id, SparkLowLevel.MotorType.kBrushless)
 
             motor2.configure(
                 SparkMaxConfig()

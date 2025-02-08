@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.ClosedLoopConfig
 import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
+import com.revrobotics.spark.SparkFlex
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
@@ -66,11 +67,11 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     }
 
     class ArmNeoIO(motor_id: Int):ArmIO {
-        var motor: SparkMax;
+        var motor: SparkFlex;
         var encoder: RelativeEncoder;
 
         init {
-            motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
+            motor = SparkFlex(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()

@@ -12,6 +12,9 @@ class IntakeSubsystem(private val intake: IntakeIO) : SubsystemBase() {
  fun setVoltage(power: Double) {
   intake.setVoltage(power)
  }
+ fun setVoltageAlgae(power: Double) {
+    intake.setVoltageAlgae(power)
+ }
 
  override fun simulationPeriodic() {
   intake.periodic()

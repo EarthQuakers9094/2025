@@ -56,6 +56,7 @@ object Constants {
     object Intake {
         const val MOTOR2 = 62;
         const val INTAKE: Double = -0.5
+        const val INTAKE_ALGAE: Double = 0.5
         const val MOTOR = 61;
         const val OUTPUT: Double = 0.5
     }

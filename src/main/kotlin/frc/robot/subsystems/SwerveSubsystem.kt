@@ -105,7 +105,7 @@ class SwerveSubsystem : SubsystemBase {
         println("}")
 
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH
         try {
             swerveDrive = SwerveParser(directory).createSwerveDrive(
                 Constants.MAX_SPEED,
@@ -549,11 +549,15 @@ class SwerveSubsystem : SubsystemBase {
      * relativity.
      * @param fieldRelative Drive mode.  True for field-relative, false for robot-relative.
      */
+    var count = 0
     fun drive(translation: Translation2d?, rotation: Double, fieldRelative: Boolean) {
+        count += 1
+        SmartDashboard.putNumber("HEY THIS IS HAPPENING", count.toDouble())
         swerveDrive.drive(
             translation,
             rotation,
-            fieldRelative,
+            true,
+            // fieldRelative,
             false
         ) // Open loop is disabled since it shouldn't be used most of the time.
     }
