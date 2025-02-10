@@ -55,6 +55,8 @@ import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.cos
+import kotlin.math.sin
 
 class SwerveSubsystem : SubsystemBase {
     /**
@@ -576,9 +578,20 @@ class SwerveSubsystem : SubsystemBase {
      *
      * @param velocity Velocity according to the field.
      */
-    fun driveFieldOriented(velocity: Supplier<ChassisSpeeds?>): Command {
+    fun driveFieldOriented(vsup: Supplier<ChassisSpeeds?>): Command {
         return run {
-            swerveDrive.driveFieldOriented(velocity.get())
+            SmartDashboard.putNumber("swerve drive heading", swerveDrive.getOdometryHeading().degrees);
+
+            val velocity = vsup.get()!!;
+
+            val angle = -swerveDrive.getOdometryHeading().radians;
+
+            val speeds = ChassisSpeeds(cos(angle) * velocity.vxMetersPerSecond - sin(angle) * velocity.vyMetersPerSecond, 
+                                       sin(angle) * velocity.vxMetersPerSecond  + cos(angle) * velocity.vyMetersPerSecond, 
+                                       velocity.omegaRadiansPerSecond);
+
+
+            swerveDrive.drive(speeds) // ChassisSpeeds.fromRobotRelativeSpeeds(velocity.get(), swerveDrive.getOdometryHeading()))
         }
     }
 

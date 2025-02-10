@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.*
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
+import frc.robot.commands.LaunchAlgaeCommand
 import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 import frc.robot.subsystems.IntakeSubsystem
@@ -94,14 +95,14 @@ class RobotContainer {
     // /**
     //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
     //  */
-    // var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
-    //     drivebase.swerveDrive,
-    //     { driverXbox.leftY * -1 * getScaleFactor()},
-    //     { driverXbox.leftX * -1 * getScaleFactor()})
-    //     .withControllerRotationAxis { driverXbox.rightX }
-    //     .deadband(OperatorConstants.DEADBAND)
-    //     .scaleTranslation(0.8)
-    //     .allianceRelativeControl(true)
+    var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
+        drivebase.swerveDrive,
+        { driverXbox.leftY * getScaleFactor()},
+        { driverXbox.leftX * getScaleFactor()})
+        .withControllerRotationAxis { driverXbox.rightX }
+        .deadband(OperatorConstants.DEADBAND)
+        .scaleTranslation(0.8)
+        .allianceRelativeControl(true)
 
     // /**
     //  * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
@@ -124,7 +125,7 @@ class RobotContainer {
     // // controls are front-left positive
     // // left stick controls translation
     // // right stick controls the angular velocity of the robot
-    // var driveFieldOrientedAnglularVelocity: Command = drivebase.driveFieldOriented(driveAngularVelocity)
+    var driveFieldOrientedAnglularVelocity: Command = drivebase.driveFieldOriented(driveAngularVelocity)
 
     // var driveSetpointGen: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle)
 
@@ -229,25 +230,28 @@ class RobotContainer {
             driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverXbox.rightBumper().onTrue(Commands.none())
 
-            operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.15))
-            operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.15))
+            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.15))
+            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.15))
 
-            operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
-            operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
+            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
+            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
 
            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
            operatorXbox.povDown().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero))
+           operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
     
-           operatorXbox.rightBumper().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
+           operatorXbox.povRight().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
-           operatorXbox.leftBumper().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
+           operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
            operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
            operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
-           //operatorXbox.leftTrigger(0.1)./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
+           operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
+
+           operatorXbox.leftBumper().onTrue(LaunchAlgaeCommand(intakeSubsystem))
 
 //
 //            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
@@ -295,16 +299,18 @@ class RobotContainer {
 
         val driveMode = { true }
 
-        val simClosedFieldRel =
-            TeleopDrive(
-                drivebase,
-                leftY,
-                leftX,
-                omega,
-                driveMode,
-            )
+        // val simClosedFieldRel =
+        //     TeleopDrive(
+        //         drivebase,
+        //         leftY,
+        //         leftX,
+        //         omega,
+        //         driveMode,
+        //     )
 
-        drivebase.defaultCommand = simClosedFieldRel
+        drivebase.defaultCommand = driveFieldOrientedAnglularVelocity;
+
+        // drivebase.defaultCommand = simClosedFieldRel
     }
 
     val autonomousCommand: Command

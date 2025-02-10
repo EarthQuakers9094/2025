@@ -57,6 +57,7 @@ object Constants {
         const val MOTOR2 = 62;
         const val INTAKE: Double = -0.5
         const val INTAKE_ALGAE: Double = 0.5
+        const val OUTPUT_ALGAE: Double = -0.5
         const val MOTOR = 61;
         const val OUTPUT: Double = 0.5
     }
@@ -130,5 +131,10 @@ object Constants {
             Meters.of(0.782),
             Rotation2d.fromDegrees(-277.099),
         );
+        val Processor = Pose(
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-77.021),
+        );
+        
     }
 }

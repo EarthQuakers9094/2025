@@ -17,6 +17,8 @@ import edu.wpi.first.units.Units.Meters
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj.simulation.ElevatorSim
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import kotlin.math.absoluteValue
@@ -29,6 +31,8 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         TrapezoidProfile.Constraints(
             Constants.Elevator.MAX_VEL,
             Constants.Elevator.MAX_ACELERATION))
+
+    private var lastTime = Timer.getFPGATimestamp();
 
     private var current_setpoint = TrapezoidProfile.State(0.0,0.0);
 
@@ -50,7 +54,11 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     }
     
     override fun periodic() {
-       current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+        val ntime = Timer.getFPGATimestamp();
+
+       current_setpoint = profile.calculate(ntime - lastTime, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+
+       lastTime = ntime;
 
        elevator.setSetpoint(current_setpoint.position)
 

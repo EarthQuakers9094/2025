@@ -15,6 +15,7 @@ import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants
 import kotlin.math.PI
@@ -27,6 +28,8 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         TrapezoidProfile.Constraints(
             Constants.Arm.MAX_VEL,
             Constants.Arm.MAX_ACELERATION))
+
+    private var lastTime = Timer.getFPGATimestamp();
 
     private var current_setpoint = TrapezoidProfile.State(Constants.Arm.START_POSITION,0.0);
 
@@ -51,9 +54,13 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         arm.setOutput(output)
     }
     override fun periodic() {
-       current_setpoint = profile.calculate(0.02, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+        val ntime = Timer.getFPGATimestamp();
 
-       arm.setSetpoint(current_setpoint.position)
+        current_setpoint = profile.calculate(ntime - lastTime, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+        lastTime = ntime;
+
+
+        arm.setSetpoint(current_setpoint.position)
         SmartDashboard.putNumber("arm angle",arm.getAngle())
 
         arm.periodic()
