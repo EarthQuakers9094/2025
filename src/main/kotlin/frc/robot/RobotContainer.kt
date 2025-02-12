@@ -48,7 +48,12 @@ class RobotContainer {
 
      fun getScaleFactor(): Double {
         val angle = atan2(driverXbox.leftY, driverXbox.leftX) % (Math.PI/2);
-        return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0)
+        return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * 
+        if (driverXbox.getHID().getRightTriggerAxis() > 0.1) {
+            0.5
+        } else {
+            1.0
+        }
     }
 
     // The robot's subsystems and commands are defined here...
@@ -235,7 +240,8 @@ class RobotContainer {
 
             // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
             // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
-
+            operatorXbox.start().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2Algae))
+            operatorXbox.back().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3Algae))
            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))

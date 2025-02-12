@@ -26,8 +26,8 @@ import kotlin.math.PI
 object Constants {
     object Elevator {
         val motorId2 = 52;
-        val MAX_VEL = 1.0;
-        val MAX_ACELERATION = 1.0;
+        val MAX_VEL = 1.5;
+        val MAX_ACELERATION = 2.5;
 
         val MAX_HEIGHT = Meters.of(71.25 - 39.25)
 
@@ -45,8 +45,8 @@ object Constants {
 
     object Arm {
         val START_POSITION = -90.0;
-        val MAX_ACELERATION = 150.0;
-        const val MAX_VEL = 150.0;
+        val MAX_ACELERATION = 250.0;
+        const val MAX_VEL = 250.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = 53
         const val TOLERANCE = 2.0
@@ -55,7 +55,7 @@ object Constants {
 
     object Intake {
         const val MOTOR2 = 62;
-        const val INTAKE: Double = -0.5
+        const val INTAKE: Double = -0.25
         const val INTAKE_ALGAE: Double = 0.5
         const val OUTPUT_ALGAE: Double = -0.5
         const val MOTOR = 61;
@@ -91,7 +91,7 @@ object Constants {
     }
 
     object Drivebase {
-        val MAX_TURNING_SPEEDS = 9.0
+        val MAX_TURNING_SPEEDS = 4.5
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
     }
@@ -104,11 +104,11 @@ object Constants {
 
         val L2 = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-204.373),
+            Rotation2d.fromDegrees(-217.0),
         );
 
         val L3 = Pose(
-            Meters.of(0.203),
+            Meters.of(0.2762),
             Rotation2d.fromDegrees(-236.233),
         );
 
@@ -119,7 +119,7 @@ object Constants {
 
         val Pickup = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-49.762),
+            Rotation2d.fromDegrees(-44.762 - 2.5),
         );
 
         val Zero = Pose(
@@ -134,6 +134,16 @@ object Constants {
         val Processor = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-77.021),
+        );
+
+        val L2Algae = Pose(
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-162.616),
+        );
+
+        val L3Algae = Pose(
+            Meters.of(0.272),
+            Rotation2d.fromDegrees(-174.886),
         );
         
     }
