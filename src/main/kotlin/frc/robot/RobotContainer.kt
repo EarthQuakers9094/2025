@@ -27,6 +27,7 @@ import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.SwerveSubsystem
+import frc.robot.utils.Config
 import swervelib.SwerveInputStream
 import java.io.File
 import java.util.*
@@ -60,26 +61,28 @@ class RobotContainer {
     private val drivebase = SwerveSubsystem(
         File(
             Filesystem.getDeployDirectory(),
-            "swerve/neo"
+            Config("testswerve/neo","swerve/neo").config
         )
     )
 
+    private val subsystemsEnable = Config(false, true).config && RobotBase.isReal();
+
     private val armSubsystem = ArmSubsystem(
-        if (RobotBase.isReal()) {
+        if (subsystemsEnable) {
             ArmSubsystem.ArmNeoIO(Constants.Arm.motorId)
         } else {
             ArmSubsystem.ArmSimIO()
         })
 
     private val elevatorSubsystem = ElevatorSubsystem(
-        if (RobotBase.isReal()) {
+        if (subsystemsEnable) {
             ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId, Constants.Elevator.motorId2)
         } else {
             ElevatorSubsystem.ElevatorSimIO()
         })
 
     private val intakeSubsystem = IntakeSubsystem(
-        if (RobotBase.isReal()) {
+        if (subsystemsEnable) {
             IntakeSubsystem.IntakeNeoIO(Constants.Intake.MOTOR, Constants.Intake.MOTOR2)
         } else {
             IntakeSubsystem.IntakeSym()
