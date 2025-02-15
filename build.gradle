@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.2.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.1"
     id 'org.jetbrains.kotlin.jvm'
 }
 
@@ -29,12 +29,12 @@ deploy {
                 // }
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
    // Enable VisualVM connection
-   jvmArgs.add("-Dcom.sun.management.jmxremote=true")
-   jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
-   jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
-   jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
-   jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
-   jvmArgs.add("-Djava.rmi.server.hostname=10.90.94.2") // Replace TE.AM with team number
+//    jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+//    jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+//    jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+//    jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+//    jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+//    jvmArgs.add("-Djava.rmi.server.hostname=10.90.94.2") // Replace TE.AM with team number
 }
 
                 // Static files artifact

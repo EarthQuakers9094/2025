@@ -10,7 +10,7 @@ class Config<T>(testBot:T,realBot:T) {
     val config:T;
 
     init {
-        if (teamNumber == 9999) {
+        if (teamNumber == 9093) {
             config = testBot
         } else {
             config = realBot
