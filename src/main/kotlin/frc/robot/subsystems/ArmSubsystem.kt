@@ -8,7 +8,9 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.ClosedLoopConfig
 import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkMaxConfig
+import com.revrobotics.spark.config.AbsoluteEncoderConfig
 import com.revrobotics.spark.SparkFlex
+import com.revrobotics.AbsoluteEncoder
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
@@ -78,6 +80,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     class ArmNeoIO(motor_id: Int):ArmIO {
         var motor: SparkFlex;
         var encoder: RelativeEncoder;
+        var absoluteEncoder: AbsoluteEncoder;
 
         init {
             motor = SparkFlex(motor_id, SparkLowLevel.MotorType.kBrushless)
@@ -87,14 +90,28 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
                     .apply(
                         EncoderConfig().positionConversionFactor(Constants.Arm.CONVERSION_FACTOR))
                     .apply(
-                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0)),
+                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0))
+                    .apply(
+                        AbsoluteEncoderConfig()
+                            .positionConversionFactor(Constants.Arm.ABSOLUTE_ENCODER_CONVERSION_FACTOR)
+                            .zeroOffset(Constants.Arm.ABSOLUTE_ENCODER_OFFSET)
+                            .zeroCentered(true)
+                    ),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
-            encoder.setPosition(Constants.Arm.START_POSITION)
+            absoluteEncoder = motor.absoluteEncoder;
+
+            SmartDashboard.putNumber("position of arm set at start", absoluteEncoder.position - 90.0)
+
+            encoder.setPosition(absoluteEncoder.position - 90.0) // abs encoder zeroed around thing starting position
+
+            // encoder.setPosition(Constants.Arm.START_POSITION)
         }
 
-        override fun periodic() {}
+        override fun periodic() {
+            // SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
+        }
 
         override fun setSetpoint(loc: Double) {
             motor.closedLoopController.setReference(loc, SparkBase.ControlType.kPosition)
