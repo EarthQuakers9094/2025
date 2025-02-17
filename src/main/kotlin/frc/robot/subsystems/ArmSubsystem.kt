@@ -41,6 +41,10 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         setpoint = loc;
         // arm.setSetpoint(loc)
     }
+    fun getSetpoint(): Double {
+        return setpoint
+        // arm.setSetpoint(loc)
+    }
 
     fun atLocation(): Boolean {
         return (arm.getAngle() - setpoint).absoluteValue <= Constants.Arm.TOLERANCE

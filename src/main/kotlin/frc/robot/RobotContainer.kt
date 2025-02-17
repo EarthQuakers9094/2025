@@ -36,6 +36,9 @@ import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.pow
+import org.photonvision.PhotonCamera
+import CameraAlignInfo
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -48,10 +51,11 @@ class RobotContainer {
     val operatorXbox: CommandXboxController = CommandXboxController(1)
 
      fun getScaleFactor(): Double {
+        SmartDashboard.putNumber("squared input magnitude", driverXbox.leftX.pow(2.0) + driverXbox.leftY.pow(2.0))
         val angle = atan2(driverXbox.leftY, driverXbox.leftX) % (Math.PI/2);
         return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * 
         if (driverXbox.getHID().getRightTriggerAxis() > 0.1) {
-            0.5
+            0.25
         } else {
             1.0
         }
@@ -107,7 +111,7 @@ class RobotContainer {
         drivebase.swerveDrive,
         { driverXbox.leftY * getScaleFactor()},
         { driverXbox.leftX * getScaleFactor()})
-        .withControllerRotationAxis { driverXbox.rightX }
+        .withControllerRotationAxis { driverXbox.rightX * -0.4 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(true)
@@ -233,16 +237,17 @@ class RobotContainer {
                 )
             )
             //driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2.0))
-            driverXbox.start().whileTrue(Commands.none())
-            driverXbox.back().whileTrue(Commands.none())
-            driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverXbox.rightBumper().onTrue(Commands.none())
+            // driverXbox.start().whileTrue(Commands.none())
+            // driverXbox.back().whileTrue(Commands.none())
+            //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
+            driverXbox.rightBumper().whileTrue(AlignReef(drivebase, CameraAlignInfo(PhotonCamera("ATFrontRight"), Inches.of(8.125)), CameraAlignInfo(PhotonCamera("ATFrontLeft"), Inches.of(-8.0)), Inches.of(6.5)))
+            driverXbox.leftBumper().whileTrue(AlignReef(drivebase, CameraAlignInfo(PhotonCamera("ATFrontRight"), Inches.of(8.125)), CameraAlignInfo(PhotonCamera("ATFrontLeft"), Inches.of(-8.0)), Inches.of(-6.5)))
 
-            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.15))
-            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.15))
+            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
+            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
 
-            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
-            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
+            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().plus(Meters.of(0.05)))}))
+            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().minus(Meters.of(0.05)))}))
             operatorXbox.start().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2Algae))
             operatorXbox.back().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3Algae))
            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
@@ -256,8 +261,8 @@ class RobotContainer {
 
            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
-           operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
-           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
+           operatorXbox.rightTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
+           operatorXbox.leftTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
            operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
 
            operatorXbox.leftBumper().onTrue(LaunchAlgaeCommand(intakeSubsystem))

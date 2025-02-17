@@ -12,7 +12,7 @@ class MoveArmCommand(private val armSubsystem: ArmSubsystem, private var output:
     }
 
     override fun initialize() {
-        armSubsystem.setoutput(output)
+        armSubsystem.setSetpoint(armSubsystem.getSetpoint()+output )
     }
 
     override fun execute() {}
@@ -23,6 +23,6 @@ class MoveArmCommand(private val armSubsystem: ArmSubsystem, private var output:
     }
 
     override fun end(interrupted: Boolean) {
-        armSubsystem.setoutput(0.0)
+        //armSubsystem.setoutput(0.0)
     }
 }
