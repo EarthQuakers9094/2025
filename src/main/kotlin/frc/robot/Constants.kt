@@ -51,6 +51,12 @@ object Constants {
         const val motorId: Int = 53
         const val TOLERANCE = 2.0
         const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
+        const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 12.0/40.0 * 360.0;
+        // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
+
+        // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
+        const val ABSOLUTE_ENCODER_OFFSET = -0.241 + 1.0;
+
     }
 
     object Intake {
