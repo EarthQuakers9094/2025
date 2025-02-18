@@ -16,14 +16,15 @@ import kotlin.collections.firstOrNull
 import kotlin.math.abs
 import kotlin.math.pow
 import java.lang.Math
+import VisionSubsystem
 
-class AlignReef(private val swerveSubsystem: SwerveSubsystem, private val rightCamera: CameraAlignInfo, private val leftCamera: CameraAlignInfo, private val lateralOffset: Distance) : Command() {
+class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
 
     private val skewPID = PIDController(0.05, 0.0, 0.0)
-    private val lateralPID = PIDController(2.5, 0.0, 0.0)
-    private val forwardPID = PIDController(2.0, 0.0, 0.0)
-    private val skewTolerance = 0.1
-    private val lateralTolerance = 0.1
+    private val lateralPID = PIDController(2.0, 0.0, 0.0)
+    private val forwardPID = PIDController(1.5, 0.0, 0.0)
+    private val skewTolerance = 20.0
+    private val lateralTolerance = 2.5
     private val distanceTolerance = 0.1
     private var skew = 0.0
     private var distance = 0.0
@@ -55,11 +56,12 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, private val rightC
             val camera = camera.value
             
              val results = camera.camera.allUnreadResults
-             val validResults = results.map { it.targets.filter { reefTags.contains(it.fiducialId) && (targetId == 0 || targetId == it.fiducialId) }.sortedBy { it.poseAmbiguity } }.filter {it.isNotEmpty()}
+             val validResults = results.map { it.targets.map { Pair(it, it.getBestCameraToTarget()) }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ (reefTags.contains(it.first.fiducialId) && (targetId == 0 || targetId == it.first.fiducialId)) }.sortedBy { it.first.poseAmbiguity } }.filter {it.isNotEmpty()}
             val result = validResults.firstOrNull()?.firstOrNull()
             if (result != null){
-                if (targetId == 0) { targetId = result.fiducialId}
-                val rawTransform = result.getBestCameraToTarget()
+                if (targetId == 0) { targetId = result.first.fiducialId}
+                val rawTransform = result.second
+                
                 if (index == 0) {
                     SmartDashboard.putNumber("align target raw transform x", rawTransform.getX())
                     SmartDashboard.putNumber("align target transform y", rawTransform.getY())
@@ -80,10 +82,11 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, private val rightC
         offsetY /= numTargets
         offsetZ /= numTargets
         yaw /= numTargets
-
-        val rotation = if (abs(yaw) > 3.0) { -skewPID.calculate(yaw,180.0)} else {0.0}
+        SmartDashboard.putNumber("yaw dist from zero", abs(180.0 - yaw))
+        
+        val rotation = if (abs(180.0 - yaw) > 3.0) { -skewPID.calculate(yaw,180.0)} else {0.0}
         val lateral = -lateralPID.calculate(offsetY,lateralOffset.`in`(Units.Meters))
-        val forward = if /*(yaw < skewTolerance && offsetY < lateralTolerance)*/(true) {
+        val forward = if (abs(180.0 - yaw) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {
             -forwardPID.calculate(offsetX,0.0)
         } else {
             0.01
@@ -96,7 +99,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, private val rightC
         SmartDashboard.putNumber("align rotation", rotation)
         SmartDashboard.putNumber("align lateral", lateral)
         SmartDashboard.putNumber("align forward", forward)
-        swerveSubsystem.drive(if ((swerveSubsystem.robotVelocity.vxMetersPerSecond.pow(2) + swerveSubsystem.robotVelocity.vyMetersPerSecond.pow(2)) < 1.0) { Translation2d(forward, lateral) } else {Translation2d(0.01, 0.01)},rotation,false)
+        swerveSubsystem.drive(if ((swerveSubsystem.robotVelocity.vxMetersPerSecond.pow(2) + swerveSubsystem.robotVelocity.vyMetersPerSecond.pow(2)) < 3.0) { Translation2d(forward, lateral) } else {Translation2d(0.01, 0.01)},rotation,false)
         
         // SmartDashboard.putNumber("hello folks this is line 33", 1.0)
         // val results = camera.allUnreadResults

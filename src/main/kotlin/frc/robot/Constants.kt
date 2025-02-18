@@ -45,8 +45,8 @@ object Constants {
 
     object Arm {
         val START_POSITION = -90.0;
-        val MAX_ACELERATION = 250.0;
-        const val MAX_VEL = 250.0;
+        val MAX_ACELERATION = 1500.0;
+        const val MAX_VEL = 4000.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = 53
         const val TOLERANCE = 2.0
