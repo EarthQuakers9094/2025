@@ -41,6 +41,7 @@ import kotlin.math.sin
 import kotlin.math.pow
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
+import VisionSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -55,13 +56,15 @@ class RobotContainer {
 
      fun getScaleFactor(): Double {
         SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
-        val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2);
-        return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * 
+        val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
+        val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
         if (driverRightStick.getHID().getRawButton(2)) {
             0.25
         } else {
             1.0
         }
+        SmartDashboard.putNumber("driving scale factor", factor)
+        return factor
     }
 
     // The robot's subsystems and commands are defined here...
@@ -94,6 +97,18 @@ class RobotContainer {
         } else {
             IntakeSubsystem.IntakeSym()
         })
+    private val visionSubsystem = VisionSubsystem(
+            if (subsystemsEnable) {
+                VisionSubsystem.VisionRealIO(
+                    PhotonCamera("ATFrontRight"), 
+                    Inches.of(8.125), 
+                    PhotonCamera("ATFrontLeft"),
+                    Inches.of(-8.0),
+                )
+                    
+            } else {
+                VisionSubsystem.VisionSimIO()
+            })
 
     private val isCompetition = true;
 
@@ -114,7 +129,7 @@ class RobotContainer {
         drivebase.swerveDrive,
         { driverLeftStick.getY() * getScaleFactor()},
         { driverLeftStick.getX() * getScaleFactor()})
-        .withControllerRotationAxis { driverRightStick.getX() * -0.4 }
+        .withControllerRotationAxis { driverRightStick.getX() * -0.5 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(true)
@@ -243,8 +258,8 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverLeftStick.trigger().whileTrue(AlignReef(drivebase, CameraAlignInfo(PhotonCamera("ATFrontRight"), Inches.of(8.125)), CameraAlignInfo(PhotonCamera("ATFrontLeft"), Inches.of(-8.0)), Inches.of(6.5 - 0.5)))
-            driverRightStick.trigger().whileTrue(AlignReef(drivebase, CameraAlignInfo(PhotonCamera("ATFrontRight"), Inches.of(8.125)), CameraAlignInfo(PhotonCamera("ATFrontLeft"), Inches.of(-8.0)), Inches.of(-6.5 - 0.5)))
+            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
+            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
 
             // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
             // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
@@ -264,8 +279,8 @@ class RobotContainer {
 
            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
-           operatorXbox.rightTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
-           operatorXbox.leftTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
+           operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
+           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
            operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
 
            operatorXbox.leftBumper().onTrue(LaunchAlgaeCommand(intakeSubsystem))

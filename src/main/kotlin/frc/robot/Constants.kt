@@ -24,6 +24,10 @@ import kotlin.math.PI
  * constants are needed, to reduce verbosity.
  */
 object Constants {
+
+    object Vision {
+        val reefTags = arrayOf(6,7,8,9,10,11)
+    }
     object Elevator {
         val motorId2 = 52;
         val MAX_VEL = 1.5;
@@ -62,7 +66,7 @@ object Constants {
     object Intake {
         const val MOTOR2 = 62;
         const val INTAKE: Double = -0.25
-        const val INTAKE_ALGAE: Double = 0.5
+        const val INTAKE_ALGAE: Double = 1.0
         const val OUTPUT_ALGAE: Double = -0.5
         const val MOTOR = 61;
         const val OUTPUT: Double = 0.5

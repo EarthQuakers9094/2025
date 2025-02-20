@@ -4,14 +4,19 @@ import org.photonvision.PhotonCamera
 import org.photonvision.simulation.PhotonCameraSim
 import org.photonvision.targeting.PhotonPipelineResult
 import edu.wpi.first.units.measure.Distance
+import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 
-class VisionSubsystem {
+class VisionSubsystem(val io: VisionIO): SubsystemBase() {
+    override fun periodic() {
+        io.periodic()
+    }
     interface VisionIO {
         fun periodic()
-        fun getFrontCameras(): HashMap<String, CameraAlignInfo> 
-        fun hasTarget(filter: Array<Int>, cameras: Array<String>): Boolean
-        fun getResults(camera: String): List<PhotonPipelineResult>?
+        public fun getFrontCameras(): HashMap<String, CameraAlignInfo> 
+        public fun hasTarget(filter: Array<Int>, cameras: Array<String>): Boolean
+        public fun getResults(camera: String): List<PhotonPipelineResult>?
+        fun getLateralOffset(camera: String): Distance? 
 
     }
 
@@ -67,6 +72,9 @@ class VisionSubsystem {
             
             //results.map { it.targets.map { Pair(it, it.getBestCameraToTarget()) }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ (reefTags.contains(it.first.fiducialId) && (targetId == 0 || targetId == it.first.fiducialId)) }.sortedBy { it.first.poseAmbiguity } }.filter {it.isNotEmpty()}
         }
+        override fun getLateralOffset(camera: String): Distance? {
+            return this.getFrontCameras().get(camera)?.lateralOffset
+        }
 
         
     }
@@ -86,6 +94,11 @@ class VisionSubsystem {
          }
 
         override fun getResults(camera: String): List<PhotonPipelineResult>? {
+            TODO("got lazy")
+        }
+
+
+        override fun getLateralOffset(camera: String): Distance? { 
             TODO("got lazy")
         }
     }
