@@ -85,6 +85,13 @@ class RobotContainer {
             ArmSubsystem.ArmSimIO()
         })
 
+    private val grappleSubsystem = GrapplingSubsystem(
+        if (subsystemsEnable) {
+            GrapplingSubsystem.GrapplingNeoIO(Constants.Arm.motorId)
+        } else {
+            GrapplingSubsystem.GrapplingSimIO()
+        })
+
     private val elevatorSubsystem = ElevatorSubsystem(
         if (subsystemsEnable) {
             ElevatorSubsystem.ElevatorNeoIO(Constants.Elevator.motorId, Constants.Elevator.motorId2)
@@ -98,11 +105,13 @@ class RobotContainer {
         } else {
             IntakeSubsystem.IntakeSym()
         })
+
+    
     private val visionSubsystem = VisionSubsystem(
             if (subsystemsEnable) {
                 VisionSubsystem.VisionRealIO(
                     PhotonCamera("ATFrontRight"), 
-                    Inches.of(8.125), 
+                    Inches.of(8.125),
                     PhotonCamera("ATFrontLeft"),
                     Inches.of(-8.0),
                 )
@@ -249,6 +258,11 @@ class RobotContainer {
             // driverXbox.rightBumper().onTrue(Commands.none())
         } else {
             driverLeftStick.button(4).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
+            driverLeftStick.button(10).onTrue(MoveGrappleCommand(grappleSubsystem, Constants.Grappling.STANGLE))
+            driverLeftStick.button(11).onTrue(MoveGrappleCommand(grappleSubsystem, Constants.Grappling.OUT_ANGLE))
+
+
+
             //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
             // driverXbox.b().whileTrue(
             //     drivebase.driveToPose(
