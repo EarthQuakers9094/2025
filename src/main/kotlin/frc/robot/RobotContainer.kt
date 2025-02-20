@@ -6,6 +6,7 @@ package frc.robot
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
+import com.reduxrobotics.sensors.canandmag.CanandmagDetails
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Units.*
 import edu.wpi.first.math.geometry.Pose2d
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.*
@@ -37,6 +39,10 @@ import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.pow
+import org.photonvision.PhotonCamera
+import CameraAlignInfo
+import VisionSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -45,17 +51,21 @@ import kotlin.math.sin
  */
 class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    val driverXbox: CommandXboxController = CommandXboxController(0)
-    val operatorXbox: CommandXboxController = CommandXboxController(1)
+    val driverLeftStick: CommandJoystick = CommandJoystick(0)
+    val driverRightStick: CommandJoystick = CommandJoystick(1)
+    val operatorXbox: CommandXboxController = CommandXboxController(2)
 
      fun getScaleFactor(): Double {
-        val angle = atan2(driverXbox.leftY, driverXbox.leftX) % (Math.PI/2);
-        return sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * 
-        if (driverXbox.getHID().getRightTriggerAxis() > 0.1) {
-            0.5
+        SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
+        val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
+        val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
+        if (driverRightStick.getHID().getRawButton(2)) {
+            0.25
         } else {
             1.0
         }
+        SmartDashboard.putNumber("driving scale factor", factor)
+        return factor
     }
 
     // The robot's subsystems and commands are defined here...
@@ -88,6 +98,18 @@ class RobotContainer {
         } else {
             IntakeSubsystem.IntakeSym()
         })
+    private val visionSubsystem = VisionSubsystem(
+            if (subsystemsEnable) {
+                VisionSubsystem.VisionRealIO(
+                    PhotonCamera("ATFrontRight"), 
+                    Inches.of(8.125), 
+                    PhotonCamera("ATFrontLeft"),
+                    Inches.of(-8.0),
+                )
+                    
+            } else {
+                VisionSubsystem.VisionSimIO()
+            })
 
     private val isCompetition = true;
 
@@ -106,9 +128,9 @@ class RobotContainer {
     //  */
     var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
-        { driverXbox.leftY * getScaleFactor()},
-        { driverXbox.leftX * getScaleFactor()})
-        .withControllerRotationAxis { driverXbox.rightX }
+        { driverLeftStick.getY() * getScaleFactor()},
+        { driverLeftStick.getX() * getScaleFactor()})
+        .withControllerRotationAxis { driverRightStick.getX() * -0.5 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(true)
@@ -205,45 +227,46 @@ class RobotContainer {
         //     if (!RobotBase.isSimulation()) driveFieldOrientedDirectAngle else driveFieldOrientedDirectAngleSim
 
         if (RobotBase.isSimulation()) {
-            driverXbox.start().onTrue(Commands.runOnce({
-                drivebase.resetOdometry(
-                    Pose2d(
-                        3.0,
-                        3.0,
-                        Rotation2d()
-                    )
-                )
-            }))
+            // driverXbox.start().onTrue(Commands.runOnce({
+            //     drivebase.resetOdometry(
+            //         Pose2d(
+            //             3.0,
+            //             3.0,
+            //             Rotation2d()
+            //         )
+            //     )
+            // }))
         }
         if (DriverStation.isTest()) {
             //drivebase.defaultCommand = driveFieldOrientedAnglularVelocity // Overrides drive command above!
 
-            driverXbox.b().whileTrue(drivebase.sysIdAngleMotorCommand())
-            driverXbox.x().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2))
-            driverXbox.start().onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            driverXbox.back().whileTrue(drivebase.centerModulesCommand())
-            driverXbox.leftBumper().onTrue(Commands.none())
-            driverXbox.rightBumper().onTrue(Commands.none())
+            // driverXbox.b().whileTrue(drivebase.sysIdAngleMotorCommand())
+            // driverXbox.x().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
+            // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2))
+            // driverXbox.start().onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
+            // driverXbox.back().whileTrue(drivebase.centerModulesCommand())
+            // driverXbox.leftBumper().onTrue(Commands.none())
+            // driverXbox.rightBumper().onTrue(Commands.none())
         } else {
-            driverXbox.a().onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
-            driverXbox.b().whileTrue(
-                drivebase.driveToPose(
-                    Pose2d(Translation2d(4.0, 4.0), Rotation2d.fromDegrees(0.0))
-                )
-            )
+            driverLeftStick.button(4).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
+            //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
+            // driverXbox.b().whileTrue(
+            //     drivebase.driveToPose(
+            //         Pose2d(Translation2d(4.0, 4.0), Rotation2d.fromDegrees(0.0))
+            //     )
+            // )
             //driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2.0))
-            driverXbox.start().whileTrue(Commands.none())
-            driverXbox.back().whileTrue(Commands.none())
-            driverXbox.leftBumper().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverXbox.rightBumper().onTrue(Commands.none())
+            // driverXbox.start().whileTrue(Commands.none())
+            // driverXbox.back().whileTrue(Commands.none())
+            //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
+            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
+            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
 
-            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,0.15))
-            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-0.15))
+            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
+            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
 
-            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.2))}))
-            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(Meters.of(0.0))}))
+            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().plus(Meters.of(0.05)))}))
+            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().minus(Meters.of(0.05)))}))
             operatorXbox.start().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2Algae))
             operatorXbox.back().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3Algae))
            operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
@@ -285,7 +308,7 @@ class RobotContainer {
                 {
                     
                     -MathUtil.applyDeadband(
-                        applyTeam(driverXbox.leftY),
+                        applyTeam(driverLeftStick.getY()),
                         Constants.OperatorConstants.LEFT_Y_DEADBAND
                     )
                 }
@@ -294,7 +317,7 @@ class RobotContainer {
         val leftX: () -> Double =
                 {
                     -MathUtil.applyDeadband(
-                        applyTeam(driverXbox.leftX),
+                        applyTeam(driverLeftStick.getX()),
                         Constants.OperatorConstants.LEFT_X_DEADBAND
                     )
                     
@@ -302,7 +325,7 @@ class RobotContainer {
 
         val omega = {
             MathUtil.applyDeadband(
-                driverXbox.rightX,
+                driverRightStick.getX(),
                 Constants.OperatorConstants.LEFT_X_DEADBAND
             )
         }

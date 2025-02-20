@@ -120,8 +120,8 @@ class ElevatorTrackingAngle(private val armSubsystem: ArmSubsystem, private val 
     }
 
     override fun execute() {
-        val percentTo = (armSubsystem.getAngle().degrees - Constants.Poses.Pickup.angle.degrees) /
-                        (Constants.Arm.SAFE_ANGLE.degrees - Constants.Poses.Pickup.angle.degrees);
+        val percentTo = ((armSubsystem.getAngle().degrees - Constants.Poses.Pickup.angle.degrees) /
+                        (Constants.Arm.SAFE_ANGLE.degrees + 90.0)).coerceIn(0.0, 1.2);
 
         SmartDashboard.putNumber("percentTo", percentTo);
 

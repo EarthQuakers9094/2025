@@ -42,7 +42,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
 
     fun setSetpoint(loc: Distance) {
         setpoint = loc.`in`(Units.Meters);
-        // elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
+        elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
     }
 
     fun atLocation(): Boolean {
@@ -54,13 +54,13 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
     }
     
     override fun periodic() {
-        val ntime = Timer.getFPGATimestamp();
+    //     val ntime = Timer.getFPGATimestamp();
 
-       current_setpoint = profile.calculate(ntime - lastTime, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
+    //    current_setpoint = profile.calculate(ntime - lastTime, current_setpoint, TrapezoidProfile.State(setpoint, 0.0))
 
-       lastTime = ntime;
+    //    lastTime = ntime;
 
-       elevator.setSetpoint(current_setpoint.position)
+    //    elevator.setSetpoint(current_setpoint.position)
 
         SmartDashboard.putNumber("elevator angle", elevator.getHeight())
         SmartDashboard.putNumber("elevator setpoint", current_setpoint.position)

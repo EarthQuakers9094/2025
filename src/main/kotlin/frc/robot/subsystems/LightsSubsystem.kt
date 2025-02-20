@@ -7,6 +7,12 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class LightsSubsystem(val io: LightsIO) : SubsystemBase() {
+    public fun setAllLeds(color: Color) {
+        for (led in 0.rangeUntil(io.getLEDS())) {
+            io.setLED(led, color)
+        }
+    }
+
     interface LightsIO {
         fun periodic();
         fun setLED(index: Int, color: Color);

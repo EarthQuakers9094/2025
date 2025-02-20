@@ -13,7 +13,7 @@ class LaunchAlgaeCommand(private val intakeSubsystem: IntakeSubsystem) : Command
     }
 
     override fun initialize() {
-        intakeSubsystem.setVoltage(Constants.Intake.OUTPUT_ALGAE)
+        intakeSubsystem.setVoltageAlgae(Constants.Intake.OUTPUT_ALGAE)
         timer.restart()
     }
 
@@ -25,6 +25,6 @@ class LaunchAlgaeCommand(private val intakeSubsystem: IntakeSubsystem) : Command
     }
 
     override fun end(interrupted: Boolean) {
-        intakeSubsystem.setVoltage(0.0)
+        intakeSubsystem.setVoltageAlgae(0.0)
     }
 }
