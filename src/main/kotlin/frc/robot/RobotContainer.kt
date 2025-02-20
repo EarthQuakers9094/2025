@@ -27,6 +27,7 @@ import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.SwerveSubsystem
+import frc.robot.subsystems.GrapplingSubsystem
 import frc.robot.utils.Config
 import swervelib.SwerveInputStream
 import java.io.File
