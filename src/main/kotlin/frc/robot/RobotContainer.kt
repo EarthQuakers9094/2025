@@ -58,7 +58,7 @@ class RobotContainer {
         SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
         val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
         val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
-        if (driverRightStick.getHID().getRawButton(2)) {
+        if (driverLeftStick.getHID().getRawButton(2)) {
             0.25
         } else {
             1.0
@@ -260,6 +260,7 @@ class RobotContainer {
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
             driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
+            driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0)))
 
             // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
             // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))

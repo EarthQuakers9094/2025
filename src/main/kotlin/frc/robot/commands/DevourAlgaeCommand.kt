@@ -22,6 +22,6 @@ class DevourAlgaeCommand(private val intakeSubsystem: IntakeSubsystem) : Command
     }
 
     override fun end(interrupted: Boolean) {
-        intakeSubsystem.setVoltageAlgae(0.0)
+        //intakeSubsystem.setVoltageAlgae(0.0)
     }
 }

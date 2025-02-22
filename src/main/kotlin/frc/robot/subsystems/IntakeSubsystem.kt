@@ -4,6 +4,9 @@ import com.revrobotics.RelativeEncoder
 import com.revrobotics.spark.SparkFlex
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
+import com.revrobotics.spark.config.SparkFlexConfig
+import com.revrobotics.spark.config.SparkBaseConfig
+import com.revrobotics.spark.SparkBase
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.motorcontrol.Spark
@@ -44,6 +47,7 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
   motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
   motor2 = SparkFlex(motor2_id, SparkLowLevel.MotorType.kBrushless)
   encoder = motor.encoder;
+  //motor2.configure(SparkFlexConfig().idleMode(SparkBaseConfig.IdleMode.kBrake),SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
  }
 
  override fun periodic() {}
