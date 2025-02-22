@@ -62,6 +62,22 @@ object Constants {
         const val ABSOLUTE_ENCODER_OFFSET = -0.241 + 1.0;
 
     }
+    object Grappling {
+        val STANGLE = 0.0;
+        val MAX_ACELERATION = 250.0;
+        const val MAX_VEL = 250.0;
+        const val OUT_ANGLE = 60.0; 
+        val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
+        const val motorId: Int = 53
+        const val TOLERANCE = 2.0
+        const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
+        const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 12.0/40.0 * 360.0;
+        // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
+
+        // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
+        const val ABSOLUTE_ENCODER_OFFSET = -0.241 + 1.0;
+
+    }
 
     object Intake {
         const val MOTOR2 = 62;
@@ -105,7 +121,7 @@ object Constants {
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
     }
-    
+
     object Poses {
         val L1 = Pose(
             Meters.of(0.0),
