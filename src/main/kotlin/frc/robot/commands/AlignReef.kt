@@ -18,6 +18,29 @@ import kotlin.math.abs
 import kotlin.math.pow
 import java.lang.Math
 import VisionSubsystem
+import edu.wpi.first.wpilibj2.command.Commands
+
+enum class Side {
+    Left,
+    Right
+}
+
+fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem, section: String): Command {
+    return Commands.select(
+        mapOf(
+            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET),
+            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET),
+        ),
+        {
+            if (SmartDashboard.getBoolean(section, true)) {
+                Side.Left
+            } else {
+                Side.Right
+
+            }
+        }
+    )
+}
 
 class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
 

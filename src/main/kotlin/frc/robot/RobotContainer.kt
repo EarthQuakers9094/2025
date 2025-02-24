@@ -217,7 +217,14 @@ class RobotContainer {
         NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
         NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
+        NamedCommands.registerCommand("zero_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
+
+        NamedCommands.registerCommand("pickup_pose", BackupCommand(drivebase).andThen(gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup)))
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
+        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
+        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
+
+
 
         SmartDashboard.putData("Auto Chooser", autoChooser)
 
