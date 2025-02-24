@@ -1,0 +1,142 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Lower Far"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "l4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_right"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch_coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup_pose"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Lower Far to Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "devour_coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back to Lower Far"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "l4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_left"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch_coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup_pose"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Lower Far to Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "devour_coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pickup to Far Left"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "l4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_right"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch_coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
