@@ -26,6 +26,8 @@ enum class Side {
 }
 
 fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem, section: String): Command {
+    SmartDashboard.putBoolean(section, false);
+
     return Commands.select(
         mapOf(
             Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET),
