@@ -217,7 +217,20 @@ class RobotContainer {
         NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
         NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
+        NamedCommands.registerCommand("zero_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
+
+        NamedCommands.registerCommand("pickup_pose", BackupCommand(drivebase).andThen(gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup)))
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
+
+        NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
+        NamedCommands.registerCommand("align_second", alignReefSelect(drivebase, visionSubsystem, "align_second_left"));
+        NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
+        NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
+
+        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
+        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
+
+
 
         SmartDashboard.putData("Auto Chooser", autoChooser)
 
@@ -273,8 +286,8 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
-            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
+            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.RIGHT_OFFSET))
+            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET))
 
             // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
             // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))

@@ -20,6 +20,10 @@ class IntakeSubsystem(private val intake: IntakeIO) : SubsystemBase() {
   intake.periodic()
  }
 
+fun getOutputCurrent(): Double {
+   return intake.getCurrent()
+ }
+
  override fun periodic() {
   intake.periodic()
  }
@@ -33,6 +37,7 @@ class IntakeSubsystem(private val intake: IntakeIO) : SubsystemBase() {
   fun setVoltage(power: Double)
   fun setVoltageAlgae(power: Double)
   fun hasPiece(): Boolean;
+  fun getCurrent(): Double;
  }
 
 class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
@@ -60,6 +65,10 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
  override fun hasPiece():Boolean {
   return button.get()
  }
+
+ override fun getCurrent(): Double { 
+   return motor.outputCurrent
+ }
 }
 
  class IntakeSym() : IntakeIO {
@@ -80,6 +89,10 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
 
   override fun hasPiece(): Boolean {
    return set >= 0.0
+  }
+
+  override fun getCurrent(): Double { 
+   return 1000000.0
   }
  }
 }
