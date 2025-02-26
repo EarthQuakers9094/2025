@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 
@@ -21,6 +22,7 @@ class Robot : TimedRobot() {
     private var m_robotContainer: RobotContainer? = null
 
     private var disabledTimer: Timer? = null
+    private val field = Field2d()
 
     init {
         instance = this
@@ -52,6 +54,12 @@ class Robot : TimedRobot() {
      * SmartDashboard integrated updating.
      */
     override fun robotPeriodic() {
+        m_robotContainer!!.frame += 1;
+
+        
+        //SmartDashboard.putData("Field", field)
+        //field.setRobotPose(m_robotContainer!!.drivebase.pose)
+ 
         // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
         // commands, running already-scheduled commands, removing finished or interrupted commands,
         // and running subsystem periodic() methods.  This must be called from the robot's periodic

@@ -23,68 +23,70 @@ import frc.robot.Constants
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode
-import com.revrobotics.spark.config.SparkBaseConfig
 
-class GrapplingSubsystem(private val grappling: GrapplingIO) : SubsystemBase() {
-    private var setpoint = -90.0;
+class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
+    private var setpoint = 0.0;
 
-    private var lastTime = Timer.getFPGATimestamp();
-
-    fun getAngle(): Rotation2d {
-        return Rotation2d.fromDegrees(grappling.getAngle())
+    fun getAngle(): Double {
+        return arm.getAngle()
     }
 
     fun setSetpoint(loc: Double) {
         setpoint = loc;
-        grappling.setSetpoint(loc)
+        arm.setSetpoint(loc)
+    }
+    fun getSetpoint(): Double {
+        return setpoint
+
     }
 
     fun atLocation(): Boolean {
-        return (grappling.getAngle() - setpoint).absoluteValue <= Constants.Grappling.TOLERANCE
+        return (arm.getAngle() - setpoint).absoluteValue <= Constants.Grappling.TOLERANCE
     }
 
     override fun simulationPeriodic() {
-        grappling.periodic()
+        arm.periodic()
     }
 
     fun setoutput(output: Double) {
-        grappling.setOutput(output)
+        arm.setOutput(output)
     }
     override fun periodic() {
-        SmartDashboard.putNumber("grappling angle",grappling.getAngle())
-
-        grappling.periodic()
+        arm.periodic()
     }
 
     interface GrapplingIO {
-        fun periodic()
-        fun setSetpoint(loc: Double)
+        fun periodic();
+        fun setSetpoint(loc: Double);
         fun getAngle(): Double;
         fun setOutput(output: Double);
     }
 
     class GrapplingNeoIO(motor_id: Int):GrapplingIO {
-        var motor: SparkFlex;
+        var motor: SparkMax;
         var encoder: RelativeEncoder;
+        var absoluteEncoder: AbsoluteEncoder;
 
         init {
-            motor = SparkFlex(motor_id, SparkLowLevel.MotorType.kBrushless)
+            motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
                     .apply(
-                        EncoderConfig().positionConversionFactor(Constants.Grappling.CONVERSION_FACTOR))
-                    .apply(
-                        ClosedLoopConfig().p(0.0).i(0.0).d(0.0))
-                    .idleMode(SparkBaseConfig.IdleMode.kBrake),
+                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0))
+                    .idleMode(IdleMode.kBrake),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
-            encoder.setPosition(Constants.Grappling.START_POSITION)
+            absoluteEncoder = motor.absoluteEncoder;
+
+            encoder.setPosition(0.0) // abs encoder zeroed around thing starting position
+
+            // encoder.setPosition(Constants.Arm.START_POSITION)
         }
 
         override fun periodic() {
-            // SmartDashboard.putNumber("abs grappling angle",absoluteEncoder.position)
+            // SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
         }
 
         override fun setSetpoint(loc: Double) {
@@ -105,11 +107,11 @@ class GrapplingSubsystem(private val grappling: GrapplingIO) : SubsystemBase() {
 
         private var setpoint = 0.0;
 
-        // private val simulation = SingleJointedSim(DCMotor.getNEO(2), 16.0 * 40.0/12.0, 1.0,0.5, -5.0 * Math.PI/3.0, Math.PI/6.0,true, Constants.Grappling.START_POSITION * PI/180.0);
+        private val simulation = SingleJointedArmSim(DCMotor.getNEO(2), 16.0 * 40.0/12.0, 1.0,0.5, -5.0 * Math.PI/3.0, Math.PI/6.0,true, Constants.Arm.START_POSITION * PI/180.0);
 
         override fun periodic() {
-           // simulation.setInputVoltage(controller.calculate(simulation.angleRads * 180.0 / Math.PI,setpoint))
-           // simulation.update(0.02)
+            simulation.setInputVoltage(controller.calculate(simulation.angleRads * 180.0 / Math.PI,setpoint))
+            simulation.update(0.02)
         }
 
 
@@ -118,7 +120,7 @@ class GrapplingSubsystem(private val grappling: GrapplingIO) : SubsystemBase() {
         }
 
         override fun getAngle(): Double {
-            return 0.00
+            return simulation.angleRads * 180.0 / Math.PI
         }
 
         override fun setOutput(output: Double) {

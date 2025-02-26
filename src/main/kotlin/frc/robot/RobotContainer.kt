@@ -55,21 +55,35 @@ class RobotContainer {
     val driverRightStick: CommandJoystick = CommandJoystick(1)
     val operatorXbox: CommandXboxController = CommandXboxController(2)
 
+    var frame = 0
+
+    var lastScaleFactor = 0.0;
+
+    var lastUpdatedScaleFactor = -1;
+
      fun getScaleFactor(): Double {
-        SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
-        val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
+        if (lastUpdatedScaleFactor == frame) {
+            return lastScaleFactor
+        }
+
+        // SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
+        // val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
         val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
         if (driverLeftStick.getHID().getRawButton(2)) {
             0.25
         } else {
             1.0
         }
+
+        lastScaleFactor = factor
+        lastUpdatedScaleFactor = frame
+
         SmartDashboard.putNumber("driving scale factor", factor)
         return factor
     }
 
     // The robot's subsystems and commands are defined here...
-    private val drivebase = SwerveSubsystem(
+    val drivebase = SwerveSubsystem(
         File(
             Filesystem.getDeployDirectory(),
             Config("testswerve/neo","swerve/neo").config
@@ -87,7 +101,7 @@ class RobotContainer {
 
     private val grappleSubsystem = GrapplingSubsystem(
         if (subsystemsEnable) {
-            GrapplingSubsystem.GrapplingNeoIO(Constants.Arm.motorId)
+            GrapplingSubsystem.GrapplingNeoIO(Constants.Grappling.motorId)
         } else {
             GrapplingSubsystem.GrapplingSimIO()
         })
@@ -139,7 +153,7 @@ class RobotContainer {
         drivebase.swerveDrive,
         { driverLeftStick.getY() * getScaleFactor()},
         { driverLeftStick.getX() * getScaleFactor()})
-        .withControllerRotationAxis { driverRightStick.getX() * -0.5 }
+        .withControllerRotationAxis { driverRightStick.getX() * -0.7 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(true)
@@ -258,8 +272,8 @@ class RobotContainer {
             // driverXbox.rightBumper().onTrue(Commands.none())
         } else {
             driverLeftStick.button(4).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            driverLeftStick.button(10).onTrue(MoveGrappleCommand(grappleSubsystem, Constants.Grappling.STANGLE))
-            driverLeftStick.button(11).onTrue(MoveGrappleCommand(grappleSubsystem, Constants.Grappling.OUT_ANGLE))
+            driverLeftStick.button(10).onTrue(MoveGrappleCommand(grappleSubsystem, -0.5))
+            driverLeftStick.button(11).onTrue(MoveGrappleCommand(grappleSubsystem, 0.5))
 
 
 
@@ -306,46 +320,46 @@ class RobotContainer {
 //
         }
 
-        fun applyTeam(speed: Double):Double {
-            if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
-                return -speed;
-            } else {
-                return speed;
-            }
-        }
+        // fun applyTeam(speed: Double):Double {
+        //     if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
+        //         return -speed;
+        //     } else {
+        //         return speed;
+        //     }
+        // }
 
 //        fun upMax(speed: Double):Double {
 //            val sign = speed.sign;
 //            return sign * Math.min(Math.abs(speed) - 0.1,1.0);
 //        }
 
-        val leftY =
-                {
+        // val leftY =
+        //         {
                     
-                    -MathUtil.applyDeadband(
-                        applyTeam(driverLeftStick.getY()),
-                        Constants.OperatorConstants.LEFT_Y_DEADBAND
-                    )
-                }
+        //             -MathUtil.applyDeadband(
+        //                 applyTeam(driverLeftStick.getY()),
+        //                 Constants.OperatorConstants.LEFT_Y_DEADBAND
+        //             )
+        //         }
 
 
-        val leftX: () -> Double =
-                {
-                    -MathUtil.applyDeadband(
-                        applyTeam(driverLeftStick.getX()),
-                        Constants.OperatorConstants.LEFT_X_DEADBAND
-                    )
+        // val leftX: () -> Double =
+        //         {
+        //             -MathUtil.applyDeadband(
+        //                 applyTeam(driverLeftStick.getX()),
+        //                 Constants.OperatorConstants.LEFT_X_DEADBAND
+        //             )
                     
-                };
+        //         };
 
-        val omega = {
-            MathUtil.applyDeadband(
-                driverRightStick.getX(),
-                Constants.OperatorConstants.LEFT_X_DEADBAND
-            )
-        }
+        // val omega = {
+        //     MathUtil.applyDeadband(
+        //         driverRightStick.getX(),
+        //         Constants.OperatorConstants.LEFT_X_DEADBAND
+        //     )
+        // }
 
-        val driveMode = { true }
+        // val driveMode = { true }
 
         // val simClosedFieldRel =
         //     TeleopDrive(

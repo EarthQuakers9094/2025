@@ -33,7 +33,7 @@ object Constants {
         val MAX_VEL = 1.5;
         val MAX_ACELERATION = 2.5;
 
-        val MAX_HEIGHT = Meters.of(0.796)//Meters.of(71.25 - 39.25)
+        val MAX_HEIGHT = Meters.of(0.800) + Inches.of(0.5)//Meters.of(71.25 - 39.25)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
         val COLLISION_HEIGHT_HIGH: Distance = Inches.of(53.0 - 39.25)
@@ -48,6 +48,7 @@ object Constants {
     }
 
     object Arm {
+        val LOW_LAST_SAFE_ANGLE = Rotation2d.fromDegrees(-245.0);
         val START_POSITION = -90.0;
         val MAX_ACELERATION = 1500.0;
         const val MAX_VEL = 4000.0;
@@ -63,12 +64,10 @@ object Constants {
 
     }
     object Grappling {
-        val STANGLE = 0.0;
         val MAX_ACELERATION = 250.0;
         const val MAX_VEL = 250.0;
-        const val OUT_ANGLE = 60.0; 
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
-        const val motorId: Int = 53
+        const val motorId: Int = 9
         const val TOLERANCE = 2.0
         const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
         const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 12.0/40.0 * 360.0;
@@ -81,7 +80,7 @@ object Constants {
 
     object Intake {
         const val MOTOR2 = 62;
-        const val INTAKE: Double = -0.25
+        const val INTAKE: Double = -0.45
         const val INTAKE_ALGAE: Double = 1.0
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
@@ -128,6 +127,11 @@ object Constants {
             Rotation2d.fromDegrees(-77.021),
         );
 
+        val CLIMB_POSE = Pose(
+            Meters.of(0.114),
+            Rotation2d.fromDegrees(-270.0 - 45.0)
+        );
+
         val L2 = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-226.731),
@@ -139,8 +143,8 @@ object Constants {
         );
 
         val L4 = Pose(
-            Meters.of(0.8),
-            Rotation2d.fromDegrees(-242.0),
+            Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
+            Rotation2d.fromDegrees(-246.0),
         );
 
         val Pickup = Pose(
@@ -169,7 +173,7 @@ object Constants {
         );
 
         val L3Algae = Pose(
-            Meters.of(0.153) + Inches.of(0.5),
+            Meters.of(0.153) + Inches.of(2.5),
             Rotation2d.fromDegrees(-149.00),
         );
         

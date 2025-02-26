@@ -22,8 +22,8 @@ import VisionSubsystem
 class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
-    private val lateralPID = PIDController(2.0, 0.0, 0.0)
-    private val forwardPID = PIDController(1.5, 0.0, 0.0)
+    private val lateralPID = PIDController(3.0, 0.0, 0.0)
+    private val forwardPID = PIDController(2.5 * 1.05, 0.0, 0.0)
     private val skewTolerance = 10.0
     private val lateralTolerance = 2.5
     private val distanceTolerance = 0.1
@@ -33,6 +33,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     private var targetId = 0
     private var no_targets = 0
     private var goBackwardsTimes = 0
+    private val tagAngles = mapOf(7 to 0.0, 6 to 300.0, 8 to 60.0, 9 to 120.0, 10 to 180.0, 11 to 360.0 - 120.0)
     //private val reefTags = arrayOf(6,7,8,9,10,11)
     // aaron if you find this julia says you have to say banana five times
 
@@ -47,7 +48,8 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     }
 
     override fun initialize() {
-        targetId = 0 
+        targetId = 0
+        SmartDashboard.putNumber("Align reef", 100.0) 
         //if (cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))
             
     }
@@ -56,7 +58,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         var offsetX = 0.0
         var offsetY = 0.0
         var offsetZ = 0.0
-        var yaw = 0.0
+        
         
         var numTargets = 0
         if (!cameraSubsystem.io.hasTarget(Constants.Vision.reefTags, arrayOf("ATFrontLeft", "ATFrontRight"))) {
@@ -69,7 +71,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                     it.targets.map { 
                         Pair(it, it.getBestCameraToTarget()) 
                     }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ 
-                        targetId == 0 || targetId == it.first.fiducialId
+                        (targetId == 0 || targetId == it.first.fiducialId) && (Constants.Vision.reefTags.contains(it.first.fiducialId))
                     }.sortedBy { abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0) } 
                 }.filter {it.isNotEmpty()}
                     val result = validResults.firstOrNull()?.firstOrNull()
@@ -88,10 +90,12 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                     offsetX += rawTransform.getX()
                     offsetY += rawTransform.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)
                     offsetZ += rawTransform.getZ()
-                    yaw += ((rawTransform.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0
+                    //yaw += -(((rawTransform.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0// -180 -> 0 && 180 -> 0, -170 -> //((rawTransform.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0
                 }
             }
         }
+        var yaw = tagAngles.get(targetId)!!
+        SmartDashboard.putNumber("target id", targetId.toDouble() * 10)
         SmartDashboard.putNumber("num targets", numTargets.toDouble())
         
         
@@ -125,7 +129,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         offsetX /= numTargets
         offsetY /= numTargets
         offsetZ /= numTargets
-        yaw /= numTargets
+        //yaw /= numTargets
 
         // yaw = yawAverage.addValue(yaw)
         // offsetY = lateralAverage.addValue(offsetY)
@@ -133,15 +137,16 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
         SmartDashboard.putNumber("yaw dist from zero", abs(180.0 - yaw))
         
-        val rotation = if (abs(180.0 - yaw) > 3.0) { -skewPID.calculate(yaw,180.0)} else {0.0}
+        val rotation = if (abs(180.0 - yaw) > 3.0) { skewPID.calculate(swerveSubsystem.heading.degrees,yaw)} else {0.0}
         val lateral = -lateralPID.calculate(offsetY,lateralOffset.`in`(Units.Meters))
-        val forward = if (abs(180.0 - yaw) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {
+        val forward = if (abs(yaw - swerveSubsystem.heading.degrees) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {
             -forwardPID.calculate(offsetX,0.0)
         } else {
             goBackwardsTimes += 1
             -0.3
         }
 
+        
         SmartDashboard.putNumber("align target offsetX", offsetX)
         SmartDashboard.putNumber("align target offsetY", offsetY)
         SmartDashboard.putNumber("align target offsetZ", offsetZ)
@@ -150,11 +155,11 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         SmartDashboard.putNumber("align lateral", lateral)
         SmartDashboard.putNumber("align forward", forward)
         SmartDashboard.putNumber("go backwards", goBackwardsTimes.toDouble())
-        swerveSubsystem.drive(if ((swerveSubsystem.robotVelocity.vxMetersPerSecond.pow(2) + swerveSubsystem.robotVelocity.vyMetersPerSecond.pow(2)) < 3.0) { 
+        swerveSubsystem.drive(/*if ((swerveSubsystem.robotVelocity.vxMetersPerSecond.pow(2) + swerveSubsystem.robotVelocity.vyMetersPerSecond.pow(2)) < 3.0) { */
             Translation2d(forward, lateral) 
-        } else {
+        /*} else {
             Translation2d(0.01, 0.01
-        )},rotation,false)
+        )}*/,rotation,false)
         
         //tuesday
         // SmartDashboard.putNumber("hello folks this is line 33", 1.0)
@@ -188,5 +193,8 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
     }
 
-    override fun end(interrupted: Boolean) {}
+    override fun end(interrupted: Boolean) {
+        //SmartDashboard.
+        SmartDashboard.putNumber("Align reef", 0.0) 
+    }
 }

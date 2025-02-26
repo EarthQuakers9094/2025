@@ -172,6 +172,7 @@ class SwerveSubsystem : SubsystemBase {
     }
 
     override fun periodic() {
+        SmartDashboard.putNumber("current robot yaw", this.heading.degrees)
         // When vision is enabled we must manually update odometry in SwerveDrive
         if (visionDriveTest) {
             swerveDrive.updateOdometry()
@@ -415,7 +416,7 @@ class SwerveSubsystem : SubsystemBase {
         return SwerveDriveTest.generateSysIdCommand(
             SwerveDriveTest.setDriveSysIdRoutine(
                 SysIdRoutine.Config(),
-                this, swerveDrive, 12.0
+                this, swerveDrive, 12.0, true
             ),
             3.0, 5.0, 3.0
         )
@@ -558,8 +559,8 @@ class SwerveSubsystem : SubsystemBase {
         swerveDrive.drive(
             translation,
             rotation,
-            true,
-            // fieldRelative,
+            // true,
+            fieldRelative,
             false
         ) // Open loop is disabled since it shouldn't be used most of the time.
     }

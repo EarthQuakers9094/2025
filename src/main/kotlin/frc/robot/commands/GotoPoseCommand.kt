@@ -18,7 +18,9 @@ import frc.robot.subsystems.ElevatorSubsystem
 enum class State {
     BelowToHigh,
     HighToBelow,
-    SameToSame
+    SameToSame,
+    BelowToBelowDangerous,
+    BelowToBelowDangerousTo,
     //HighToBelowSafe,
 }
 
@@ -27,8 +29,10 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
             State.BelowToHigh to ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose),
             //State.HighToBelowUnsafe to SequentialCommandGroup(GotoSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)),
             State.HighToBelow to ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose),
-            State.SameToSame to GotoPoseSimple(armSubsystem,elevatorSubsystem, pose)
-            ), {
+            State.SameToSame to GotoPoseSimple(armSubsystem,elevatorSubsystem, pose),
+            State.BelowToBelowDangerous to Commands.sequence(GotoAngle(armSubsystem, pose.angle), GotoHeight(elevatorSubsystem, pose.height)),
+            State.BelowToBelowDangerousTo to Commands.sequence(GotoHeight(elevatorSubsystem, pose.height), GotoAngle(armSubsystem, pose.angle)),
+        ), {
                 if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height >= Constants.Elevator.COLLISION_HEIGHT_LOW) {
                     //        if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
                     //            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))
@@ -44,7 +48,11 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
                             SmartDashboard.putString("goto pose command", " HighBelow");
                             State.HighToBelow
                             //ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)
-                        } else {
+                        } else if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH && armSubsystem.getAngle().degrees < Constants.Arm.LOW_LAST_SAFE_ANGLE.degrees) {
+                            State.BelowToBelowDangerous
+                        } else if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.angle.degrees < Constants.Arm.LOW_LAST_SAFE_ANGLE.degrees) {
+                            State.BelowToBelowDangerousTo
+                        }else {
                             SmartDashboard.putString("goto pose command", "simple");
                             State.SameToSame
                             //GotoPoseSimple(armSubsystem,elevatorSubsystem, pose);
