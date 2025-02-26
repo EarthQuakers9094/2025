@@ -85,6 +85,7 @@ object Constants {
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
         const val OUTPUT: Double = 0.5
+        const val STOP_CURRENT: Double = 30.0
     }
 
     const val ROBOT_MASS: Double = (148.0 - 20.3) * 0.453592 // 32lbs * kg per pound
@@ -119,6 +120,12 @@ object Constants {
         val MAX_TURNING_SPEEDS = 4.5
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
+    }
+
+    object Field {
+        val LEFT_OFFSET = Inches.of(-6.5 - 0.5);
+        val RIGHT_OFFSET = Inches.of(6.5 - 0.5);
+
     }
 
     object Poses {

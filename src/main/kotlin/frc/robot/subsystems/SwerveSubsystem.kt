@@ -559,7 +559,6 @@ class SwerveSubsystem : SubsystemBase {
         swerveDrive.drive(
             translation,
             rotation,
-            // true,
             fieldRelative,
             false
         ) // Open loop is disabled since it shouldn't be used most of the time.
