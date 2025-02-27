@@ -17,7 +17,8 @@ class DevourCoralCommand(private val intakeSubsystem: IntakeSubsystem) : Command
     override fun execute() {}
 
     override fun isFinished(): Boolean {
-        return intakeSubsystem.getOutputCurrent() > Constants.Intake.STOP_CURRENT
+        return false;
+        // return intakeSubsystem.getOutputCurrent() > Constants.Intake.STOP_CURRENT
         // TODO: Make this return true when this Command no longer needs to run execute()
     }
 

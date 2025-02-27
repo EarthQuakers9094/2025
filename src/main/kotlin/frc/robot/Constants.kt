@@ -156,7 +156,7 @@ object Constants {
 
         val Pickup = Pose(
             Meters.of(0.049),
-            Rotation2d.fromDegrees(-53.0),
+            Rotation2d.fromDegrees(-64.0),
         );
 
         val Zero = Pose(
