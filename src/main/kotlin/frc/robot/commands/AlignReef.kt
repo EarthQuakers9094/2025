@@ -74,20 +74,28 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
     override fun initialize() {
         targetId = 0
+
+        val angle = swerveSubsystem.heading.degrees + 360;
+        // val dx = Math.cos(angle.radians);
+        // val dy = Math.sin(angle.radians);
+
         for (camera in listOf("ATFrontLeft", "ATFrontRight")) {
             cameraSubsystem.io.getResults(camera)?.let { results -> 
                 val validResults = results.map { 
                     it.targets.map { 
-                        Pair(it, it.getBestCameraToTarget()) 
-                    }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ 
+                        Pair(it, it.getBestCameraToTarget())
+                    }.filter {
                         (targetId == 0 || targetId == it.first.fiducialId) && (Constants.Vision.reefTags.contains(it.first.fiducialId))
-                    }.sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2)).pow(0.5)/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
+                    }
+                    .sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
+                    // .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
                 }.filter {it.isNotEmpty()}
-                    val result = validResults.firstOrNull()?.firstOrNull()
+
+                val result = validResults.firstOrNull()?.firstOrNull()
 
                 
                 if (result != null){
-                    if (targetId == 0) { targetId = result.first.fiducialId}
+                    targetId = result.first.fiducialId
                 }
             }
         }
@@ -107,22 +115,24 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
             no_targets += 1
             return
         }
+
         for (camera in listOf("ATFrontLeft", "ATFrontRight")) {
             cameraSubsystem.io.getResults(camera)?.let { results -> 
                 val validResults = results.map { 
-                    it.targets.map { 
-                        Pair(it, it.getBestCameraToTarget()) 
+                    it.targets.map {
+                        Pair(it, it.getBestCameraToTarget())
                     }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ 
                         (targetId == 0 || targetId == it.first.fiducialId) && (Constants.Vision.reefTags.contains(it.first.fiducialId))
-                    }.sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2)).pow(0.5)/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
+                    }
+                    // removed sorting because only two results should exist right?
+                    // .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2)).pow(0.5)/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
                 }.filter {it.isNotEmpty()}
                     val result = validResults.firstOrNull()?.firstOrNull()
 
                 
                 if (result != null){
-                    if (targetId == 0) { targetId = result.first.fiducialId}
-                    val rawTransform = result.second
-                    
+                    // if (targetId == 0) { targetId = result.first.fiducialId}
+                    val rawTransform = result.second                      
                     // if (index == 0) {
                     //     SmartDashboard.putNumber("align target raw transform x", rawTransform.getX())
                     //     SmartDashboard.putNumber("align target transform y", rawTransform.getY())
@@ -166,6 +176,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         // }
         
         if (numTargets == 0) {
+            SmartDashboard.putNumber("no targets", no_targets.toDouble())
             return
         }
         offsetX /= numTargets
@@ -179,7 +190,11 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
         SmartDashboard.putNumber("yaw dist from zero", abs(180.0 - yaw))
         
-        val rotation = if (abs(180.0 - yaw) > 3.0) { skewPID.calculate(swerveSubsystem.heading.degrees,yaw)} else {0.0}
+        // removed because I don't think it makes sense without using vision for the angle of the tag idk though - Aaron
+        // val rotation = if (abs(180.0 - yaw) > 3.0) { skewPID.calculate(swerveSubsystem.heading.degrees,yaw)} else {0.0}
+
+        val rotation = skewPID.calculate(swerveSubsystem.heading.degrees,yaw)
+
         val lateral = -lateralPID.calculate(offsetY,lateralOffset.`in`(Units.Meters))
         val forward = /*if (abs(yaw - swerveSubsystem.heading.degrees) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {*/
             -forwardPID.calculate(offsetX,0.0)
@@ -227,12 +242,12 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         //     SmartDashboard.putNumber("align forward", forward)
         //     swerveSubsystem.drive(Translation2d(forward, lateral),rotation,false)
         // }
-        SmartDashboard.putNumber("no targets", no_targets.toDouble())
     }
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
+        return targetId == 0 // don't do anything if you don't have a targetId
+        // return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
     }
 
     override fun end(interrupted: Boolean) {
