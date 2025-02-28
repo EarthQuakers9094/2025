@@ -45,7 +45,7 @@ class AlignPickup(private val swerveSubsystem: SwerveSubsystem, val cameraSubsys
         goBackwardsTimes = 0
         
         // each subsystem used by the command must be passed into the addRequirements() method
-        addRequirements(swerveSubsystem)
+        addRequirements(swerveSubsystem, cameraSubsystem)
     }
 
     override fun initialize() {
