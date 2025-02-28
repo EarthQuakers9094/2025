@@ -33,7 +33,7 @@ object Constants {
         val MAX_VEL = 1.5;
         val MAX_ACELERATION = 2.5;
 
-        val MAX_HEIGHT = Meters.of(0.800) + Inches.of(0.5)//Meters.of(71.25 - 39.25)
+        val MAX_HEIGHT = Meters.of(0.800) + Inches.of(1.0)//Meters.of(71.25 - 39.25)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
         val COLLISION_HEIGHT_HIGH: Distance = Inches.of(53.0 - 39.25)
@@ -85,7 +85,7 @@ object Constants {
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
         const val OUTPUT: Double = 0.5
-        const val STOP_CURRENT: Double = 30.0
+        const val STOP_CURRENT: Double = 50.0
     }
 
     const val ROBOT_MASS: Double = (148.0 - 20.3) * 0.453592 // 32lbs * kg per pound
@@ -135,8 +135,8 @@ object Constants {
         );
 
         val CLIMB_POSE = Pose(
-            Meters.of(0.114),
-            Rotation2d.fromDegrees(-270.0 - 45.0)
+            Meters.of(0.0),
+            Rotation2d.fromDegrees(-135.0)
         );
 
         val L2 = Pose(
@@ -151,7 +151,7 @@ object Constants {
 
         val L4 = Pose(
             Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
-            Rotation2d.fromDegrees(-246.0),
+            Rotation2d.fromDegrees(-241.0),
         );
 
         val Pickup = Pose(
@@ -183,6 +183,11 @@ object Constants {
             Meters.of(0.153) + Inches.of(2.5),
             Rotation2d.fromDegrees(-149.00),
         );
+        val FullExtend = Pose(
+            Elevator.MAX_HEIGHT,
+            Rotation2d.fromDegrees(-180.0),
+        );
+        
         
     }
 }

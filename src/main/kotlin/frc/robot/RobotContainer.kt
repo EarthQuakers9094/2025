@@ -43,6 +43,7 @@ import kotlin.math.pow
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
 import VisionSubsystem
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -128,13 +129,15 @@ class RobotContainer {
                     Inches.of(8.125),
                     PhotonCamera("ATFrontLeft"),
                     Inches.of(-8.0),
+                    PhotonCamera("ATBack"),
+                    Inches.of(0.0),
                 )
                     
             } else {
                 VisionSubsystem.VisionSimIO()
             })
 
-    private val isCompetition = true;
+    private val isCompetition = false;
 
     private val autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
         { stream: Stream<PathPlannerAuto> ->
@@ -227,7 +230,7 @@ class RobotContainer {
         configureBindings()
         DriverStation.silenceJoystickConnectionWarning(true)
         NamedCommands.registerCommand("launch_coral", LaunchCoralCommand(intakeSubsystem))
-        NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem))
+        NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem, true))
         NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
         NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
@@ -302,6 +305,10 @@ class RobotContainer {
             driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.RIGHT_OFFSET))
             driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET))
             driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0)))
+            driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
+                gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
+                AlignPickup(drivebase, visionSubsystem, Inches.of(0.0))
+            ))
 
             // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
             // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
@@ -315,14 +322,15 @@ class RobotContainer {
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
            operatorXbox.povDown().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero))
-           operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
-    
+           //operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
+           operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
+
            operatorXbox.povRight().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
            operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
-           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem))
+           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem,false))
            operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
 
            operatorXbox.leftBumper().onTrue(LaunchAlgaeCommand(intakeSubsystem))

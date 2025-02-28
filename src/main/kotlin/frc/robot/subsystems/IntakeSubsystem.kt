@@ -52,7 +52,7 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
   motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
   motor2 = SparkFlex(motor2_id, SparkLowLevel.MotorType.kBrushless)
   encoder = motor.encoder;
-  motor2.configure(SparkFlexConfig().idleMode(SparkBaseConfig.IdleMode.kBrake),SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+  motor2.configure(SparkFlexConfig()/* .idleMode(SparkBaseConfig.IdleMode.kBrake)*/,SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
  }
 
  override fun periodic() {}

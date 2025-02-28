@@ -20,31 +20,9 @@ import java.lang.Math
 import VisionSubsystem
 import edu.wpi.first.wpilibj2.command.Commands
 
-enum class Side {
-    Left,
-    Right
-}
 
-fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem, section: String): Command {
-    SmartDashboard.putBoolean(section, false);
 
-    return Commands.select(
-        mapOf(
-            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET),
-            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET),
-        ),
-        {
-            if (SmartDashboard.getBoolean(section, true)) {
-                Side.Left
-            } else {
-                Side.Right
-
-            }
-        }
-    )
-}
-
-class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
+class AlignPickup(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
     private val lateralPID = PIDController(2.5, 0.0, 0.0)
@@ -58,8 +36,8 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     private var targetId = 0
     private var no_targets = 0
     private var goBackwardsTimes = 0
-    private val tagAngles = mapOf(7 to 0.0, 6 to 300.0, 8 to 60.0, 9 to 120.0, 10 to 180.0, 11 to 360.0 - 120.0)
-    //private val reefTags = arrayOf(6,7,8,9,10,11)
+    private val tagAngles = mapOf(2 to 234.0)
+    private val tags = arrayOf(2)
 
     init {
         skewPID.enableContinuousInput(0.0, 360.0)
@@ -77,13 +55,13 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         // val dx = Math.cos(angle.radians);
         // val dy = Math.sin(angle.radians);
 
-        for (camera in listOf("ATFrontLeft", "ATFrontRight")) {
+        for (camera in listOf("ATBack")) {
             cameraSubsystem.io.getResults(camera)?.let { results -> 
                 val validResults = results.map { 
                     it.targets.map { 
                         Pair(it, it.getBestCameraToTarget())
                     }.filter {
-                        (Constants.Vision.reefTags.contains(it.first.fiducialId))
+                        (targetId == 0 || targetId == it.first.fiducialId) && (tags.contains(it.first.fiducialId))
                     }
                     //.sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
                     .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
@@ -108,18 +86,18 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         
         
         var numTargets = 0
-        if (!cameraSubsystem.io.hasTarget(Constants.Vision.reefTags, arrayOf("ATFrontLeft", "ATFrontRight"))) {
+        if (!cameraSubsystem.io.hasTarget(tags, arrayOf("ATBack"))) {
             no_targets += 1
             return
         }
 
-        for (camera in listOf("ATFrontLeft", "ATFrontRight")) {
+        for (camera in listOf("ATBack")) {
             cameraSubsystem.io.getResults(camera)?.let { results -> 
                 val validResults = results.map { 
                     it.targets.map {
                         Pair(it, it.getBestCameraToTarget())
                     }.filter { /*(((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) < (100.0)  &&*/ 
-                        (targetId == 0 || targetId == it.first.fiducialId) && (Constants.Vision.reefTags.contains(it.first.fiducialId))
+                        (targetId == 0 || targetId == it.first.fiducialId) && (tags.contains(it.first.fiducialId))
                     }
                     // removed sorting because only two results should exist right?
                     // .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2)).pow(0.5)/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
@@ -143,9 +121,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                 }
             }
         }
-        var yaw = tagAngles.get(targetId) ?: return
-        
-        
+        var yaw = tagAngles.get(targetId)!!
         SmartDashboard.putNumber("target id", targetId.toDouble() * 10)
         SmartDashboard.putNumber("num targets", numTargets.toDouble())
         
@@ -195,7 +171,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return false//targetId == 0 // don't do anything if you don't have a targetId
+        return targetId == 0 // don't do anything if you don't have a targetId
         // return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
     }
 
