@@ -92,7 +92,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                 }
                 //.sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
                 .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
-            }.filter {it.isNotEmpty()}
+            }.filter {it.isNotEmpty()}.sortedBy { (it.first().second.getX().pow(2) + (it.first().second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ }
 
             val result = validResults.firstOrNull()?.firstOrNull()
             
@@ -108,12 +108,13 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                     TODO("im going to shoot dean kamen out of a human cannon unconsentually")
                 }
                 DriverStation.reportWarning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${this.targetId}", false);
-            } else {
+            } /*else {
                 TODO("robot killing itself wacky fun haha silly isnt that hilarious omg this is so funny im having a blast blast haha get it because human cannon:)")
-            }
+            }*/
         }
         if (this.targetId == -1) {
-            TODO("robot killing itself :) 2ngcgjcg cjgfhcnjkhgczslfkdg lrashflkasdfkulh dasljkfhalskdjhf klasdhlfkjasdh kljfhlasdkjfhlkadsh fkdshflkjdshflkjasdhkfjl hdskljfhsafhlkjsdhlfsadfhadsljkfhldjshf")
+            DriverStation.reportError("GOT NO TARGETS", false)
+            //TODO("robot killing itself :) 2ngcgjcg cjgfhcnjkhgczslfkdg lrashflkasdfkulh dasljkfhalskdjhf klasdhlfkjasdh kljfhlasdkjfhlkadsh fkdshflkjdshflkjasdhkfjl hdskljfhsafhlkjsdhlfsadfhadsljkfhldjshf")
         }
         DriverStation.reportWarning("????????????????????????????? ${this.targetId}", false);
         SmartDashboard.putNumber("Align reef", 100.0) 
@@ -193,12 +194,12 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         val rotation = skewPID.calculate(swerveSubsystem.heading.degrees,yaw)
 
         val lateral = -lateralPID.calculate(offsetY,lateralOffset.`in`(Units.Meters))
-        val forward = if (abs(yaw - swerveSubsystem.heading.degrees) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {
+        val forward = /*if (abs(yaw - swerveSubsystem.heading.degrees) < skewTolerance && abs(lateralOffset.`in`(Units.Meters) - offsetY) < lateralTolerance) {*/
             -forwardPID.calculate(offsetX,0.0)
-        } else {
+        /*} else {
             goBackwardsTimes += 1
             -0.3
-        }
+        }*/
 
         
         SmartDashboard.putNumber("align target offsetX", offsetX)

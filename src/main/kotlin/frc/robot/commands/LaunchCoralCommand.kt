@@ -40,7 +40,7 @@ class LaunchCoralCommand(private val intakeSubsystem: IntakeSubsystem) : Command
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-         return timer.hasElapsed(0.5)
+         return timer.hasElapsed(0.75)
     }
 
     override fun end(interrupted: Boolean) {

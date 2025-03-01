@@ -310,6 +310,13 @@ class RobotContainer {
                 AlignPickup(drivebase, visionSubsystem, Inches.of(0.0))
             ))
 
+            driverRightStick.button(3).onTrue(InstantCommand({
+                setMotorBrake(true)
+            }))
+            driverRightStick.button(3).onFalse(InstantCommand({
+                setMotorBrake(false)
+            }))
+
             // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
             // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
 
@@ -321,7 +328,17 @@ class RobotContainer {
            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-           operatorXbox.povDown().onTrue(ParallelCommandGroup(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero), BackupCommand(drivebase)))
+           operatorXbox.povDown().onTrue(
+            Commands.select(
+                mapOf(
+                    false to ParallelCommandGroup(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero), BackupCommand(drivebase)),
+                    true to gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero)
+                ),  
+                {
+                    armSubsystem.getPose() == Constants.Poses.Barge.pose
+                }
+                )
+            )
            //operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
            operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
 

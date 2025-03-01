@@ -16,13 +16,13 @@ class BackupCommand(private val swerveSubsystem: SwerveSubsystem) : Command() {
 
     override fun initialize() {
         timer.restart()
-        swerveSubsystem.drive(Translation2d(0.0,-1.0), 0.0, false);
+        swerveSubsystem.drive(Translation2d(-1.0,0.0), 0.0, false);
     }
 
     override fun execute() {}
 
     override fun isFinished(): Boolean {
-        return timer.hasElapsed(0.25)
+        return timer.hasElapsed(0.1)
     }
 
     override fun end(interrupted: Boolean) {}

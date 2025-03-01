@@ -85,7 +85,7 @@ object Constants {
         const val INTAKE_ALGAE: Double = 1.0
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
-        const val OUTPUT: Double = 0.5
+        const val OUTPUT: Double = 1.0
         const val STOP_CURRENT: Double = 50.0
     }
 
@@ -159,12 +159,19 @@ object Constants {
         val L4 = Pose(
             Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
             // Rotation2d.fromDegrees(-241.0),
-            Rotation2d.fromDegrees(-250.0),
+            Rotation2d.fromDegrees(-242.5),
             "l4"
         );
 
+        val L4Back = Pose(
+            Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
+            // Rotation2d.fromDegrees(-241.0),
+            Rotation2d.fromDegrees(-250.0 - 15.0),
+            "l4-back"
+        );
+
         val Pickup = Pose(
-            Meters.of(0.049),
+            Meters.of(0.049) + Inches.of(2.0),
             Rotation2d.fromDegrees(-64.0),
             "pickup"
         );
