@@ -309,10 +309,10 @@ class RobotContainer {
             // driverXbox.leftBumper().onTrue(Commands.none())
             // driverXbox.rightBumper().onTrue(Commands.none())
         } else {
-            driverLeftStick.button(4).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
+            driverRightStick.button(11).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
             driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.5))
             driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 0.5))
-            driverRightStick.button(12).whileTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE))
+            //driverRightStick.button(12).whileTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE))
 
             //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
             // driverXbox.b().whileTrue(T
