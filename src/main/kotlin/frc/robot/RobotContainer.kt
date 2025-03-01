@@ -329,15 +329,15 @@ class RobotContainer {
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
            operatorXbox.povDown().onTrue(
-            Commands.select(
+            /*Commands.select(
                 mapOf(
                     false to ParallelCommandGroup(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero), BackupCommand(drivebase)),
-                    true to gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero)
+                    */gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero)/*
                 ),  
                 {
                     armSubsystem.getPose() == Constants.Poses.Barge.pose
                 }
-                )
+                )*/
             )
            //operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
            operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))

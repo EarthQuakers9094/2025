@@ -7,8 +7,10 @@ package frc.robot.commands.swervedrive.drivebase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand
 import frc.robot.Constants
 import frc.robot.subsystems.SwerveSubsystem
 import frc.robot.utils.PIDController
@@ -34,6 +36,10 @@ public class TeleopDrive(
 
     var rotationPid = PIDController(rotationPIDvalues)
 
+    var xCurrent = 0.0;
+    var yCurrent = 0.0;
+
+
     /**
      * Creates a new ExampleCommand.
      *
@@ -56,11 +62,18 @@ public class TeleopDrive(
     override fun execute() {
         val xVelocityRaw = vX.getAsDouble()
         val yVelocityRaw = vY.getAsDouble()
+
         val magnitude = sqrt(Math.pow(xVelocityRaw, 2.0) + Math.pow(yVelocityRaw, 2.0))
 
         val xVelocity = Math.pow(magnitude, 2.0) * xVelocityRaw
 
         val yVelocity = Math.pow(magnitude, 2.0) * yVelocityRaw
+
+        xCurrent = xVelocity * 0.7 + xCurrent + 0.3;
+        yCurrent = yVelocity * 0.7 + yCurrent + 0.3;
+
+
+        // val xVelocity = 
 
         val angVelocity: Double
 

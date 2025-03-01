@@ -51,7 +51,7 @@ object Constants {
     object Arm {
         val LOW_LAST_SAFE_ANGLE = Rotation2d.fromDegrees(-245.0);
         val START_POSITION = -90.0;
-        val MAX_ACELERATION = 1500.0;
+        val MAX_ACELERATION = 2000.0;
         const val MAX_VEL = 4000.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = 53
@@ -172,7 +172,7 @@ object Constants {
 
         val Pickup = Pose(
             Meters.of(0.049) + Inches.of(2.0),
-            Rotation2d.fromDegrees(-64.0),
+            Rotation2d.fromDegrees(-68.0),
             "pickup"
         );
 
