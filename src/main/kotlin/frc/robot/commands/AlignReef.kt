@@ -12,6 +12,7 @@ import frc.robot.Constants
 import frc.robot.utils.MovingAverage
 import org.photonvision.PhotonCamera
 import org.photonvision.PhotonUtils
+import org.photonvision.targeting.PhotonPipelineResult
 import CameraAlignInfo
 import kotlin.collections.firstOrNull
 import kotlin.math.abs
@@ -21,6 +22,8 @@ import VisionSubsystem
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj.DriverStation
 import frc.robot.utils.PIDController
+
+
 
 enum class Side {
     Left,
@@ -32,8 +35,8 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
 
     return Commands.select(
         mapOf(
-            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET),
-            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET),
+            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET, {0}),
+            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET, {0}),
         ),
         {
             if (SmartDashboard.getBoolean(section, true)) {
@@ -46,7 +49,7 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
     )
 }
 
-class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, /*private val pov: () -> Int*/) : Command() {
+class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, private val selectedTag: () -> Int) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
     private val lateralPID = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
@@ -73,6 +76,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     }
     
     // private fun getSelected(): Int {
+        
     //     return when (pov()) {
     //         0 -> 10     
     //         45 -> 9
@@ -91,39 +95,43 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         //val angle = swerveSubsystem.heading.degrees + 360;
         // val dx = Math.cos(angle.radians);
         // val dy = Math.sin(angle.radians);
+        //var fullResults: List<PhotonPipelineResult> = mutableListOf()
 
-        for (camera in listOf("ATFrontLeft", "ATFrontRight")) {
-            val results = cameraSubsystem.io.getResults(camera)!!
+        
+        val results= listOf("ATFrontLeft", "ATFrontRight").map{ cam -> cameraSubsystem.io.getResults(cam)!!.map { it to cam } }.flatten()
+            
             //if (results)
             
-            val validResults = results.map { 
-                it.targets.map { 
-                    Pair(it, it.getBestCameraToTarget())
-                }.filter {
-                    //it.first.fiducialId == getSelected()
-                    (reefTags.contains(it.first.fiducialId))
-                }
-                //.sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
-                //.sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
-            }.filter {it.isNotEmpty()}.flatten().sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ }
+            /*val validResults =*/
+        val validResults = results.map { pair ->
+            pair.first.targets.map { 
+                Pair(it, it.getBestCameraToTarget())
+            }.filter {
+                it.first.fiducialId == selectedTag()
+                //(reefTags.contains(it.first.fiducialId))
+            }
+            //.sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
+            .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(pair.second)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
+        }.filter {it.isNotEmpty()}.firstOrNull()//.sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ }
 
-            val result = validResults.firstOrNull()
-            
-            if (result != null){
-                id = result.first.fiducialId
-                DriverStation.reportWarning("did find a target, ${id}", false);
-                
-                this.targetId = id
-                if (id == 0) {
-                    TODO("robot killing itself :)")
-                }
-                if (this.targetId != id) {
-                    TODO("im going to shoot dean kamen out of a human cannon unconsentually")
-                }
-                DriverStation.reportWarning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${this.targetId}", false);
-            } /*else {
+             /*else {
                 TODO("robot killing itself wacky fun haha silly isnt that hilarious omg this is so funny im having a blast blast haha get it because human cannon:)")
             }*/
+        
+        val result = validResults?.firstOrNull()
+            
+        if (result != null){
+            id = result.first.fiducialId
+            DriverStation.reportWarning("did find a target, ${id}", false);
+            
+            this.targetId = id
+            if (id == 0) {
+                TODO("robot killing itself :)")
+            }
+            if (this.targetId != id) {
+                TODO("im going to shoot dean kamen out of a human cannon unconsentually")
+            }
+            DriverStation.reportWarning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${this.targetId}", false);
         }
         if (this.targetId == -1) {
             DriverStation.reportError("GOT NO TARGETS", false)
@@ -136,6 +144,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     }
 
     override fun execute() {
+        //SmartDashboard.putNumber("povPOSITION", pov().toDouble())
         var offsetX = 0.0
         var offsetY = 0.0
         var offsetZ = 0.0

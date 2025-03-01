@@ -244,13 +244,35 @@ class RobotContainer {
         NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
         NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
 
-        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5), {0.0}))
-        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5), {0.0}))
+        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5) , {0}))
+        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {0}))
 
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser)
 
+    }
+
+    private fun getSelectedTag(): Int {
+        if (driverLeftStick.getHID().getPOV() == 0) {
+            return 10
+        }
+        if (driverLeftStick.getHID().getPOV() == 180) {
+            return 7
+        }
+        if (driverLeftStick.getHID().getRawButton(5)) {
+            return 11
+        }
+        if (driverLeftStick.getHID().getRawButton(6)) {
+            return 9
+        }
+        if (driverLeftStick.getHID().getRawButton(3)) {
+            return 6
+        }
+        if (driverLeftStick.getHID().getRawButton(4)) {
+            return 8
+        }
+        return -1
     }
 
     /**
@@ -303,10 +325,10 @@ class RobotContainer {
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.RIGHT_OFFSET
-            // , {driverLeftStick.getHID().getPOV()}
+             , {driverLeftStick.getHID().getPOV()}
             ))
-            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET/*,  {driverLeftStick.getHID().getPOV()}*/))
-            driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0)/* , {driverLeftStick.getHID().getPOV()}*/))
+            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET,  {getSelectedTag()}))
+            driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0) , {getSelectedTag()}))
             driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
                 gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
                 AlignPickup(drivebase, visionSubsystem, Inches.of(0.0))

@@ -1,8 +1,12 @@
+
+
 import org.photonvision.PhotonCamera
 import org.photonvision.simulation.PhotonCameraSim
 import org.photonvision.targeting.PhotonPipelineResult
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import CameraAlignInfo
+
 
 class VisionSubsystem(val io: VisionIO): SubsystemBase() {
     override fun periodic() {
@@ -11,21 +15,27 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
     interface VisionIO {
         fun periodic()
         public fun getFrontCameras(): HashMap<String, CameraAlignInfo> 
+        public fun getBackCameras(): HashMap<String, CameraAlignInfo> 
         public fun hasTarget(filter: Array<Int>, cameras: Array<String>): Boolean
         public fun getResults(camera: String): List<PhotonPipelineResult>?
         fun getLateralOffset(camera: String): Distance? 
 
     }
 
-    class VisionRealIO(val frontLeftCamera: PhotonCamera, val frontLeftLateralOffset: Distance, val frontRightCamera: PhotonCamera, val frontRightLateralOffset: Distance):VisionIO {
+    class VisionRealIO(val frontLeftCamera: PhotonCamera, val frontLeftLateralOffset: Distance, val frontRightCamera: PhotonCamera, val frontRightLateralOffset: Distance/*, val backCenterCamera: PhotonCamera, val backCenterLateralOffset: Distance*/):VisionIO {
 
-        var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
+        private var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
+        private var readResults = HashMap<String,Boolean>()
 
         override fun periodic() {
             //cameraResults = HashMap()
-            for (camera in this.getFrontCameras()) {
+            for (camera in this.getFrontCameras()/* + this.getBackCameras()*/) {
                 val name = camera.key
                 val cam = camera.value
+                if (readResults.get(name) == true) {
+                    cameraResults.remove(name)
+                }
+                //TODO(name)
                 if (cameraResults.containsKey(name)) {
                     cameraResults.get(name)!! += cam.camera.allUnreadResults
                 } else {
@@ -63,7 +73,8 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
         }
         override fun getResults(camera: String): List<PhotonPipelineResult>? {
             val results = cameraResults.get(camera)
-            cameraResults.remove(camera)
+            readResults[camera] = true
+            //cameraResults.remove(camera)
             return results
             
             
@@ -72,6 +83,13 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
         override fun getLateralOffset(camera: String): Distance? {
             return this.getFrontCameras().get(camera)?.lateralOffset
         }
+
+        override fun getBackCameras(): HashMap<String, CameraAlignInfo> { 
+            TODO("askdhfjkasdhfksdkjafjkadsjkfds")
+            //return hashMapOf(backCenterCamera.name to CameraAlignInfo(backCenterCamera, backCenterLateralOffset))
+        }
+
+        
 
         
     }
@@ -98,5 +116,9 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
         override fun getLateralOffset(camera: String): Distance? { 
             TODO("got lazy")
         }
+
+        override fun getBackCameras(): HashMap<String, CameraAlignInfo> { TODO("stayed lazy")}
+
+        
     }
 }
