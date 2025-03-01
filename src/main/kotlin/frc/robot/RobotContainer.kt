@@ -229,7 +229,7 @@ class RobotContainer {
         // Configure the trigger bindings
         configureBindings()
         DriverStation.silenceJoystickConnectionWarning(true)
-        NamedCommands.registerCommand("launch_coral", LaunchCoralCommand(intakeSubsystem))
+        NamedCommands.registerCommand("launch_coral", launch_coral(intakeSubsystem,armSubsystem))
         NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem, true))
         NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
         NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
@@ -321,7 +321,7 @@ class RobotContainer {
            operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
            operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
            operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-           operatorXbox.povDown().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero))
+           operatorXbox.povDown().onTrue(ParallelCommandGroup(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero), BackupCommand(drivebase)))
            //operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
            operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
 
@@ -329,7 +329,7 @@ class RobotContainer {
 
            operatorXbox.povUp().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge))
 
-           operatorXbox.leftTrigger(0.1).onTrue(LaunchCoralCommand(intakeSubsystem))
+           operatorXbox.leftTrigger(0.1).onTrue(launch_coral(intakeSubsystem,armSubsystem))
            operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem,false))
            operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem))
 

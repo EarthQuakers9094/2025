@@ -33,6 +33,7 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
             State.BelowToBelowDangerous to Commands.sequence(GotoAngle(armSubsystem, pose.angle), GotoHeight(elevatorSubsystem, pose.height)),
             State.BelowToBelowDangerousTo to Commands.sequence(GotoHeight(elevatorSubsystem, pose.height), GotoAngle(armSubsystem, pose.angle)),
         ), {
+                armSubsystem.setPose(pose.pose);
                 if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height >= Constants.Elevator.COLLISION_HEIGHT_LOW) {
                     //        if (armSubsystem.getAngle().degrees < Constants.Arm.SAFE_ANGLE.degrees) {
                     //            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))

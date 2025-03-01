@@ -25,6 +25,7 @@ import kotlin.math.absoluteValue
 
 class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     private var setpoint = -90.0;
+    private var pose = "zero";
 
     private var profile = TrapezoidProfile(
         TrapezoidProfile.Constraints(
@@ -37,6 +38,14 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
     fun getAngle(): Rotation2d {
         return Rotation2d.fromDegrees(arm.getAngle())
+    }
+
+    fun setPose(pose: String) {
+        this.pose = pose
+    }
+
+    fun getPose(): String {
+        return pose
     }
 
     fun setSetpoint(loc: Double) {

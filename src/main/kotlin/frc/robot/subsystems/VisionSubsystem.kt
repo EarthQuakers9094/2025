@@ -24,14 +24,17 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
 
     class VisionRealIO(val frontLeftCamera: PhotonCamera, val frontLeftLateralOffset: Distance, val frontRightCamera: PhotonCamera, val frontRightLateralOffset: Distance/*, val backCenterCamera: PhotonCamera, val backCenterLateralOffset: Distance*/):VisionIO {
 
-        var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
+        private var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
+        private var readResults = HashMap<String,Boolean>()
 
         override fun periodic() {
             //cameraResults = HashMap()
             for (camera in this.getFrontCameras()/* + this.getBackCameras()*/) {
-                
                 val name = camera.key
                 val cam = camera.value
+                if (readResults.get(name) == true) {
+                    cameraResults.remove(name)
+                }
                 //TODO(name)
                 if (cameraResults.containsKey(name)) {
                     cameraResults.get(name)!! += cam.camera.allUnreadResults
@@ -70,7 +73,8 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
         }
         override fun getResults(camera: String): List<PhotonPipelineResult>? {
             val results = cameraResults.get(camera)
-            cameraResults.remove(camera)
+            readResults[camera] = true
+            //cameraResults.remove(camera)
             return results
             
             

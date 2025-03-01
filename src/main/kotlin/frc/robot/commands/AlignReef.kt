@@ -20,6 +20,7 @@ import java.lang.Math
 import VisionSubsystem
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj.DriverStation
+import frc.robot.utils.PIDController
 
 enum class Side {
     Left,
@@ -48,8 +49,8 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
 class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
-    private val lateralPID = PIDController(2.5, 0.0, 0.0)
-    private val forwardPID = PIDController(2.5 * 1.05, 0.0, 0.0)
+    private val lateralPID = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
+    private val forwardPID = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
     private val skewTolerance = 10.0
     private val lateralTolerance = 2.5
     private val distanceTolerance = 0.1

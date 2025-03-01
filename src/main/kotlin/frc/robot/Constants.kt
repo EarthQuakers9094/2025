@@ -4,6 +4,7 @@
 package frc.robot
 
 import com.pathplanner.lib.config.PIDConstants
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.math.util.Units
@@ -120,6 +121,8 @@ object Constants {
         val MAX_TURNING_SPEEDS = 4.5
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
+        //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
+         val TRANSLATION_PID_TELEOP = PIDConstants(2.5 * 1.05, 0.0, 0.0)
     }
 
     object Field {
@@ -132,62 +135,72 @@ object Constants {
         val L1 = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-77.021),
+            "l1"
         );
 
         val CLIMB_POSE = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-135.0)
+            Rotation2d.fromDegrees(-135.0),
+            "climb_pose"
         );
 
         val L2 = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-226.731),
+            "l2"
         );
 
         val L3 = Pose(
             Meters.of(0.225).plus(Inches.of(2.5)),
             Rotation2d.fromDegrees(-236.233),
+            "l3"
         );
 
         val L4 = Pose(
             Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
-            Rotation2d.fromDegrees(-241.0),
+            // Rotation2d.fromDegrees(-241.0),
+            Rotation2d.fromDegrees(-250.0),
+            "l4"
         );
 
         val Pickup = Pose(
             Meters.of(0.049),
             Rotation2d.fromDegrees(-64.0),
+            "pickup"
         );
 
         val Zero = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-90.0),
+            "zero"
         );
 
         val Barge = Pose(
             Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
             Rotation2d.fromDegrees(-228.00),
+            "barge"
         );
         val Processor = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-77.021),
+            "processor"
         );
 
         val L2Algae = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-131.00
-            ),
+            Rotation2d.fromDegrees(-131.00),
+            "l2algae"
         );
 
         val L3Algae = Pose(
             Meters.of(0.153) + Inches.of(2.5),
             Rotation2d.fromDegrees(-149.00),
+            "l3algae"
         );
         val FullExtend = Pose(
             Elevator.MAX_HEIGHT,
             Rotation2d.fromDegrees(-180.0),
+            "fullextend"
         );
-        
-        
     }
 }
