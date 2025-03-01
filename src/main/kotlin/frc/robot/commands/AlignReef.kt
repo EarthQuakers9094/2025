@@ -46,7 +46,7 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
     )
 }
 
-class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance) : Command() {
+class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, /*private val pov: () -> Int*/) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
     private val lateralPID = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
@@ -71,6 +71,18 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         // each subsystem used by the command must be passed into the addRequirements() method
         addRequirements(swerveSubsystem, cameraSubsystem)
     }
+    
+    // private fun getSelected(): Int {
+    //     return when (pov()) {
+    //         0 -> 10     
+    //         45 -> 9
+    //         135 -> 8
+    //         180 -> 7
+    //         225 -> 6
+    //         315 -> 11
+    //         else -> -1
+    //     }
+    // }
 
     override fun initialize() {
         //this.targetId = 0
@@ -88,13 +100,14 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
                 it.targets.map { 
                     Pair(it, it.getBestCameraToTarget())
                 }.filter {
+                    //it.first.fiducialId == getSelected()
                     (reefTags.contains(it.first.fiducialId))
                 }
                 //.sortedBy { abs((tagAngles.get(it.first.fiducialId)!!) + 360 - angle) } // Math.abs(it.second.getX() * dx + it.second.getY() * dy) }
-                .sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
-            }.filter {it.isNotEmpty()}.sortedBy { (it.first().second.getX().pow(2) + (it.first().second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ }
+                //.sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ } 
+            }.filter {it.isNotEmpty()}.flatten().sortedBy { (it.second.getX().pow(2) + (it.second.getY() - cameraSubsystem.io.getLateralOffset(camera)!!.`in`(edu.wpi.first.units.Units.Meters)).pow(2))/*abs((((it.second.rotation.getZ() * (180/Math.PI)) + 360.0) % 360.0) - 180.0)*/ }
 
-            val result = validResults.firstOrNull()?.firstOrNull()
+            val result = validResults.firstOrNull()
             
             if (result != null){
                 id = result.first.fiducialId

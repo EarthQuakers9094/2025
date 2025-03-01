@@ -45,8 +45,6 @@ public class TeleopDrive(
 
         SmartDashboard.putData("turning pid", rotationPid)
         rotationPid.enableContinuousInput(-Math.PI, Math.PI)
-
-        SmartDashboard.putData("turning pid", rotationPid)
     }
 
     // Called when the command is initially scheduled.
