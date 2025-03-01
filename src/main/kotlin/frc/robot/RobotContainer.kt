@@ -244,8 +244,8 @@ class RobotContainer {
         NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
         NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
 
-        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5)))
-        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5)))
+        NamedCommands.registerCommand("align_right", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5), {0.0}))
+        NamedCommands.registerCommand("align_left", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5), {0.0}))
 
 
 
@@ -302,9 +302,11 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.RIGHT_OFFSET))
-            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET))
-            driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0)))
+            driverRightStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.RIGHT_OFFSET
+            // , {driverLeftStick.getHID().getPOV()}
+            ))
+            driverLeftStick.button(1).whileTrue(AlignReef(drivebase, visionSubsystem, Constants.Field.LEFT_OFFSET/*,  {driverLeftStick.getHID().getPOV()}*/))
+            driverRightStick.button(2).whileTrue(AlignReef(drivebase, visionSubsystem, Inches.of(0.0)/* , {driverLeftStick.getHID().getPOV()}*/))
             driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
                 gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
                 AlignPickup(drivebase, visionSubsystem, Inches.of(0.0))
