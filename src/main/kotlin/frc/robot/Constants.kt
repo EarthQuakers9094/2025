@@ -51,7 +51,7 @@ object Constants {
     object Arm {
         val LOW_LAST_SAFE_ANGLE = Rotation2d.fromDegrees(-245.0);
         val START_POSITION = -90.0;
-        val MAX_ACELERATION = 2000.0;
+        val MAX_ACELERATION = 3000.0;
         const val MAX_VEL = 4000.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = 53
@@ -61,7 +61,7 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = -0.241 + 1.0;
+        const val ABSOLUTE_ENCODER_OFFSET = -0.312 + 1.0 // -0.241 + 1.0;
 
     }
     object Grappling {
@@ -86,6 +86,7 @@ object Constants {
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
         const val OUTPUT: Double = 1.0
+        const val L1OUTPUT: Double = 0.5
         const val STOP_CURRENT: Double = 50.0
     }
 
@@ -122,7 +123,7 @@ object Constants {
         val MAX_SPEED = 3.9624
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
-         val TRANSLATION_PID_TELEOP = PIDConstants(2.5 * 1.05, 0.0, 0.0)
+         val TRANSLATION_PID_TELEOP = PIDConstants(2.5, 0.0, 0.01)
     }
 
     object Field {
@@ -140,7 +141,7 @@ object Constants {
 
         val CLIMB_POSE = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-135.0),
+            Rotation2d.fromDegrees(-180.0),
             "climb_pose"
         );
 
@@ -151,7 +152,7 @@ object Constants {
         );
 
         val L3 = Pose(
-            Meters.of(0.225).plus(Inches.of(2.5)),
+            Meters.of(0.225).plus(Inches.of(2.0)),
             Rotation2d.fromDegrees(-236.233),
             "l3"
         );
@@ -187,6 +188,7 @@ object Constants {
             Rotation2d.fromDegrees(-228.00),
             "barge"
         );
+        
         val Processor = Pose(
             Meters.of(0.0),
             Rotation2d.fromDegrees(-77.021),

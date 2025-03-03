@@ -40,6 +40,10 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         return Rotation2d.fromDegrees(arm.getAngle())
     }
 
+    fun setConstrainst(constraints: TrapezoidProfile.Constraints) {
+        profile = TrapezoidProfile(constraints)
+    }
+
     fun setPose(pose: String) {
         this.pose = pose
     }
@@ -52,6 +56,13 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         setpoint = loc;
         // arm.setSetpoint(loc)
     }
+
+    fun fastSetSetpoint(loc: Double) {
+        setpoint = loc;
+        current_setpoint = TrapezoidProfile.State(loc, 0.0);
+        arm.setSetpoint(loc)
+    }
+
     fun getSetpoint(): Double {
         return setpoint
         // arm.setSetpoint(loc)
@@ -68,6 +79,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     fun setoutput(output: Double) {
         arm.setOutput(output)
     }
+
     override fun periodic() {
         val ntime = Timer.getFPGATimestamp();
 
@@ -123,7 +135,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         }
 
         override fun periodic() {
-            // SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
+            SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
         }
 
         override fun setSetpoint(loc: Double) {

@@ -35,8 +35,8 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
 
     return Commands.select(
         mapOf(
-            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET, {0}),
-            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET, {0}),
+            Side.Left to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET, {0}, true),
+            Side.Right to AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.RIGHT_OFFSET, {0}, true),
         ),
         {
             if (SmartDashboard.getBoolean(section, true)) {
@@ -49,7 +49,7 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
     )
 }
 
-class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, private val selectedTag: () -> Int) : Command() {
+class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, private val selectedTag: () -> Int, private val autoEnd: Boolean) : Command() {
 
     private val skewPID = PIDController(0.07, 0.0, 0.0)
     private val lateralPID = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
@@ -89,8 +89,10 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     // }
 
     override fun initialize() {
+        //TODO("hi")
         //this.targetId = 0
         var id = 0
+        no_targets = 0
 
         //val angle = swerveSubsystem.heading.degrees + 360;
         // val dx = Math.cos(angle.radians);
@@ -243,7 +245,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return false//targetId == 0 // don't do anything if you don't have a targetId
+        return false/*(no_targets > (3000 * (1/20))) && autoEnd*/// || ()//targetId == 0 // don't do anything if you don't have a targetId
         // return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
     }
 
