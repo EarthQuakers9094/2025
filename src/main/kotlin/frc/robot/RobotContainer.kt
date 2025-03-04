@@ -68,17 +68,21 @@ class RobotContainer {
         if (lastUpdatedScaleFactor == frame) {
             return lastScaleFactor
         }
-        val pov = driverLeftStick.getHID().getPOV()
+        val pov = driverRightStick.getHID().getPOV()
         // SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
         // val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
         val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
         if (pov == 0) {
-            (2.0/3.0).pow((1/3))
+            (2.0/3.0)//.pow((1/3))
         } else if (pov == 180) {
-            (1.0/3.0).pow((1/3))
+            (1.0/3.0)//.pow((1/3))
         } else {
             1.0
-        }
+        } * if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
+            -1.0
+        } else {
+            1.0
+        };
 
         lastScaleFactor = factor
         lastUpdatedScaleFactor = frame
@@ -150,12 +154,12 @@ class RobotContainer {
     //  */
     var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
-        { driverLeftStick.getY() * getScaleFactor()},
-        { driverLeftStick.getX() * getScaleFactor()})
+        { driverLeftStick.getY().pow(3) * getScaleFactor()},
+        { driverLeftStick.getX().pow(3) * getScaleFactor()})
         .withControllerRotationAxis { driverRightStick.getX() * -0.7 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
-        .allianceRelativeControl(true)
+        .allianceRelativeControl(false)
 
     // /**
     //  * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
@@ -240,13 +244,13 @@ class RobotContainer {
         NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
         NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
 
-        // for (tag in Constants.Vision.reefTags) {
+        for (tag in Constants.Vision.reefTags) {
 
-        // NamedCommands.registerCommand("align_right_${tag}", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5) , {tag}, true))
-        // NamedCommands.registerCommand("align_left_${tag}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {tag}, true))
-        // }
+            NamedCommands.registerCommand("align_right_${tag}", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5) , {tag}, true))
+            NamedCommands.registerCommand("align_left_${tag}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {tag}, true))
+        }
         NamedCommands.registerCommand("hello there this is me", AlignReef(drivebase, visionSubsystem, Inches.of(-6.5 - 0.5) , {10}, true))
-        NamedCommands.registerCommand("align_left_${10}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {10}, true))
+        //NamedCommands.registerCommand("align_left_${10}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {10}, true))
 
         drivebase.setupPathPlanner()
 

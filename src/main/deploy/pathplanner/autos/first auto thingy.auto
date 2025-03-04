@@ -17,13 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "hello there this is me"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "l4"
+                  "name": "align_right_10"
                 }
               }
             ]

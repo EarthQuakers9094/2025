@@ -14,8 +14,11 @@ import frc.robot.subsystems.ElevatorSubsystem
 // TODO: Add your sequential commands in the super constructor call,
 //       e.g. ParallelCommandGroup(OpenClawCommand(), MoveArmCommand())
 class ScoreAlgae(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem)
-    : ParallelCommandGroup( gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend),
-    (WaitCommand(0.6).andThen(ParallelCommandGroup( 
+    // : ParallelCommandGroup( gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge),
+    //                         WaitCommand(0.8).andThen(LaunchAlgaeCommand(intakeSubsystem)))
+    : ParallelCommandGroup( 
+        gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend),
+       (WaitCommand(0.6).andThen(ParallelCommandGroup( 
         WaitCommand(0.1).andThen(LaunchAlgaeCommand(intakeSubsystem)),
         InstantCommand({armSubsystem.fastSetSetpoint(Constants.Poses.Barge.angle.degrees)})
     ))))

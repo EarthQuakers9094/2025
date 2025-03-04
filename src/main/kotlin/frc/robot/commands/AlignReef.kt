@@ -67,7 +67,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     private val reefTags = arrayOf(6,7,8,9,10,11)
 
     init {
-        skewPID.enableContinuousInput(0.0, 360.0)
+        skewPID.enableContinuousInput(-180.0, 180.0)
         no_targets = 0
         goBackwardsTimes = 0
         
@@ -157,6 +157,8 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
             no_targets += 1
             
             return
+        } else {
+            no_targets = 0
         }
         DriverStation.reportWarning("targetid, ${this.targetId}", false);
 
@@ -230,6 +232,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
         SmartDashboard.putNumber("align target offsetY", offsetY)
         SmartDashboard.putNumber("align target offsetZ", offsetZ)
         SmartDashboard.putNumber("align target yaw", yaw)
+        SmartDashboard.putNumber("align current yaw", swerveSubsystem.heading.degrees)
         SmartDashboard.putNumber("align rotation", rotation)
         SmartDashboard.putNumber("align lateral", lateral)
         SmartDashboard.putNumber("align forward", forward)
@@ -245,8 +248,8 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return false/*(no_targets > (3000 * (1/20))) && autoEnd*/// || ()//targetId == 0 // don't do anything if you don't have a targetId
-        // return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
+        // return (no_targets > 20) && autoEnd// || ()//targetId == 0 // don't do anything if you don't have a targetId
+        return false//!(cameraSubsystem.io.hasTarget(reefTags, arrayOf("ATFrontRight", "ATFrontLeft")))//((yaw) < lateralTolerance) && (skew < skewTolerance) && (distance < distanceTolerance)
     }
 
     override fun end(interrupted: Boolean) {

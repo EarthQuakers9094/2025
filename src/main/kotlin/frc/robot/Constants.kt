@@ -185,7 +185,7 @@ object Constants {
 
         val Barge = Pose(
             Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
-            Rotation2d.fromDegrees(-228.00),
+            Rotation2d.fromDegrees(-270.00),
             "barge"
         );
         
@@ -208,7 +208,7 @@ object Constants {
         );
         val FullExtend = Pose(
             Elevator.MAX_HEIGHT,
-            Rotation2d.fromDegrees(-180.0),
+            Constants.Arm.SAFE_ANGLE + Rotation2d.fromDegrees(3.0),
             "fullextend"
         );
     }
