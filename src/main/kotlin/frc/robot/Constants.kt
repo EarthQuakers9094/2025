@@ -127,7 +127,7 @@ object Constants {
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
          val TRANSLATION_PID_TELEOP = PIDConstants(2.5, 0.0, 0.01)
-        val REEF_TRANSLATION_PID_TELEOP = PIDConstants(2.0, 0.0, 0.008)
+        val REEF_TRANSLATION_PID_TELEOP = PIDConstants(1.75, 0.0, 0.015)
 
     }
 

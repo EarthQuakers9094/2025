@@ -116,9 +116,7 @@ class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsyste
     private val skewTolerance = 10.0
     private val lateralTolerance = 2.5
     private val distanceTolerance = 0.1
-    private var lateralAverage = MovingAverage(10)//0.0
-    private var distanceAverage = MovingAverage(10)
-    private var yawAverage = MovingAverage(10)
+    
     private var targetId = -1
     private var no_targets = 0
     private var goBackwardsTimes = 0

@@ -11,19 +11,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "align_left_9"
+                  "name": "l4"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "l4"
+                  "name": "align_left_9"
                 }
               }
             ]
@@ -48,7 +48,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -79,19 +79,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "align_left_8"
+                  "name": "l4"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "l4"
+                  "name": "align_left_8"
                 }
               }
             ]
