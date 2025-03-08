@@ -61,7 +61,7 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = -0.312 + 1.0 // -0.241 + 1.0;
+        const val ABSOLUTE_ENCODER_OFFSET = 1.0 - 0.478 // -0.241 + 1.0;
 
     }
     object Grappling {
@@ -85,7 +85,10 @@ object Constants {
         const val INTAKE_ALGAE: Double = 1.0
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
-        const val OUTPUT: Double = 1.0
+        const val OUTPUT_L1: Double = 0.3
+        const val OUTPUT_L2: Double = 0.9
+        const val OUTPUT_L3: Double = 0.6
+        const val OUTPUT_L4: Double = 1.0
         const val L1OUTPUT: Double = 0.5
         const val STOP_CURRENT: Double = 50.0
     }
@@ -124,6 +127,8 @@ object Constants {
         val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
          val TRANSLATION_PID_TELEOP = PIDConstants(2.5, 0.0, 0.01)
+        val REEF_TRANSLATION_PID_TELEOP = PIDConstants(2.0, 0.0, 0.008)
+
     }
 
     object Field {
@@ -140,8 +145,8 @@ object Constants {
         );
 
         val CLIMB_POSE = Pose(
-            Meters.of(0.0),
-            Rotation2d.fromDegrees(-180.0),
+            Meters.of(0.420),
+            Rotation2d.fromDegrees(-349.801),
             "climb_pose"
         );
 
@@ -196,19 +201,19 @@ object Constants {
         );
 
         val L2Algae = Pose(
-            Meters.of(0.0),
+            Meters.of(0.0) + Inches.of(2.0),
             Rotation2d.fromDegrees(-131.00),
             "l2algae"
         );
 
         val L3Algae = Pose(
-            Meters.of(0.153) + Inches.of(2.5),
+            Meters.of(0.153) + Inches.of(2.5) + Inches.of(8.0),
             Rotation2d.fromDegrees(-149.00),
             "l3algae"
         );
         val FullExtend = Pose(
             Elevator.MAX_HEIGHT,
-            Constants.Arm.SAFE_ANGLE + Rotation2d.fromDegrees(3.0),
+            Constants.Arm.SAFE_ANGLE - Rotation2d.fromDegrees(10.0),
             "fullextend"
         );
     }

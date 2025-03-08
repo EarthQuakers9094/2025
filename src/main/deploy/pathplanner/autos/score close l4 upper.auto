@@ -17,12 +17,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "align_left"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "l4"
                 }
               }

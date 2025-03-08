@@ -22,14 +22,14 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
 
     }
 
-    class VisionRealIO(val frontLeftCamera: PhotonCamera, val frontLeftLateralOffset: Distance, val frontRightCamera: PhotonCamera, val frontRightLateralOffset: Distance/*, val backCenterCamera: PhotonCamera, val backCenterLateralOffset: Distance*/):VisionIO {
+    class VisionRealIO(val frontLeftCamera: PhotonCamera, val frontLeftLateralOffset: Distance, val frontRightCamera: PhotonCamera, val frontRightLateralOffset: Distance, val backCenterCamera: PhotonCamera, val backCenterLateralOffset: Distance):VisionIO {
 
         private var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
         private var readResults = HashMap<String,Boolean>()
 
         override fun periodic() {
             //cameraResults = HashMap()
-            for (camera in this.getFrontCameras()/* + this.getBackCameras()*/) {
+            for (camera in this.getFrontCameras() + this.getBackCameras()) {
                 val name = camera.key
                 val cam = camera.value
                 if (readResults.get(name) == true) {
@@ -85,8 +85,8 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
         }
 
         override fun getBackCameras(): HashMap<String, CameraAlignInfo> { 
-            TODO("askdhfjkasdhfksdkjafjkadsjkfds")
-            //return hashMapOf(backCenterCamera.name to CameraAlignInfo(backCenterCamera, backCenterLateralOffset))
+            //TODO("askdhfjkasdhfksdkjafjkadsjkfds")
+            return hashMapOf(backCenterCamera.name to CameraAlignInfo(backCenterCamera, backCenterLateralOffset))
         }
 
         

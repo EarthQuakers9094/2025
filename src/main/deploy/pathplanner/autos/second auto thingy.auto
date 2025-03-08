@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Lower Far"
+            "pathName": "lower barge to 9"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_left_9"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -30,15 +36,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "pickup_pose"
+            "pathName": "9 backup"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Lower Far to Pickup"
+            "name": "zero_pose"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "9 to pickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align_pickup"
           }
         },
         {
@@ -50,13 +75,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Back to Lower Far"
+            "pathName": "pickup to 8"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_left_8"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -73,46 +104,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "pickup_pose"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Lower Far to Pickup"
+            "pathName": "8 backup"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "devour_coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Pickup to Far Left"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "l4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "launch_coral"
+            "name": "zero_pose"
           }
         }
       ]

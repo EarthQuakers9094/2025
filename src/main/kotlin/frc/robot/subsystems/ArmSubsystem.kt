@@ -54,7 +54,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
     fun setSetpoint(loc: Double) {
         setpoint = loc;
-        // arm.setSetpoint(loc)
+//        arm.setSetpoint(loc)
     }
 
     fun fastSetSetpoint(loc: Double) {
@@ -89,7 +89,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
         arm.setSetpoint(current_setpoint.position)
         SmartDashboard.putNumber("arm angle",arm.getAngle())
-        SmartDashboard.putNumber("arm setpoint",current_setpoint.position)
+//        SmartDashboard.putNumber("arm setpoint",current_setpoint.position)
 
 
         arm.periodic()

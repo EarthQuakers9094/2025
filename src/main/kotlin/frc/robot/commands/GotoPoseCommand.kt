@@ -19,6 +19,8 @@ enum class State {
     BelowToHigh,
     HighToBelow,
     SameToSame,
+    HighToBelowUnsafe,
+    BelowToHighUnsafe,
     BelowToBelowDangerous,
     BelowToBelowDangerousTo,
     //HighToBelowSafe,
@@ -27,7 +29,8 @@ enum class State {
 fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem, pose: Pose): Command {
     return Commands.select(mapOf(
             State.BelowToHigh to ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose),
-            //State.HighToBelowUnsafe to SequentialCommandGroup(GotoSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)),
+            State.HighToBelowUnsafe to SequentialCommandGroup(GotoLastSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)),
+            State.BelowToHighUnsafe to SequentialCommandGroup(ElevatorTrackingAngle(armSubsystem,elevatorSubsystem, Pose(pose.height, Constants.Arm.LOW_LAST_SAFE_ANGLE, pose.pose))),
             State.HighToBelow to ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose),
             State.SameToSame to GotoPoseSimple(armSubsystem,elevatorSubsystem, pose),
             State.BelowToBelowDangerous to Commands.sequence(GotoAngle(armSubsystem, pose.angle), GotoHeight(elevatorSubsystem, pose.height)),
@@ -39,7 +42,14 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
                     //            return SequentialCommandGroup(GotoSafeAngle(armSubsystem),GotoHeight(elevatorSubsystem, pose.height),GotoAngle(armSubsystem,pose.angle))
                     //        }
                             SmartDashboard.putString("goto pose command", "BelowToHigh");
-                            State.BelowToHigh
+
+                            if (pose.angle.degrees < -240) {
+                                State.BelowToHighUnsafe
+                            } else {
+                                State.BelowToHigh
+                            }
+
+
                             //ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose)
                         } else if (elevatorSubsystem.getHeight() >= Constants.Elevator.COLLISION_HEIGHT_LOW && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH) {
                             // if (armSubsystem.getAngle().degrees > Constants.Arm.SAFE_ANGLE.degrees) {
@@ -47,7 +57,12 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
                             //     SequentialCommandGroup(GotoSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose))
                             // }
                             SmartDashboard.putString("goto pose command", " HighBelow");
-                            State.HighToBelow
+                            if (armSubsystem.getAngle().degrees < -240.0) {
+                                State.HighToBelowUnsafe
+
+                            } else {
+                                State.HighToBelow
+                            }
                             //ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)
                         } else if (elevatorSubsystem.getHeight() <= Constants.Elevator.COLLISION_HEIGHT_HIGH && pose.height <= Constants.Elevator.COLLISION_HEIGHT_HIGH && armSubsystem.getAngle().degrees < Constants.Arm.LOW_LAST_SAFE_ANGLE.degrees) {
                             State.BelowToBelowDangerous
@@ -89,7 +104,7 @@ open class GotoAngle(private val armSubsystem: ArmSubsystem, private val angle: 
     }
 }
 
-class GotoSafeAngle(private val armSubsystem: ArmSubsystem) : GotoAngle(armSubsystem, Constants.Arm.SAFE_ANGLE);
+class GotoLastSafeAngle(private val armSubsystem: ArmSubsystem) : GotoAngle(armSubsystem, Constants.Arm.LOW_LAST_SAFE_ANGLE);
 
 class ArmTrackingHeight(private val armSubsystem: ArmSubsystem, private val elevatorSubsystem: ElevatorSubsystem, private val pose: Pose) : Command() {
     private var startPosition: Rotation2d = Rotation2d.fromDegrees(0.0)
