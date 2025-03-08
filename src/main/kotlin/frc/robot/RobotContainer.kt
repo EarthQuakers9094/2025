@@ -130,9 +130,9 @@ class RobotContainer {
             if (subsystemsEnable) {
                 VisionSubsystem.VisionRealIO(
                     PhotonCamera("ATFrontRight"), 
-                    Inches.of(8.125),
+                    Inches.of(8.143),
                     PhotonCamera("ATFrontLeft"),
-                    Inches.of(-8.0),
+                    Inches.of(-8.143),
                      PhotonCamera("ATBack"),
                      Inches.of(0.0),
                 )

@@ -61,7 +61,7 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = 1.0 - 0.478 // -0.241 + 1.0;
+        const val ABSOLUTE_ENCODER_OFFSET = 1.0 - 0.331 // -0.241 + 1.0;
 
     }
     object Grappling {
@@ -132,7 +132,7 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-6.5 - 0.5);
+        val LEFT_OFFSET = Inches.of(-8.0);
         val RIGHT_OFFSET = Inches.of(6.5 - 0.5);
 
     }

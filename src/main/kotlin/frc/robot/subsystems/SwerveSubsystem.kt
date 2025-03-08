@@ -176,7 +176,6 @@ class SwerveSubsystem : SubsystemBase {
         SmartDashboard.putNumber("current robot yaw", this.heading.degrees)
         SmartDashboard.putData("robot location x", this.swerveDrive.field)
 
-
         // When vision is enabled we must manually update odometry in SwerveDrive
         if (visionDriveTest) {
             swerveDrive.updateOdometry()

@@ -22,13 +22,15 @@ import VisionSubsystem
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj.DriverStation
 import frc.robot.utils.PIDController
-
+import java.sql.Driver
 
 
 enum class Side {
     Left,
     Right
 }
+
+
 
 class FaceTag(private val swerveSubsystem: SwerveSubsystem, private val selectedTag: () -> Int): Command() {
     private val tagAngles = mapOf(7 to 0.0, 6 to 300.0, 8 to 60.0, 9 to 120.0, 10 to 180.0, 11 to 360.0 - 120.0)
@@ -37,10 +39,16 @@ class FaceTag(private val swerveSubsystem: SwerveSubsystem, private val selected
     private val skewPID = PIDController(0.07, 0.0, 0.0)
 
     init {
+        skewPID.enableContinuousInput(-180.0, 180.0)
     }
 
     override fun initialize() {
-        val angle = tagAngles.get(selectedTag())
+        val tag: Int = selectedTag()
+
+        DriverStation.reportWarning("tag id ${tag}", false)
+
+        val angle = tagAngles.get(tag)
+        DriverStation.reportWarning("tag anlge ${angle}", false);
         if (angle != null) {
             tagAngle = angle
         } else {
@@ -50,11 +58,21 @@ class FaceTag(private val swerveSubsystem: SwerveSubsystem, private val selected
     }
 
     override fun execute() {
-        swerveSubsystem.drive(Translation2d(0.0,0.0),skewPID.calculate(swerveSubsystem.heading.degrees, tagAngle), false)
+        val yaw = (tagAngle + 180.0) % 360.0 // using this stupid thing because I dont feel like fixing it right now
+
+        swerveSubsystem.drive(Translation2d(0.0,0.0),skewPID.calculate(swerveSubsystem.heading.degrees, yaw), false)
     }
 
     override fun isFinished(): Boolean {
-        return tagAngle == -1.0 || abs(swerveSubsystem.heading.degrees -  tagAngle) <= 3.0
+        val yaw = (tagAngle + 180.0) % 360.0 // using this stupid thing because I dont feel like fixing it right now
+
+        SmartDashboard.putNumber("auto turn current heading", (swerveSubsystem.heading.degrees + 360.0) % 360.0);
+        SmartDashboard.putNumber("auto turn target heading", yaw);
+
+
+        val end = tagAngle == -1.0 || abs((swerveSubsystem.heading.degrees + 360.0) % 360.0 -  yaw) <= 3.0
+        SmartDashboard.putBoolean("auto align turn end", end)
+        return end
     }
 
 }
@@ -64,7 +82,7 @@ fun alignReef(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem
 }
 
 fun alignReefLeft(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem, selectedTag: () -> Int, autoEnd: Boolean): Command {
-    return AlignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET, selectedTag, autoEnd)
+    return alignReef(swerveSubsystem, cameraSubsystem, Constants.Field.LEFT_OFFSET, selectedTag, autoEnd)
 }
 
 fun alignReefRight(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSubsystem, selectedTag: () -> Int, autoEnd: Boolean): Command {

@@ -306,7 +306,7 @@ class Vision
             Translation3d(
                 Units.inchesToMeters(-4.628),
                 Units.inchesToMeters(-10.687),
-                Units.inchesToMeters(16.129)
+                Units.inchesToMeters(39.0)
             ),
             VecBuilder.fill(4.0, 4.0, 8.0), VecBuilder.fill(0.5, 0.5, 1.0)
         );
