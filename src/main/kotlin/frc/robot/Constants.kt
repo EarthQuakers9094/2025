@@ -99,6 +99,8 @@ object Constants {
     const val LOOP_TIME: Double = 0.13 //s, 20ms + 110ms sprk max velocity lag
     val MAX_SPEED: Double = Units.feetToMeters(14.5)
 
+    val ROBOT_WIDTH: Distance = Inches.of(3.0 * 2.0 + 27.0)
+
     // Maximum speed of the robot in meters per second, used to limit acceleration.
     //  public static final class AutonConstants
     //  {

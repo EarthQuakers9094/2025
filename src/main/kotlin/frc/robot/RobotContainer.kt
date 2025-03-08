@@ -40,6 +40,7 @@ import VisionSubsystem
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import kotlin.math.*
+import kotlin.math.PI
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -129,11 +130,11 @@ class RobotContainer {
                 VisionSubsystem.VisionRealIO(
                     drivebase,
                     PhotonCamera("ATFrontRight"), 
-                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d()) ,
+                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), 0.0)) ,
                     PhotonCamera("ATFrontLeft"),
-                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d()) ,
+                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), 0.0)) ,
                      PhotonCamera("ATBack"),
-                     Inches.of(0.0),
+                     Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), PI)),
                 )
                     
             } else {
@@ -284,20 +285,20 @@ class RobotContainer {
         NamedCommands.registerCommand("pickup_pose", /*BackupCommand(drivebase).andThen(*/gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))//)
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
 
-        NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
-        NamedCommands.registerCommand("align_second", alignReefSelect(drivebase, visionSubsystem, "align_second_left"));
-        NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
-        NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
+        // NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
+        // NamedCommands.registerCommand("align_second", alignReefSelect(drivebase, visionSubsystem, "align_second_left"));
+        // NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
+        // NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
 
-        NamedCommands.registerCommand("align_pickup", ParallelCommandGroup(
-            gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-            AlignPickup(drivebase, visionSubsystem, Inches.of(0.0), true)
-        ))
+        // NamedCommands.registerCommand("align_pickup", ParallelCommandGroup(
+        //     gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
+        //     AlignPickup(drivebase, visionSubsystem, Inches.of(0.0), true)
+        // ))
 
         for (tag in Constants.Vision.reefTags) {
 
-            NamedCommands.registerCommand("align_right_${tag}", alignReefLeft(drivebase, visionSubsystem, {tag}, true))
-            NamedCommands.registerCommand("align_left_${tag}", alignReefRight(drivebase, visionSubsystem, {tag}, true))
+            // NamedCommands.registerCommand("align_right_${tag}", alignReefLeft(drivebase, visionSubsystem, {tag}, true))
+            // NamedCommands.registerCommand("align_left_${tag}", alignReefRight(drivebase, visionSubsystem, {tag}, true))
         }
         //NamedCommands.registerCommand("align_left_${10}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {10}, true))
 
@@ -387,15 +388,15 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            driverRightStick.button(1).whileTrue(alignReefRight(drivebase, visionSubsystem, {getSelectedTag()},false))
-            driverLeftStick.button(1).whileTrue(alignReefLeft(drivebase, visionSubsystem,  {getSelectedTag()}, false))
-            driverRightStick.button(2).whileTrue(alignReef(drivebase, visionSubsystem, Inches.of(0.0) , {getSelectedTag()}, false))
+            // driverRightStick.button(1).whileTrue(alignReefRight(drivebase, visionSubsystem, {getSelectedTag()},false))
+            // driverLeftStick.button(1).whileTrue(alignReefLeft(drivebase, visionSubsystem,  {getSelectedTag()}, false))
+            // driverRightStick.button(2).whileTrue(alignReef(drivebase, visionSubsystem, Inches.of(0.0) , {getSelectedTag()}, false))
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
-            driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
-                gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-                AlignPickup(drivebase, visionSubsystem, Inches.of(0.0), true)
-            ))
+            // driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
+            //     gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
+            //     AlignPickup(drivebase, visionSubsystem, Inches.of(0.0), true)
+            // ))
 
             driverRightStick.button(3).onTrue(InstantCommand({
                 setMotorBrake(true)
