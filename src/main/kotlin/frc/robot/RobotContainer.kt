@@ -9,9 +9,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto
 import com.reduxrobotics.sensors.canandmag.CanandmagDetails
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.units.Units.*
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.RobotBase
@@ -40,6 +37,7 @@ import java.util.stream.Stream
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
 import VisionSubsystem
+import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import kotlin.math.*
 
@@ -129,10 +127,11 @@ class RobotContainer {
     private val visionSubsystem = VisionSubsystem(
             if (subsystemsEnable) {
                 VisionSubsystem.VisionRealIO(
+                    drivebase,
                     PhotonCamera("ATFrontRight"), 
-                    Inches.of(8.143),
+                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d()) ,
                     PhotonCamera("ATFrontLeft"),
-                    Inches.of(-8.143),
+                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d()) ,
                      PhotonCamera("ATBack"),
                      Inches.of(0.0),
                 )
