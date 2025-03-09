@@ -174,6 +174,7 @@ class SwerveSubsystem : SubsystemBase {
     override fun periodic() {
 
         SmartDashboard.putNumber("current robot yaw", this.heading.degrees)
+        this.swerveDrive.field.robotPose = swerveDrive.pose
         SmartDashboard.putData("robot location x", this.swerveDrive.field)
 
         // When vision is enabled we must manually update odometry in SwerveDrive
@@ -181,6 +182,7 @@ class SwerveSubsystem : SubsystemBase {
             swerveDrive.updateOdometry()
             vision!!.updatePoseEstimation(swerveDrive)
         }
+
     }
 
     override fun simulationPeriodic() {
@@ -215,7 +217,7 @@ class SwerveSubsystem : SubsystemBase {
                 },  // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                     PIDConstants(2.5, 0.0, 0.0),  // Translation PID constants
-                    PIDConstants(0.07, 0.0, 0.0) // Rotation PID constants
+                    PIDConstants(0.09, 0.0, 0.0) // Rotation PID constants
                 ),
                 config,  // The robot configuration
                 {

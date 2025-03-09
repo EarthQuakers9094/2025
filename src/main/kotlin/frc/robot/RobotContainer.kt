@@ -130,11 +130,11 @@ class RobotContainer {
                 VisionSubsystem.VisionRealIO(
                     drivebase,
                     PhotonCamera("ATFrontRight"), 
-                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), 0.0)) ,
+                    Transform3d(Inches.of(-8.143), Inches.of(-11.550), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
                     PhotonCamera("ATFrontLeft"),
-                    Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), 0.0)) ,
-                     PhotonCamera("ATBack"),
-                     Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, TODO("pitch"), PI)),
+                    Transform3d(Inches.of(8.143), Inches.of(-11.550), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
+                     PhotonCamera("ATBack --------"),
+                     Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, 25.0 * (PI/180.0), PI)),
                 )
                     
             } else {

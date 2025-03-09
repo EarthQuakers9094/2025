@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import CameraAlignInfo
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
+import edu.wpi.first.math.Matrix
+import edu.wpi.first.math.Nat
+import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.geometry.Transform3d
 import edu.wpi.first.wpilibj.Timer
 import frc.robot.subsystems.SwerveSubsystem
@@ -70,16 +73,16 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
 //            }
             frontLeftCamera.allUnreadResults.lastOrNull()?.let {
                 val pose = frontLeftPoseEstimator.update(it).getOrNull()
-                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp()) }
+                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(2.0, 2.0, 1.0)) }
 
             }
             frontRightCamera.allUnreadResults.lastOrNull()?.let {
                 val pose = frontRightPoseEstimator.update(it).getOrNull()
-                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp()) }
+                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(2.0, 2.0, 1.0)) }
             }
             backCenterCamera.allUnreadResults.lastOrNull()?.let {
                 val pose = backCenterPoseEstimator.update(it).getOrNull()
-                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp()) }
+                //pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 1.0)) }
             }
 
             //this.getFrontCameras().map { it.camera.allUnreadResults }
