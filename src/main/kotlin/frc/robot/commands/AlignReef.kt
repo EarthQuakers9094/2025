@@ -110,7 +110,7 @@ fun alignReefSelect(swerveSubsystem: SwerveSubsystem, cameraSubsystem: VisionSub
 
 class AlignReef(private val swerveSubsystem: SwerveSubsystem, val cameraSubsystem: VisionSubsystem,private val lateralOffset: Distance, private val selectedTag: () -> Int, private val autoEnd: Boolean) : Command() {
 
-    private val skewPID = PIDController(0.07, 0.0, 0.0)
+    private val skewPID = PIDController(0.09, 0.0, 0.0)
     private val lateralPID = PIDController(Constants.Drivebase.REEF_TRANSLATION_PID_TELEOP)
     private val forwardPID = PIDController(Constants.Drivebase.REEF_TRANSLATION_PID_TELEOP)
     private val skewTolerance = 10.0

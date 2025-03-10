@@ -30,7 +30,9 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
     return Commands.select(mapOf(
             State.BelowToHigh to ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose),
             State.HighToBelowUnsafe to SequentialCommandGroup(GotoLastSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)),
-            State.BelowToHighUnsafe to SequentialCommandGroup(ElevatorTrackingAngle(armSubsystem,elevatorSubsystem, Pose(pose.height, Constants.Arm.LOW_LAST_SAFE_ANGLE, pose.pose)), GotoAngle(armSubsystem, Constants.Poses.CLIMB_POSE.angle)),
+            State.BelowToHighUnsafe to SequentialCommandGroup(
+                ElevatorTrackingAngle(armSubsystem,elevatorSubsystem, Pose(pose.height, Constants.Arm.LOW_LAST_SAFE_ANGLE, pose.pose)), 
+                GotoAngle(armSubsystem, pose.angle/*Constants.Poses.CLIMB_POSE.angle*/)),
             State.HighToBelow to ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose),
             State.SameToSame to GotoPoseSimple(armSubsystem,elevatorSubsystem, pose),
             State.BelowToBelowDangerous to Commands.sequence(GotoAngle(armSubsystem, pose.angle), GotoHeight(elevatorSubsystem, pose.height)),
@@ -45,6 +47,7 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
 
                             if (pose.angle.degrees < -240) {
                                 State.BelowToHighUnsafe
+                                //TODO("BelowToHighUnsafe")
                             } else {
                                 State.BelowToHigh
                             }
