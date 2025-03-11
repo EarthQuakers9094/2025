@@ -61,7 +61,7 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = 1.0 - 0.331 // -0.241 + 1.0;
+        const val ABSOLUTE_ENCODER_OFFSET = 0.439 // -0.241 + 1.0;
 
     }
     object Grappling {
@@ -117,7 +117,7 @@ object Constants {
         const val LEFT_X_DEADBAND = 0.05
 
         // Joystick Deadband
-        const val DEADBAND: Double = 0.1
+        const val DEADBAND: Double = 0.15
         const val LEFT_Y_DEADBAND: Double = 0.1
         const val RIGHT_X_DEADBAND: Double = 0.1
         const val TURN_CONSTANT: Double = 6.0
@@ -125,17 +125,17 @@ object Constants {
 
     object Drivebase {
         val MAX_TURNING_SPEEDS = 4.5
-        val MAX_SPEED = 3.9624
-        val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
+        val MAX_SPEED = 5.36
+        val ROTATION_PID_TELEOP = PIDConstants(1.7, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
-         val TRANSLATION_PID_TELEOP = PIDConstants(2.5, 0.0, 0.01)
+         val TRANSLATION_PID_TELEOP = PIDConstants(4.0, 0.0, 0.01)
         val REEF_TRANSLATION_PID_TELEOP = PIDConstants(2.0, 0.0, 0.008)
 
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-8.0);
-        val RIGHT_OFFSET = Inches.of(6.5 - 0.5);
+        val LEFT_OFFSET = Inches.of(-7.0);
+        val RIGHT_OFFSET = Inches.of(6.5);
 
     }
 
@@ -154,7 +154,7 @@ object Constants {
 
         val L2 = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-226.731),
+            Rotation2d.fromDegrees(-232.0),
             "l2"
         );
 

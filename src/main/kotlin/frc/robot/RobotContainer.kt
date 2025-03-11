@@ -39,6 +39,7 @@ import CameraAlignInfo
 import VisionSubsystem
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import pathPlannerToReef
 import kotlin.math.*
 import kotlin.math.PI
 
@@ -68,11 +69,11 @@ class RobotContainer {
         // val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
         val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
         if (pov == 0) {
-            (2.0/3.0)//.pow((1/3))
+            (1.0)//.pow((1/3))
         } else if (pov == 180) {
-            (1.0/3.0)//.pow((1/3))
+            (1.0/Constants.MAX_SPEED) * 0.5
         } else {
-            1.0
+            (1.0/Constants.MAX_SPEED) * 1.0
         } * if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
             -1.0
         } else {
@@ -130,11 +131,11 @@ class RobotContainer {
                 VisionSubsystem.VisionRealIO(
                     drivebase,
                     PhotonCamera("ATFrontRight"), 
-                    Transform3d(Inches.of(-8.143), Inches.of(-11.550), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
+                    Transform3d(Inches.of(11.550), Inches.of(/*11.550*/-8.143), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
                     PhotonCamera("ATFrontLeft"),
-                    Transform3d(Inches.of(8.143), Inches.of(-11.550), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
-                     PhotonCamera("ATBack --------"),
-                     Transform3d(Inches.of(-8.143), Inches.of(11.550), Inches.of(7.962), Rotation3d(0.0, 25.0 * (PI/180.0), PI)),
+                    Transform3d(Inches.of(11.550), Inches.of(8.143), Inches.of(7.962), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
+                     PhotonCamera("ATBack"),
+                     Transform3d(Inches.of(5.793), Inches.of(0.223), Inches.of(39.098), Rotation3d(0.0, 30.0 * (PI/180.0), PI)),
                 )
                     
             } else {
@@ -148,7 +149,7 @@ class RobotContainer {
     private var angle = 0.0;
     private var magnitude = 0.0;
 
-    private var driveAngleSnap = true;
+    private var driveAngleSnap = false;
 
     private var ix = 0.0;
     private var iy = 0.0;
@@ -194,12 +195,17 @@ class RobotContainer {
         drivebase.swerveDrive,
         { if (driveAngleSnap) {
             sin (getSnappedAngle()) * getMagnitude() * getScaleFactor()
-        } else { driverLeftStick.getY()/*.pow(3)*/ * getScaleFactor() }},
+        } else {
+            driverLeftStick.getY()/*.pow(3)*/ * getScaleFactor()
+        } * Constants.Drivebase.MAX_SPEED},
         { if (driveAngleSnap) {
             cos(getSnappedAngle()) * getMagnitude() * getScaleFactor()
-        } else {driverLeftStick.getX()/*.pow(3)*/ * getScaleFactor()}
-        })
-        .withControllerRotationAxis { driverRightStick.getX() * -0.7 }
+        } else {
+            driverLeftStick.getX()/*.pow(3)*/ * getScaleFactor()
+        } * Constants.Drivebase.MAX_SPEED
+        }
+    )
+        .withControllerRotationAxis { driverRightStick.getX() * -1.2 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(false)
@@ -297,8 +303,8 @@ class RobotContainer {
 
         for (tag in Constants.Vision.reefTags) {
 
-            // NamedCommands.registerCommand("align_right_${tag}", alignReefLeft(drivebase, visionSubsystem, {tag}, true))
-            // NamedCommands.registerCommand("align_left_${tag}", alignReefRight(drivebase, visionSubsystem, {tag}, true))
+             NamedCommands.registerCommand("align_right_${tag}", pathPlannerToReef(Constants.Field.RIGHT_OFFSET, {tag}, drivebase, true))
+             NamedCommands.registerCommand("align_left_${tag}", pathPlannerToReef(Constants.Field.LEFT_OFFSET, {tag}, drivebase, true))
         }
         //NamedCommands.registerCommand("align_left_${10}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {10}, true))
 
@@ -388,8 +394,8 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            // driverRightStick.button(1).whileTrue(alignReefRight(drivebase, visionSubsystem, {getSelectedTag()},false))
-            // driverLeftStick.button(1).whileTrue(alignReefLeft(drivebase, visionSubsystem,  {getSelectedTag()}, false))
+             driverRightStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.RIGHT_OFFSET, {getSelectedTag()}, drivebase, false))
+             driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET, {getSelectedTag()}, drivebase, false))
             // driverRightStick.button(2).whileTrue(alignReef(drivebase, visionSubsystem, Inches.of(0.0) , {getSelectedTag()}, false))
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
