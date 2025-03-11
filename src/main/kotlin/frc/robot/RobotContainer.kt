@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import pathPlannerToReef
 import kotlin.math.*
 import kotlin.math.PI
+import pathPlannerToPickup
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -288,7 +289,7 @@ class RobotContainer {
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
         NamedCommands.registerCommand("zero_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
 
-        NamedCommands.registerCommand("pickup_pose", /*BackupCommand(drivebase).andThen(*/gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))//)
+        NamedCommands.registerCommand("pickup_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
 
         // NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
@@ -399,10 +400,10 @@ class RobotContainer {
             // driverRightStick.button(2).whileTrue(alignReef(drivebase, visionSubsystem, Inches.of(0.0) , {getSelectedTag()}, false))
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
-            // driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
-            //     gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-            //     AlignPickup(drivebase, visionSubsystem, Inches.of(0.0), true)
-            // ))
+            driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
+                gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
+                pathPlannerToPickup(Inches.of(0.0), drivebase, false)
+            ))
 
             driverRightStick.button(3).onTrue(InstantCommand({
                 setMotorBrake(true)

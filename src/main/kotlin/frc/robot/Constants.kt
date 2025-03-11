@@ -86,11 +86,11 @@ object Constants {
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
         const val OUTPUT_L1: Double = 0.3
-        const val OUTPUT_L2: Double = 0.9
+        const val OUTPUT_L2: Double = 0.85
         const val OUTPUT_L3: Double = 0.6
         const val OUTPUT_L4: Double = 1.0
         const val L1OUTPUT: Double = 0.5
-        const val STOP_CURRENT: Double = 50.0
+        const val STOP_CURRENT: Double = 40.0
     }
 
     const val ROBOT_MASS: Double = (148.0 - 20.3) * 0.453592 // 32lbs * kg per pound
@@ -134,7 +134,7 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-7.0);
+        val LEFT_OFFSET = Inches.of(-8.5);
         val RIGHT_OFFSET = Inches.of(6.5);
 
     }
@@ -152,9 +152,15 @@ object Constants {
             "climb_pose"
         );
 
+        val CLIMB2_POSE = Pose(
+            Meters.of(0.320),
+            Rotation2d.fromDegrees(-349.801),
+            "climb_pose"
+        );
+
         val L2 = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-232.0),
+            Rotation2d.fromDegrees(-230.0),
             "l2"
         );
 

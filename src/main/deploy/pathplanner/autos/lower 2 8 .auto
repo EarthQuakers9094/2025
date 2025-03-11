@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lower barge to 9 exact"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch_coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "9 exact to pickup 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup_pose"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "devour_coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pickup 2 to 8 exact"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "launch_coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

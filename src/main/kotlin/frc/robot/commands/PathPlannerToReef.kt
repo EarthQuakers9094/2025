@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.units.Units.Inches
+import edu.wpi.first.units.Units.Meters
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
@@ -18,13 +19,15 @@ import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.sin
 import kotlin.math.cos
+import edu.wpi.first.wpilibj.DriverStation
+
 
 val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
 
-fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
+fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean, back: Boolean): Command{
     return DeferredCommand({
         val constraints = PathConstraints(
-            1.0, 1.0,
+            Constants.MAX_SPEED, 1.0,
             Units.degreesToRadians(540.0), Units.degreesToRadians(720.0)
         );
 
@@ -48,7 +51,7 @@ fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveS
                         Translation2d(
                             xoffset + location.measureX,
                             yoffset + location.measureY),
-                        Rotation2d(yaw + Math.PI)),
+                        Rotation2d(yaw + if (back) {0.0} else {Math.PI})),
                     constraints);
 
                 if (autoEnd) {
@@ -59,6 +62,30 @@ fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveS
             }
         }
     }, setOf(swerveSubsystem))
+}
+
+fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
+    return pathPlannerToTag(offset, tag, swerveSubsystem, autoEnd, false)
+}
+
+fun pathPlannerToPickup(offset: Distance, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
+    return pathPlannerToTag(offset, 
+        {
+            val upperSide = swerveSubsystem.pose.measureY.`in`(Meters) >= 4.0;
+            if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Red)) {
+                if (upperSide) {
+                    2
+                } else {
+                    1
+                }
+            } else {
+                if (upperSide) {
+                    13
+                } else {
+                    12
+                }
+            }
+        }, swerveSubsystem, autoEnd, true)
 }
 
 //class PathPlannerToReef(private val offset: Distance, private val tag: () -> Int) : Command() {
