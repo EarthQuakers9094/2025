@@ -7,7 +7,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lower barge to 9 exact"
+            "pathName": "fake path center"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_right_10"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "l4"
+                }
+              }
+            ]
           }
         },
         {
@@ -19,31 +38,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "9 exact to pickup 2"
+            "pathName": "backup and grab algae"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "pickup_pose"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "devour_coral"
+            "name": "devour_algae"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "pickup 2 to 8 exact"
+            "pathName": "go to barge"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "launch_coral"
+            "name": "score_algae"
           }
         }
       ]

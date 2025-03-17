@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.882133838383839,
-        "y": 2.988257575757576
+        "x": 3.7844065656565657,
+        "y": 3.1712121212121214
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.932954545454547,
-        "y": 1.1688762626262612
+        "x": 3.3232253693340637,
+        "y": 2.705265910642551
       },
       "isLocked": false,
-      "linkedName": "left 9"
+      "linkedName": "8 left"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.7521464646464654
       },
       "prevControl": {
-        "x": 2.5240530303030297,
-        "y": 2.6223484848484855
+        "x": 2.2507757262914327,
+        "y": 1.598404930301149
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 0.2,
       "constraints": {
         "maxVelocity": 1.0,
@@ -45,7 +45,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7250778816199387,
+      "minWaypointRelativePos": 0.8325545171339548,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -60,35 +60,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "zero",
+      "name": "pickup_pose",
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "zero_pose"
-        }
-      }
-    },
-    {
-      "name": "pickup_pose",
-      "waypointRelativePos": 0.639408099688471,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
           "name": "pickup_pose"
-        }
-      }
-    },
-    {
-      "name": "devour_coral",
-      "waypointRelativePos": 0.7920560747663532,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "devour_coral"
         }
       }
     }
@@ -109,7 +87,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

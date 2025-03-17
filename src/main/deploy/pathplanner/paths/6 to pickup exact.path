@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.882133838383839,
-        "y": 2.988257575757576
+        "x": 3.692929292929293,
+        "y": 4.849
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.932954545454547,
-        "y": 1.1688762626262612
+        "x": 3.231744260459008,
+        "y": 5.314942413621017
       },
       "isLocked": false,
-      "linkedName": "left 9"
+      "linkedName": "6 exact"
     },
     {
       "anchor": {
-        "x": 1.4568181818181818,
-        "y": 0.7521464646464654
+        "x": 1.457,
+        "y": 7.248
       },
       "prevControl": {
-        "x": 2.5240530303030297,
-        "y": 2.6223484848484855
+        "x": 2.25069083838678,
+        "y": 6.402036139624812
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "pickup 2"
+      "linkedName": "pickup 1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 0.2,
       "constraints": {
         "maxVelocity": 1.0,
@@ -45,7 +45,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7250778816199387,
+      "minWaypointRelativePos": 0.8325545171339548,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -60,35 +60,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "zero",
+      "name": "pickup_pose",
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "zero_pose"
-        }
-      }
-    },
-    {
-      "name": "pickup_pose",
-      "waypointRelativePos": 0.639408099688471,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
           "name": "pickup_pose"
-        }
-      }
-    },
-    {
-      "name": "devour_coral",
-      "waypointRelativePos": 0.7920560747663532,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "devour_coral"
         }
       }
     }
@@ -102,14 +80,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 52.667
+    "velocity": 0.0,
+    "rotation": -52.667
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

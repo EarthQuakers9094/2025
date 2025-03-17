@@ -24,8 +24,8 @@
         "y": 3.0356811280414377
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": null
+      "isLocked": true,
+      "linkedName": "right 9"
     }
   ],
   "rotationTargets": [

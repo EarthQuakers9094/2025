@@ -13,6 +13,7 @@ import edu.wpi.first.math.Nat
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.geometry.Transform3d
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.robot.subsystems.SwerveSubsystem
 import org.photonvision.PhotonPoseEstimator
 import kotlin.jvm.optionals.getOrNull
@@ -82,7 +83,7 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
             }
             backCenterCamera.allUnreadResults.lastOrNull()?.let {
                 val pose = backCenterPoseEstimator.update(it).getOrNull()
-                //pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 1.0)) }
+                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 1.0)) }
             }
 
             //this.getFrontCameras().map { it.camera.allUnreadResults }

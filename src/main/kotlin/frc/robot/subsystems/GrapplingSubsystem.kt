@@ -31,17 +31,9 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
         return arm.getAngle()
     }
 
-    fun setSetpoint(loc: Double) {
-        setpoint = loc;
-        arm.setSetpoint(loc)
-    }
     fun getSetpoint(): Double {
         return setpoint
 
-    }
-
-    fun atLocation(): Boolean {
-        return (arm.getAngle() - setpoint).absoluteValue <= Constants.Grappling.TOLERANCE
     }
 
     override fun simulationPeriodic() {
@@ -57,7 +49,6 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
     interface GrapplingIO {
         fun periodic();
-        fun setSetpoint(loc: Double);
         fun getAngle(): Double;
         fun setOutput(output: Double);
     }
@@ -65,33 +56,25 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
     class GrapplingNeoIO(motor_id: Int):GrapplingIO {
         var motor: SparkMax;
         var encoder: RelativeEncoder;
-        var absoluteEncoder: AbsoluteEncoder;
 
         init {
             motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
-                    .apply(
-                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0))
                     .idleMode(IdleMode.kBrake),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
-            absoluteEncoder = motor.absoluteEncoder;
-
-            encoder.setPosition(0.0) // abs encoder zeroed around thing starting position
+            encoder.setPosition(0.0)
 
             // encoder.setPosition(Constants.Arm.START_POSITION)
         }
 
         override fun periodic() {
-            // SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
+             SmartDashboard.putNumber("climber position",encoder.position)
         }
 
-        override fun setSetpoint(loc: Double) {
-            motor.closedLoopController.setReference(loc, SparkBase.ControlType.kPosition)
-        }
 
         override fun getAngle(): Double {
             return encoder.position
@@ -112,11 +95,6 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
         override fun periodic() {
             simulation.setInputVoltage(controller.calculate(simulation.angleRads * 180.0 / Math.PI,setpoint))
             simulation.update(0.02)
-        }
-
-
-        override fun setSetpoint(loc: Double) {
-            setpoint = loc
         }
 
         override fun getAngle(): Double {

@@ -1,5 +1,6 @@
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.path.PathConstraints
+import com.pathplanner.lib.pathfinding.Pathfinding
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.geometry.Pose2d
@@ -20,6 +21,7 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.math.sin
 import kotlin.math.cos
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 
 val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
@@ -46,11 +48,15 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
                 val xoffset: Distance = offset.times(-sin(yaw)) + fakeWidth.times(cos(yaw)/2.0)
                 val yoffset: Distance = offset.times(cos(yaw)) + fakeWidth.times(sin(yaw)/2.0)
 
+                val position = Translation2d(
+                    xoffset + location.measureX,
+                    yoffset + location.measureY);
+
+
+                //SmartDashboard.putNumber("yoffset (inches)", yoffset.`in`(Inches))
                 val end = AutoBuilder.pathfindToPose(
                     Pose2d(
-                        Translation2d(
-                            xoffset + location.measureX,
-                            yoffset + location.measureY),
+                        position,
                         Rotation2d(yaw + if (back) {0.0} else {Math.PI})),
                     constraints);
 

@@ -41,7 +41,7 @@ object Constants {
         val COLLISION_HEIGHT_LOW: Distance = Inches.of(48.0 - 39.25)
 
         const val motorId: Int = 51
-        const val TOLERANCE = 0.01
+        const val TOLERANCE = 0.03
         val GEAR_CIRCUMFERENCE =
             Inches.of(1.790 * PI)
                 .`in`(edu.wpi.first.units.Units.Meters)
@@ -53,7 +53,7 @@ object Constants {
         val START_POSITION = -90.0;
         val MAX_ACELERATION = 3000.0;
         const val MAX_VEL = 4000.0;
-        val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
+        val SAFE_ANGLE = Rotation2d.fromDegrees(-150.394)
         const val motorId: Int = 53
         const val TOLERANCE = 2.0
         const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
@@ -61,7 +61,7 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = 0.439 // -0.241 + 1.0;
+        const val ABSOLUTE_ENCODER_OFFSET = 0.197 //0.439 // -0.241 + 1.0;
 
     }
     object Grappling {
@@ -75,7 +75,6 @@ object Constants {
         // const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 1.0;
 
         // const val ABSOLUTE_ENCODER_OFFSET = -26.025 + 360.0;
-        const val ABSOLUTE_ENCODER_OFFSET = -0.241 + 1.0;
 
     }
 
@@ -86,9 +85,10 @@ object Constants {
         const val OUTPUT_ALGAE: Double = -1.0
         const val MOTOR = 61;
         const val OUTPUT_L1: Double = 0.3
-        const val OUTPUT_L2: Double = 0.85
-        const val OUTPUT_L3: Double = 0.6
-        const val OUTPUT_L4: Double = 1.0
+        const val OUTPUT_L2NEW: Double = 0.6
+        const val OUTPUT_L2: Double = 0.5
+        const val OUTPUT_L3: Double = 0.5
+        const val OUTPUT_L4: Double = 0.8
         const val L1OUTPUT: Double = 0.5
         const val STOP_CURRENT: Double = 40.0
     }
@@ -125,7 +125,7 @@ object Constants {
 
     object Drivebase {
         val MAX_TURNING_SPEEDS = 4.5
-        val MAX_SPEED = 5.36
+        val MAX_SPEED = 5.36 * 0.95
         val ROTATION_PID_TELEOP = PIDConstants(1.7, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
          val TRANSLATION_PID_TELEOP = PIDConstants(4.0, 0.0, 0.01)
@@ -134,8 +134,8 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-8.5);
-        val RIGHT_OFFSET = Inches.of(6.5);
+        val LEFT_OFFSET = Inches.of(-8.25);
+        val RIGHT_OFFSET = Inches.of(6.00);
 
     }
 
@@ -146,21 +146,27 @@ object Constants {
             "l1"
         );
 
-        val CLIMB_POSE = Pose(
-            Meters.of(0.420),
-            Rotation2d.fromDegrees(-349.801),
-            "climb_pose"
+        val L2NEW = Pose(
+            Meters.of(0.049) + Inches.of(2.0),
+            Rotation2d.fromDegrees(-90.0),
+            "l1new"
         );
 
-        val CLIMB2_POSE = Pose(
-            Meters.of(0.320),
-            Rotation2d.fromDegrees(-349.801),
+//        val L2 = Pose(
+//            Meters.of(0.0),
+//            Rotation2d.fromDegrees(-77.021),
+//            "l2"
+//        );
+
+        val CLIMB_POSE = Pose(
+            Meters.of(0.420),
+            Rotation2d.fromDegrees(-359.801),
             "climb_pose"
         );
 
         val L2 = Pose(
             Meters.of(0.0),
-            Rotation2d.fromDegrees(-230.0),
+            Rotation2d.fromDegrees(-219.6 - 7.0),
             "l2"
         );
 
@@ -173,7 +179,7 @@ object Constants {
         val L4 = Pose(
             Constants.Elevator.MAX_HEIGHT,//Meters.of(0.8),
             // Rotation2d.fromDegrees(-241.0),
-            Rotation2d.fromDegrees(-242.5),
+            Rotation2d.fromDegrees(-242.5 - -360.0/42.0/2.0),
             "l4"
         );
 
@@ -185,7 +191,7 @@ object Constants {
         );
 
         val Pickup = Pose(
-            Meters.of(0.049) + Inches.of(2.0),
+            Meters.of(0.049) + Inches.of(2.5),
             Rotation2d.fromDegrees(-68.0),
             "pickup"
         );
@@ -198,7 +204,7 @@ object Constants {
 
         val Barge = Pose(
             Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
-            Rotation2d.fromDegrees(-270.00),
+            Rotation2d.fromDegrees(-290.00),
             "barge"
         );
         
@@ -215,8 +221,8 @@ object Constants {
         );
 
         val L3Algae = Pose(
-            Meters.of(0.153) + Inches.of(2.5) + Inches.of(8.0),
-            Rotation2d.fromDegrees(-149.00),
+            Meters.of(0.153) + Inches.of(2.5) + Inches.of(2.0),
+            Rotation2d.fromDegrees(-151.00),
             "l3algae"
         );
         val FullExtend = Pose(
