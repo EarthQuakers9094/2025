@@ -53,16 +53,24 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
         fun setOutput(output: Double);
     }
 
-    class GrapplingNeoIO(motor_id: Int):GrapplingIO {
+    class GrapplingNeoIO(motor_id: Int, motor2_id: Int):GrapplingIO {
         var motor: SparkMax;
+        var motor2: SparkMax;
         var encoder: RelativeEncoder;
 
         init {
             motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
+            motor2 = SparkMax(motor2_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
                     .idleMode(IdleMode.kBrake),
+                ResetMode.kNoResetSafeParameters,
+                SparkBase.PersistMode.kPersistParameters)
+
+            motor2.configure(
+                SparkMaxConfig()
+                    .idleMode(IdleMode.kBrake).follow(motor_id, true),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 

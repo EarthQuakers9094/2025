@@ -37,6 +37,7 @@ import java.util.stream.Stream
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
 import VisionSubsystem
+import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
@@ -68,12 +69,12 @@ class RobotContainer {
         }
         val pov = driverRightStick.getHID().getPOV()
         // SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
-        // val angle = atan2(driverLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
+        // val angle = atan2(driveLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
         val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
         if (pov == 0) {
             (1.0)//.pow((1/3))
         } else if (pov == 180) {
-            (1.0/Constants.MAX_SPEED)
+            (1.0/Constants.Drivebase.MAX_SPEED)
         } else {
             1.0
         } * if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
@@ -108,7 +109,7 @@ class RobotContainer {
 
     private val grappleSubsystem = GrapplingSubsystem(
         if (subsystemsEnable) {
-            GrapplingSubsystem.GrapplingNeoIO(Constants.Grappling.motorId)
+            GrapplingSubsystem.GrapplingNeoIO(Constants.Grappling.motorId, Constants.Grappling.motor2Id)
         } else {
             GrapplingSubsystem.GrapplingSimIO()
         })
@@ -193,27 +194,28 @@ class RobotContainer {
     // /**
     //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
     //  */
+    val driverXLimiter = SlewRateLimiter(30.0, -30.0, 0.0)
+    val driverYLimiter = SlewRateLimiter(30.0, -30.0, 0.0)
+    val driverRotationLimiter = SlewRateLimiter(32.0)
     var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
         {
             val y = driverLeftStick.getY()
-            if (driveAngleSnap) {
-            sin (getSnappedAngle()) * getMagnitude() * getScaleFactor()
-        } else {
-            y.pow(2) * y.sign/*.pow(3)*/ * getScaleFactor()
-        } * Constants.Drivebase.MAX_SPEED
+            SmartDashboard.putNumber("joystick y", y)
+            val yi = y.pow(2) * y.sign * getScaleFactor() * Constants.Drivebase.MAX_SPEED;
+            driverYLimiter.calculate(abs(yi)) * yi.sign * 0.5
+//            yi * 0.5
         },
         {
             val x = driverLeftStick.getX()
-            if (driveAngleSnap) {
-            cos(getSnappedAngle()) * getMagnitude() * getScaleFactor()
-        } else {
-            x.pow(2) * x.sign * getScaleFactor()
-        } * Constants.Drivebase.MAX_SPEED
+            SmartDashboard.putNumber("joystick x", x)
+            val xi = x.pow(2) * x.sign * getScaleFactor() * Constants.Drivebase.MAX_SPEED;
+            driverXLimiter.calculate(abs(xi)) * xi.sign * 0.5
+//            xi * 0.5
         }
     )
-        .withControllerRotationAxis { val i = driverRightStick.getX();
-                                        i.pow(2) * i.sign * -1.2 * 0.95 }
+        .withControllerRotationAxis { val i = driverRotationLimiter.calculate(driverRightStick.getX());
+                                        i.pow(2) * i.sign * -1.2 * 0.95 * 0.75 }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(0.8)
         .allianceRelativeControl(false)
@@ -440,10 +442,10 @@ class RobotContainer {
 
 
             driverRightStick.button(11).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -1.0))
-            driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 1.0))
+            driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.25))
+            driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 0.25))
 
-            driverRightStick.button(7).onTrue(RetractClimber(grappleSubsystem, 70.0))
+            driverRightStick.button(7).onTrue(RetractClimber(grappleSubsystem, 5.0))
 
 
             driverRightStick.button(12).onTrue(

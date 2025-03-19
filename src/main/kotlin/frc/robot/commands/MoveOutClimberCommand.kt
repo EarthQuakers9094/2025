@@ -19,7 +19,7 @@ class MoveOutClimberCommand(private val grapplingSubsystem: GrapplingSubsystem) 
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return grapplingSubsystem.getAngle() > 300.0
+        return grapplingSubsystem.getAngle() > 98.0
     }
 
     override fun end(interrupted: Boolean) {

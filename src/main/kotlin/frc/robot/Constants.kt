@@ -69,6 +69,7 @@ object Constants {
         const val MAX_VEL = 250.0;
         val SAFE_ANGLE = Rotation2d.fromDegrees(-90.0 - 32.385)
         const val motorId: Int = 9
+        const val motor2Id: Int = 8
         const val TOLERANCE = 2.0
         const val CONVERSION_FACTOR = 1.0/16.0 * 12.0/40.0 * 360.0;
         const val ABSOLUTE_ENCODER_CONVERSION_FACTOR = 12.0/40.0 * 360.0;
@@ -97,7 +98,7 @@ object Constants {
     @JvmField
     val CHASSIS: Matter = Matter(Translation3d(0.0, 0.0, Units.inchesToMeters(8.0)), ROBOT_MASS)
     const val LOOP_TIME: Double = 0.13 //s, 20ms + 110ms sprk max velocity lag
-    val MAX_SPEED: Double = Units.feetToMeters(14.5)
+//    val MAX_SPEED: Double = 3.0
 
     val ROBOT_WIDTH: Distance = Inches.of(3.0 * 2.0 + 27.0)
 
@@ -117,7 +118,7 @@ object Constants {
         const val LEFT_X_DEADBAND = 0.05
 
         // Joystick Deadband
-        const val DEADBAND: Double = 0.15
+        const val DEADBAND: Double = 0.03
         const val LEFT_Y_DEADBAND: Double = 0.1
         const val RIGHT_X_DEADBAND: Double = 0.1
         const val TURN_CONSTANT: Double = 6.0
@@ -125,7 +126,7 @@ object Constants {
 
     object Drivebase {
         val MAX_TURNING_SPEEDS = 4.5
-        val MAX_SPEED = 5.36 * 0.95
+        val MAX_SPEED = 3.0
         val ROTATION_PID_TELEOP = PIDConstants(1.7, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
          val TRANSLATION_PID_TELEOP = PIDConstants(4.0, 0.0, 0.01)

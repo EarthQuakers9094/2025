@@ -107,10 +107,10 @@ class SwerveSubsystem : SubsystemBase {
         println("}")
 
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH
         try {
             swerveDrive = SwerveParser(directory).createSwerveDrive(
-                Constants.MAX_SPEED,
+                Constants.Drivebase.MAX_SPEED,
                 Pose2d(
                     Translation2d(
                         edu.wpi.first.units.Units.Meter.of(1.0),
@@ -156,7 +156,7 @@ class SwerveSubsystem : SubsystemBase {
         swerveDrive = SwerveDrive(
             driveCfg,
             controllerCfg,
-            Constants.MAX_SPEED,
+            Constants.Drivebase.MAX_SPEED,
             Pose2d(
                 Translation2d(edu.wpi.first.units.Units.Meter.of(2.0), edu.wpi.first.units.Units.Meter.of(0.0)),
                 Rotation2d.fromDegrees(0.0)
@@ -725,7 +725,7 @@ class SwerveSubsystem : SubsystemBase {
             headingX,
             headingY,
             heading.radians,
-            Constants.MAX_SPEED
+            Constants.Drivebase.MAX_SPEED
         )
     }
 
@@ -746,7 +746,7 @@ class SwerveSubsystem : SubsystemBase {
             scaledInputs.y,
             angle.radians,
             heading.radians,
-            Constants.MAX_SPEED
+            Constants.Drivebase.MAX_SPEED
         )
     }
 
