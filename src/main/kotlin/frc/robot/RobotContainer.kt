@@ -41,6 +41,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
 import pathPlannerToReef
 import kotlin.math.*
 import kotlin.math.PI
@@ -76,7 +77,7 @@ class RobotContainer {
         } else if (pov == 180) {
             (1.0/Constants.Drivebase.MAX_SPEED)
         } else {
-            1.0
+            3.0/4.0
         } * if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
             -1.0
         } else {
@@ -137,8 +138,8 @@ class RobotContainer {
                     Transform3d(Inches.of(10.327), Inches.of(/*11.550*/-8.289), Inches.of(6.632), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
                     PhotonCamera("ATFrontLeft"),
                     Transform3d(Inches.of(10.327), Inches.of(8.289), Inches.of(6.632), Rotation3d(0.0, 10.0 * (PI/180.0), 0.0)) ,
-                     PhotonCamera("ATBack"),
-                     Transform3d(Inches.of(-5.793), Inches.of(0.223), Inches.of(39.098), Rotation3d(0.0, 30.0 * (PI/180.0), PI)),
+//                     PhotonCamera("ATBack"),
+//                     Transform3d(Inches.of(-5.793), Inches.of(0.223), Inches.of(39.098), Rotation3d(0.0, 30.0 * (PI/180.0), PI)),
                 )
                     
             } else {
@@ -178,6 +179,7 @@ class RobotContainer {
         return ix
     }
 
+
     private fun getMagnitude(): Double {
         val x = getIntputX();
         val y = getIntputY();
@@ -200,24 +202,24 @@ class RobotContainer {
     var driveAngularVelocity: SwerveInputStream = SwerveInputStream.of(
         drivebase.swerveDrive,
         {
-            val y = driverLeftStick.getY()
+            val y = getIntputY()//driverLeftStick.getY()
             SmartDashboard.putNumber("joystick y", y)
-            val yi = y.pow(2) * y.sign * getScaleFactor() * Constants.Drivebase.MAX_SPEED;
-            driverYLimiter.calculate(abs(yi)) * yi.sign * 0.5
+            val yi = y.pow(2) * y.sign * getScaleFactor();
+            driverYLimiter.calculate(abs(yi)) * yi.sign
 //            yi * 0.5
         },
         {
-            val x = driverLeftStick.getX()
+            val x = getIntputX()//driverLeftStick.getX()
             SmartDashboard.putNumber("joystick x", x)
-            val xi = x.pow(2) * x.sign * getScaleFactor() * Constants.Drivebase.MAX_SPEED;
-            driverXLimiter.calculate(abs(xi)) * xi.sign * 0.5
+            val xi = x.pow(2) * x.sign * getScaleFactor();
+            driverXLimiter.calculate(abs(xi)) * xi.sign
 //            xi * 0.5
         }
     )
         .withControllerRotationAxis { val i = driverRotationLimiter.calculate(driverRightStick.getX());
                                         i.pow(2) * i.sign * -1.2 * 0.95 * 0.75 }
         .deadband(OperatorConstants.DEADBAND)
-        .scaleTranslation(0.8)
+        .scaleTranslation(1.0)
         .allianceRelativeControl(false)
 
     // /**
@@ -296,7 +298,11 @@ class RobotContainer {
         NamedCommands.registerCommand("l1", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L1))
         NamedCommands.registerCommand("l2", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2))
         NamedCommands.registerCommand("l3_algae", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3Algae))
+        NamedCommands.registerCommand("l2_algae", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2Algae))
+
         NamedCommands.registerCommand("score_algae", ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem))
+        NamedCommands.registerCommand("flick_algae", FlickAlgae(intakeSubsystem, armSubsystem))
+
 
         NamedCommands.registerCommand("devour_algae", DevourAlgaeCommand(intakeSubsystem, true))
         NamedCommands.registerCommand("spin_up", InstantCommand({intakeSubsystem.setVoltageAlgae(Constants.Intake.INTAKE_ALGAE)}))
@@ -304,6 +310,8 @@ class RobotContainer {
 
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
         NamedCommands.registerCommand("zero_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
+        NamedCommands.registerCommand("barge_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Barge))
+
 
         NamedCommands.registerCommand("pickup_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
@@ -313,10 +321,10 @@ class RobotContainer {
         // NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
         // NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
 
-         NamedCommands.registerCommand("align_pickup", ParallelCommandGroup(
-             gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-             pathPlannerToPickup(Inches.of(0.0), drivebase, true)
-         ))
+//         NamedCommands.registerCommand("align_pickup", ParallelCommandGroup(
+//             gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
+//             pathPlannerToPickup(Inches.of(0.0), drivebase, true)
+//         ))
 
         fun teamSelect(red: Int, blue: Int): Int {
             val alliance = DriverStation.getAlliance()
@@ -354,7 +362,9 @@ class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
             { stream: Stream<PathPlannerAuto> ->
                 if (isCompetition) {
-                    stream.filter({auto:PathPlannerAuto -> auto.getName().startsWith("comp")})
+                    stream.filter { auto: PathPlannerAuto ->
+                        DriverStation.reportWarning("generating auto ${auto.getName()}", false);
+                        auto.getName().startsWith("comp") }
                 } else {
                     stream
                 } 
@@ -442,6 +452,7 @@ class RobotContainer {
 
 
             driverRightStick.button(11).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
+            driverRightStick.button(9).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.65))
             driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.25))
             driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 0.25))
 
@@ -449,9 +460,11 @@ class RobotContainer {
 
 
             driverRightStick.button(12).onTrue(
-                gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
-                    .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170)))
-                    .andThen(MoveOutClimberCommand(grappleSubsystem)))
+                ParallelCommandGroup(
+                    gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
+                    .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
+                    MoveOutClimberCommand(grappleSubsystem)
+                    ))
 
             //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
             // driverXbox.b().whileTrue(T

@@ -6,6 +6,11 @@ import frc.robot.subsystems.ArmSubsystem
 import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.ElevatorSubsystem
 
+class FlickAlgae(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem): SequentialCommandGroup(
+    ParallelCommandGroup(
+        InstantCommand({armSubsystem.fastSetSetpoint(Constants.Poses.FullExtend.angle.degrees)}),
+        WaitUntilCommand({armSubsystem.getAngle().degrees >= -260.0})
+        .andThen(LaunchAlgaeCommand(intakeSubsystem))))
 
 // TODO: Add your sequential commands in the super constructor call,
 //       e.g. ParallelCommandGroup(OpenClawCommand(), MoveArmCommand())
@@ -14,11 +19,8 @@ class ScoreAlgae(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem, e
 //                            WaitCommand(0.8).andThen(LaunchAlgaeCommand(intakeSubsystem)))
     :SequentialCommandGroup(
         gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Barge),
-        WaitCommand(2.0),
-        ParallelCommandGroup(InstantCommand({armSubsystem.fastSetSetpoint(Constants.Poses.FullExtend.angle.degrees)}),
-                             WaitCommand(0.25)
-//                                 .WaitUntilCommand({armSubsystem.getAngle().degrees >= -180.0 - 45.0 - 20.0})
-                                     .andThen(LaunchAlgaeCommand(intakeSubsystem)))
+        WaitCommand(0.5),
+        FlickAlgae(intakeSubsystem, armSubsystem))
 
 
 //        gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend),
@@ -27,5 +29,5 @@ class ScoreAlgae(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem, e
 //                            Commands.waitUntil({armSubsystem.getAngle().degrees <= -190.0})
 //                                .andThen(LaunchAlgaeCommand(intakeSubsystem)))
 
-        )
+
 

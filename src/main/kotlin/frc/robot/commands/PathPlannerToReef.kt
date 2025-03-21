@@ -29,7 +29,7 @@ val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWel
 fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean, back: Boolean): Command{
     return DeferredCommand({
         val constraints = PathConstraints(
-            Constants.Drivebase.MAX_SPEED, 1.0,
+            Constants.Drivebase.MAX_SPEED, 1.5,
             Units.degreesToRadians(540.0), Units.degreesToRadians(720.0)
         );
 

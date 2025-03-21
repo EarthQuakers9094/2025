@@ -36,27 +36,54 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "backup and grab algae"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "devour_algae"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "backup and grab algae"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "devour_algae"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "go to barge"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "go to barge"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "score_algae"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "backup barge"
+                }
+              }
+            ]
           }
         }
       ]

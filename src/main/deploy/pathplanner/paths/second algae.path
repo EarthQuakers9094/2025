@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.735921717171717,
-        "y": 4.014835858585858
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.476405454104889,
-        "y": 4.405978218653157
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 7.402840909090909,
         "y": 5.437815656565656
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.244128787878787,
+        "y": 5.559785353535352
+      },
+      "isLocked": false,
+      "linkedName": "barge toss"
+    },
+    {
+      "anchor": {
+        "x": 5.0955808080808085,
+        "y": 5.092234848484848
+      },
       "prevControl": {
-        "x": 6.345770202020201,
-        "y": 5.437815656565656
+        "x": 5.532638888888891,
+        "y": 5.803724747474747
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "barge toss"
+      "linkedName": "algae 2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.55,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": -116.39933716478424
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.4961059190031157,
+      "minWaypointRelativePos": 0.44781931464174646,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -52,13 +52,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "barge_pose",
-      "waypointRelativePos": 0.55,
+      "name": "l3_algae",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "barge_pose"
+          "name": "l3_algae"
         }
       }
     }
@@ -73,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -118.44292862436338
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.7572227262332
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

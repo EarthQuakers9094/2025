@@ -33,7 +33,7 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
 
     }
 
-    class VisionRealIO(val swerveSubsystem: SwerveSubsystem, val frontLeftCamera: PhotonCamera, val frontLeftOffset: Transform3d, val frontRightCamera: PhotonCamera, val frontRightOffset: Transform3d, val backCenterCamera: PhotonCamera, val backCenterOffset: Transform3d):VisionIO {
+    class VisionRealIO(val swerveSubsystem: SwerveSubsystem, val frontLeftCamera: PhotonCamera, val frontLeftOffset: Transform3d, val frontRightCamera: PhotonCamera, val frontRightOffset: Transform3d):VisionIO {
 
         private var cameraResults = HashMap<String, MutableList<PhotonPipelineResult>>()
         private var readResults = HashMap<String,Boolean>()
@@ -47,11 +47,11 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
             PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY,
             frontRightOffset
         )
-        private var backCenterPoseEstimator = PhotonPoseEstimator(
-            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded),
-            PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY,
-            backCenterOffset
-        )
+//        private var backCenterPoseEstimator = PhotonPoseEstimator(
+//            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded),
+//            PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY,
+//            backCenterOffset
+//        )
 
         override fun periodic() {
             //cameraResults = HashMap()
@@ -81,10 +81,10 @@ class VisionSubsystem(val io: VisionIO): SubsystemBase() {
                 val pose = frontRightPoseEstimator.update(it).getOrNull()
                 pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(2.0, 2.0, 1.0)) }
             }
-            backCenterCamera.allUnreadResults.lastOrNull()?.let {
-                val pose = backCenterPoseEstimator.update(it).getOrNull()
-                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 1.0)) }
-            }
+//            backCenterCamera.allUnreadResults.lastOrNull()?.let {
+//                val pose = backCenterPoseEstimator.update(it).getOrNull()
+//                pose?.let { swerveSubsystem.swerveDrive.addVisionMeasurement(it.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 1.0)) }
+//            }
 
             //this.getFrontCameras().map { it.camera.allUnreadResults }
         }

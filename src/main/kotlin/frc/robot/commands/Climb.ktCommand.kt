@@ -10,7 +10,7 @@ class RetractClimber(private val grapplingSubsystem: GrapplingSubsystem, private
     }
 
     override fun initialize() {
-        grapplingSubsystem.setoutput(-1.0)
+        grapplingSubsystem.setoutput(-0.65)
     }
 
     override fun execute() {}
