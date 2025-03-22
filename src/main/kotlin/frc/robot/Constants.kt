@@ -87,8 +87,8 @@ object Constants {
         const val MOTOR = 61;
         const val OUTPUT_L1: Double = 0.3
         const val OUTPUT_L2NEW: Double = 0.6
-        const val OUTPUT_L2: Double = 0.5
-        const val OUTPUT_L3: Double = 0.5
+        const val OUTPUT_L2: Double = 0.4
+        const val OUTPUT_L3: Double = 0.4
         const val OUTPUT_L4: Double = 0.8
         const val L1OUTPUT: Double = 0.5
         const val STOP_CURRENT: Double = 40.0
@@ -135,8 +135,11 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-8.25);
-        val RIGHT_OFFSET = Inches.of(6.00);
+        val LEFT_OFFSET = Inches.of(-5.75);
+        val RIGHT_OFFSET = Inches.of(6.75);
+//        val LEFT_OFFSET = Inches.of(-6.5);
+//        val RIGHT_OFFSET = Inches.of(6.5);
+
 
     }
 
@@ -192,7 +195,7 @@ object Constants {
         );
 
         val Pickup = Pose(
-            Meters.of(0.049) + Inches.of(2.5 - 0.125),
+            Meters.of(0.049) + Inches.of(3.0 - 0.125 ),
             Rotation2d.fromDegrees(-68.0),
             "pickup"
         );

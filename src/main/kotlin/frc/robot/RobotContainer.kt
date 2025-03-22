@@ -456,6 +456,8 @@ class RobotContainer {
             driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.25))
             driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 0.25))
 
+            driverLeftStick.button(10).onTrue(InstantCommand({ grappleSubsystem.hold() }))
+
             driverRightStick.button(7).onTrue(RetractClimber(grappleSubsystem, 5.0))
 
 

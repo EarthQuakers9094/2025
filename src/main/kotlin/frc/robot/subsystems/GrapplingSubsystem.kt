@@ -33,6 +33,9 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
     fun getSetpoint(): Double {
         return setpoint
+    }
+
+    fun hold() {
 
     }
 
@@ -51,6 +54,7 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
         fun periodic();
         fun getAngle(): Double;
         fun setOutput(output: Double);
+        fun hold();
     }
 
     class GrapplingNeoIO(motor_id: Int, motor2_id: Int):GrapplingIO {
@@ -64,13 +68,15 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
-                    .idleMode(IdleMode.kBrake),
+                    .idleMode(IdleMode.kBrake)
+                    .apply(ClosedLoopConfig().p(0.0001).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
             motor2.configure(
                 SparkMaxConfig()
-                    .idleMode(IdleMode.kBrake).follow(motor_id, true),
+                    .idleMode(IdleMode.kBrake).follow(motor_id, true)
+                    .apply(ClosedLoopConfig().p(0.0001).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
@@ -90,6 +96,10 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
         override fun setOutput(output: Double) {
             motor.set(output)
+        }
+
+        override fun hold() {
+            motor.closedLoopController.setReference(getAngle(), SparkBase.ControlType.kPosition)
         }
     }
 
@@ -111,6 +121,10 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
         override fun setOutput(output: Double) {
             TODO("testing robot probaly never going to be implemented")
+        }
+
+        override fun hold() {
+            TODO("Not yet implemented")
         }
     }
 }
