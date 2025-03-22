@@ -43,7 +43,7 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
 
                 val yaw = rotation.z;
 
-                val fakeWidth = Constants.ROBOT_WIDTH - Inches.of(2.0 + 0.5) - Inches.of(8.0)
+                val fakeWidth = Constants.ROBOT_WIDTH - Inches.of(2.0/* + 0.5*/) - Inches.of(8.0)
 
                 val xoffset: Distance = offset.times(-sin(yaw)) + fakeWidth.times(cos(yaw)/2.0)
                 val yoffset: Distance = offset.times(cos(yaw)) + fakeWidth.times(sin(yaw)/2.0)
