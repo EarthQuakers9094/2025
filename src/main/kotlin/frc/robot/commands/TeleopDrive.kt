@@ -49,7 +49,7 @@ public class TeleopDrive(
         addRequirements(swerve)
         rotationPid.enableContinuousInput(-Math.PI, Math.PI)
 
-        SmartDashboard.putData("turning pid", rotationPid)
+        // SmartDashboard.putData("turning pid", rotationPid)
         rotationPid.enableContinuousInput(-Math.PI, Math.PI)
     }
 

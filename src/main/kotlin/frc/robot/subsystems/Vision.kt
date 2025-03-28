@@ -314,8 +314,8 @@ class Vision
         /**
          * Latency alert to use when high latency is detected.
          */
-        val latencyAlert: Alert =
-            Alert("'$name' Camera is experiencing high latency.", AlertType.kWarning)
+        // val latencyAlert: Alert =
+        //     Alert("'$name' Camera is experiencing high latency.", AlertType.kWarning)
 
         /**
          * Camera instance for comms.

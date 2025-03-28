@@ -83,7 +83,7 @@ object Constants {
         const val MOTOR2 = 62;
         const val INTAKE: Double = -0.45
         const val INTAKE_ALGAE: Double = 11.0
-        const val OUTPUT_ALGAE: Double = -11.0
+        const val OUTPUT_ALGAE: Double = -9.0
         const val MOTOR = 61;
         const val OUTPUT_L1: Double = 0.3
         const val OUTPUT_L2NEW: Double = 0.6
@@ -135,8 +135,8 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-5.75);
-        val RIGHT_OFFSET = Inches.of(6.75);
+        val LEFT_OFFSET = Inches.of(-5.25);
+        val RIGHT_OFFSET = Inches.of(7.0);
 //        val LEFT_OFFSET = Inches.of(-6.5);
 //        val RIGHT_OFFSET = Inches.of(6.5);
 

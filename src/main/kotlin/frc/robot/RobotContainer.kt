@@ -460,8 +460,14 @@ class RobotContainer {
 
             driverRightStick.button(7).onTrue(RetractClimber(grappleSubsystem, 5.0))
 
-
             driverRightStick.button(12).onTrue(
+                ParallelCommandGroup(
+                    gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
+                        .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
+                    MoveOutClimberCommand(grappleSubsystem)
+                ))
+
+            driverLeftStick.button(12).onTrue(
                 ParallelCommandGroup(
                     gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
                     .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
