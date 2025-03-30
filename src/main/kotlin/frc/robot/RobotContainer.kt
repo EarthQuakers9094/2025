@@ -164,6 +164,9 @@ class RobotContainer {
         if (lastUpdatedInputs != frame) {
             iy = driverLeftStick.getY()
             ix = driverLeftStick.getX()
+            val hypot = min(iy.pow(2.0) + ix.pow(2.0), 1.0)
+            val angle = atan2(iy, ix)
+            iy = abs(sin(angle) * hypot) * iy.sign
 
         }
 
@@ -173,8 +176,11 @@ class RobotContainer {
         if (lastUpdatedInputs != frame) {
             iy = driverLeftStick.getY()
             ix = driverLeftStick.getX()
-
+            val hypot = min((iy.pow(2.0) + ix.pow(2.0)), 1.0)
+            val angle = atan2(iy, ix)
+            ix = abs(cos(angle) * hypot) * ix.sign
         }
+
 
         return ix
     }
@@ -204,14 +210,14 @@ class RobotContainer {
         {
             val y = getIntputY()//driverLeftStick.getY()
             SmartDashboard.putNumber("joystick y", y)
-            val yi = y.pow(2) * y.sign * getScaleFactor();
+            val yi = y * /*y.sign */getScaleFactor();
             driverYLimiter.calculate(abs(yi)) * yi.sign
 //            yi * 0.5
         },
         {
             val x = getIntputX()//driverLeftStick.getX()
             SmartDashboard.putNumber("joystick x", x)
-            val xi = x.pow(2) * x.sign * getScaleFactor();
+            val xi = x * /*x.sign * */getScaleFactor();
             driverXLimiter.calculate(abs(xi)) * xi.sign
 //            xi * 0.5
         }
@@ -484,9 +490,18 @@ class RobotContainer {
             // driverXbox.start().whileTrue(Commands.none())
             // driverXbox.back().whileTrue(Commands.none())
             //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-             driverRightStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.RIGHT_OFFSET, {getSelectedTag()}, drivebase, false))
-             driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET, {getSelectedTag()}, drivebase, false))
-             driverRightStick.button(2).whileTrue(pathPlannerToReef(Inches.of(0.0), {getSelectedTag()},drivebase, false))
+             driverRightStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.RIGHT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
+             driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
+             driverRightStick.button(2).whileTrue(pathPlannerToReef(Inches.of(0.0)/*, {getSelectedTag()}*/,drivebase, false))
+
+            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.25))
+            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.25))
+
+            driverRightStick.button(3).whileTrue(InstantCommand({drivebase.drive(null, 0.1, false)}))
+            driverRightStick.button(4).whileTrue(InstantCommand({drivebase.drive(null, -0.1, false)}))
+
+
+
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
             driverLeftStick.button(2).whileTrue(ParallelCommandGroup(

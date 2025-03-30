@@ -21,10 +21,15 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.math.sin
 import kotlin.math.cos
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
+
+
 
 fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean, back: Boolean): Command{
     return DeferredCommand({
@@ -32,6 +37,7 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
             Constants.Drivebase.MAX_SPEED, 1.5,
             Units.degreesToRadians(540.0), Units.degreesToRadians(720.0)
         );
+        //val sideTags = DriverStation.getAlliance() == Alliance.
 
         val location = fieldLayout.getTagPose(tag()).getOrNull()
 
@@ -72,6 +78,22 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
 
 fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
     return pathPlannerToTag(offset, tag, swerveSubsystem, autoEnd, false)
+}
+
+fun pathPlannerToReef(offset: Distance, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
+    return DeferredCommand({
+        val sideTags = if (DriverStation.getAlliance().getOrNull() == Alliance.Red) {
+            kotlin.collections.listOf(6,7,8,9,10,11)
+        } else {
+            kotlin.collections.listOf(17,18,19,20,21,22)
+        }
+        val tag = sideTags.map {
+            val translation = (fieldLayout.getTagPose(it).getOrNull()!!.toPose2d() - swerveSubsystem.pose).translation
+            return@map it to sqrt(translation.x.pow(2) + translation.y.pow(2))
+        }.minByOrNull { it.second }!!.first
+        pathPlannerToTag(offset, {tag}, swerveSubsystem, autoEnd, false)
+    },setOf(swerveSubsystem))
+
 }
 
 fun pathPlannerToPickup(offset: Distance, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
