@@ -531,7 +531,7 @@ class RobotContainer {
 //
 //            )
             driverRightStick.button(2).whileTrue(
-                RepeatCommand(InstantCommand({n
+                RepeatCommand(InstantCommand({
                     val tag = getClosestPickupTag(drivebase)
                     val location = fieldLayout.getTagPose(tag).getOrNull()
                     faceAngle = location?.rotation?.z
