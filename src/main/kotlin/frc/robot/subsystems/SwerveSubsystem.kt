@@ -107,10 +107,10 @@ class SwerveSubsystem : SubsystemBase {
         println("}")
 
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH
         try {
             swerveDrive = SwerveParser(directory).createSwerveDrive(
-                Constants.MAX_SPEED,
+                Constants.Drivebase.MAX_SPEED,
                 Pose2d(
                     Translation2d(
                         edu.wpi.first.units.Units.Meter.of(1.0),
@@ -156,7 +156,7 @@ class SwerveSubsystem : SubsystemBase {
         swerveDrive = SwerveDrive(
             driveCfg,
             controllerCfg,
-            Constants.MAX_SPEED,
+            Constants.Drivebase.MAX_SPEED,
             Pose2d(
                 Translation2d(edu.wpi.first.units.Units.Meter.of(2.0), edu.wpi.first.units.Units.Meter.of(0.0)),
                 Rotation2d.fromDegrees(0.0)
@@ -174,13 +174,15 @@ class SwerveSubsystem : SubsystemBase {
     override fun periodic() {
 
         SmartDashboard.putNumber("current robot yaw", this.heading.degrees)
-        SmartDashboard.putData("robot location x", this.swerveDrive.field)
+        this.swerveDrive.field.robotPose = swerveDrive.pose
+        // SmartDashboard.putData("robot location x", this.swerveDrive.field)
 
         // When vision is enabled we must manually update odometry in SwerveDrive
         if (visionDriveTest) {
             swerveDrive.updateOdometry()
             vision!!.updatePoseEstimation(swerveDrive)
         }
+
     }
 
     override fun simulationPeriodic() {
@@ -214,8 +216,8 @@ class SwerveSubsystem : SubsystemBase {
                     }
                 },  // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    PIDConstants(2.5, 0.0, 0.0),  // Translation PID constants
-                    PIDConstants(0.07, 0.0, 0.0) // Rotation PID constants
+                    Constants.Drivebase.TRANSLATION_PID_TELEOP,  // Translation PID constants
+                    Constants.Drivebase.ROTATION_PID_TELEOP // Rotation PID constants
                 ),
                 config,  // The robot configuration
                 {
@@ -723,7 +725,7 @@ class SwerveSubsystem : SubsystemBase {
             headingX,
             headingY,
             heading.radians,
-            Constants.MAX_SPEED
+            Constants.Drivebase.MAX_SPEED
         )
     }
 
@@ -744,7 +746,7 @@ class SwerveSubsystem : SubsystemBase {
             scaledInputs.y,
             angle.radians,
             heading.radians,
-            Constants.MAX_SPEED
+            Constants.Drivebase.MAX_SPEED
         )
     }
 
