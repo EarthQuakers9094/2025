@@ -37,15 +37,21 @@ import java.util.stream.Stream
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
 import VisionSubsystem
+import closestTag
 import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
+import edu.wpi.first.wpilibj2.command.RepeatCommand
+import fieldLayout
+import frc.robot.utils.PIDController
+import getClosestPickupTag
 import pathPlannerToReef
 import kotlin.math.*
 import kotlin.math.PI
 import pathPlannerToPickup
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -199,6 +205,10 @@ class RobotContainer {
         return round(rawAngle/ Math.PI * 6.0) * Math.PI / 6.0
     }
 
+    var faceAngle: Double? = null
+
+    val rotationPid = PIDController(Constants.Drivebase.ROTATION_PID_TELEOP)
+
     // /**
     //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
     //  */
@@ -222,8 +232,14 @@ class RobotContainer {
 //            xi * 0.5
         }
     )
-        .withControllerRotationAxis { val i = driverRotationLimiter.calculate(driverRightStick.getX());
-                                        i.pow(2) * i.sign * -1.2 * 0.95 * 0.75 }
+        .withControllerRotationAxis {
+            if (faceAngle != null) {
+                rotationPid.calculate(drivebase.heading.degrees, faceAngle!!)
+            } else {
+                val i = driverRotationLimiter.calculate(driverRightStick.getX());
+                i.pow(2) * i.sign * -1.2 * 0.95 * 0.75
+            }
+        }
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(1.0)
         .allianceRelativeControl(false)
@@ -480,6 +496,18 @@ class RobotContainer {
                     MoveOutClimberCommand(grappleSubsystem)
                     ))
 
+            driverRightStick.button(3).whileTrue(
+                RepeatCommand(InstantCommand({
+                    val tag = closestTag(drivebase)
+                    val location = fieldLayout.getTagPose(tag).getOrNull()
+                    faceAngle = location?.rotation?.z
+                })).finallyDo({ a ->
+                    faceAngle = null;
+                })
+            )
+
+
+
             //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
             // driverXbox.b().whileTrue(T
             //     drivebase.driveToPose(
@@ -497,17 +525,20 @@ class RobotContainer {
             driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.25))
             driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.25))
 
-            driverRightStick.button(3).whileTrue(InstantCommand({drivebase.drive(null, 0.1, false)}))
-            driverRightStick.button(4).whileTrue(InstantCommand({drivebase.drive(null, -0.1, false)}))
-
-
-
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
-            driverLeftStick.button(2).whileTrue(ParallelCommandGroup(
-                gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-                pathPlannerToPickup(Inches.of(0.0), drivebase, false)
-            ))
+//            driverLeftStick.button(2).whileTrue(
+//
+//            )
+            driverRightStick.button(2).whileTrue(
+                RepeatCommand(InstantCommand({n
+                    val tag = getClosestPickupTag(drivebase)
+                    val location = fieldLayout.getTagPose(tag).getOrNull()
+                    faceAngle = location?.rotation?.z
+                })).finallyDo({ a ->
+                    faceAngle = null;
+                })
+            )
 
 //            driverLeftStick.button(7).onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
 

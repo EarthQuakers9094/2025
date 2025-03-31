@@ -80,39 +80,48 @@ fun pathPlannerToReef(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveS
     return pathPlannerToTag(offset, tag, swerveSubsystem, autoEnd, false)
 }
 
+fun closestTag(swerveSubsystem: SwerveSubsystem): Int {
+    val sideTags = if (DriverStation.getAlliance().getOrNull() == Alliance.Red) {
+        kotlin.collections.listOf(6,7,8,9,10,11)
+    } else {
+        kotlin.collections.listOf(17,18,19,20,21,22)
+    }
+
+    return sideTags.map {
+        val translation = (fieldLayout.getTagPose(it).getOrNull()!!.toPose2d() - swerveSubsystem.pose).translation
+        return@map it to sqrt(translation.x.pow(2) + translation.y.pow(2))
+    }.minByOrNull { it.second }!!.first
+}
+
 fun pathPlannerToReef(offset: Distance, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
     return DeferredCommand({
-        val sideTags = if (DriverStation.getAlliance().getOrNull() == Alliance.Red) {
-            kotlin.collections.listOf(6,7,8,9,10,11)
-        } else {
-            kotlin.collections.listOf(17,18,19,20,21,22)
-        }
-        val tag = sideTags.map {
-            val translation = (fieldLayout.getTagPose(it).getOrNull()!!.toPose2d() - swerveSubsystem.pose).translation
-            return@map it to sqrt(translation.x.pow(2) + translation.y.pow(2))
-        }.minByOrNull { it.second }!!.first
+        val tag = closestTag(swerveSubsystem)
         pathPlannerToTag(offset, {tag}, swerveSubsystem, autoEnd, false)
     },setOf(swerveSubsystem))
 
 }
 
+fun getClosestPickupTag(swerveSubsystem: SwerveSubsystem): Int {
+    val upperSide = swerveSubsystem.pose.measureY.`in`(Meters) >= 4.0;
+    return if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Red)) {
+        if (upperSide) {
+            2
+        } else {
+            1
+        }
+    } else {
+        if (upperSide) {
+            13
+        } else {
+            12
+        }
+    }
+}
+
 fun pathPlannerToPickup(offset: Distance, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean): Command {
     return pathPlannerToTag(offset, 
         {
-            val upperSide = swerveSubsystem.pose.measureY.`in`(Meters) >= 4.0;
-            if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Red)) {
-                if (upperSide) {
-                    2
-                } else {
-                    1
-                }
-            } else {
-                if (upperSide) {
-                    13
-                } else {
-                    12
-                }
-            }
+            getClosestPickupTag(swerveSubsystem)
         }, swerveSubsystem, autoEnd, true)
 }
 
