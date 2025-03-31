@@ -234,7 +234,9 @@ class RobotContainer {
     )
         .withControllerRotationAxis {
             if (faceAngle != null) {
-                rotationPid.calculate(drivebase.heading.degrees, faceAngle!! * 180.0/ Math.PI)
+                SmartDashboard.putNumber("desired drivebase angle", faceAngle!! * 180.0/ Math.PI);
+                SmartDashboard.putNumber("current drivebase angle", drivebase.heading.degrees)
+                -rotationPid.calculate(drivebase.heading.degrees, faceAngle!! * 180.0/ Math.PI) / Constants.Drivebase.MAX_TURNING_SPEEDS
             } else {
                 val i = driverRotationLimiter.calculate(driverRightStick.getX());
                 i.pow(2) * i.sign * -1.2 * 0.95 * 0.75
