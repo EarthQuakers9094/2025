@@ -135,8 +135,8 @@ object Constants {
     }
 
     object Field {
-        val LEFT_OFFSET = Inches.of(-5.25);
-        val RIGHT_OFFSET = Inches.of(7.0);
+        var LEFT_OFFSET = Inches.of(-5.25);
+        var RIGHT_OFFSET = Inches.of(7.0);
 //        val LEFT_OFFSET = Inches.of(-6.5);
 //        val RIGHT_OFFSET = Inches.of(6.5);
 

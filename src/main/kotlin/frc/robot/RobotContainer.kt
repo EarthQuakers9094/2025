@@ -314,6 +314,15 @@ class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true)
 
 
+        SmartDashboard.putNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches))
+        SmartDashboard.putNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches))
+        SmartDashboard.putData("Update field offset configuration", InstantCommand({
+            Constants.Field.LEFT_OFFSET = Inches.of(SmartDashboard.getNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches)))
+            Constants.Field.RIGHT_OFFSET = Inches.of(SmartDashboard.getNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches)))
+            SmartDashboard.putNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches))
+            SmartDashboard.putNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches))
+        }))
+
 
         NamedCommands.registerCommand("launch_coral", launch_coral(intakeSubsystem,armSubsystem,elevatorSubsystem))
         NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem, true))
@@ -531,7 +540,7 @@ class RobotContainer {
 //
 //            )
             driverRightStick.button(2).whileTrue(
-                RepeatCommand(InstantCommand({n
+                RepeatCommand(InstantCommand({
                     val tag = getClosestPickupTag(drivebase)
                     val location = fieldLayout.getTagPose(tag).getOrNull()
                     faceAngle = location?.rotation?.z
