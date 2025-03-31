@@ -234,7 +234,7 @@ class RobotContainer {
     )
         .withControllerRotationAxis {
             if (faceAngle != null) {
-                rotationPid.calculate(drivebase.heading.degrees, faceAngle!!)
+                rotationPid.calculate(drivebase.heading.degrees, faceAngle!! * 180.0/ Math.PI)
             } else {
                 val i = driverRotationLimiter.calculate(driverRightStick.getX());
                 i.pow(2) * i.sign * -1.2 * 0.95 * 0.75
@@ -314,6 +314,15 @@ class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true)
 
 
+        SmartDashboard.putNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches))
+        SmartDashboard.putNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches))
+        SmartDashboard.putData("Update field offset configuration", InstantCommand({
+            Constants.Field.LEFT_OFFSET = Inches.of(SmartDashboard.getNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches)))
+            Constants.Field.RIGHT_OFFSET = Inches.of(SmartDashboard.getNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches)))
+            SmartDashboard.putNumber("LEFT_OFFSET_INCHES", Constants.Field.LEFT_OFFSET.`in`(Inches))
+            SmartDashboard.putNumber("RIGHT_OFFSET_INCHES", Constants.Field.RIGHT_OFFSET.`in`(Inches))
+        }))
+
 
         NamedCommands.registerCommand("launch_coral", launch_coral(intakeSubsystem,armSubsystem,elevatorSubsystem))
         NamedCommands.registerCommand("devour_coral", DevourCoralCommand(intakeSubsystem, true))
@@ -337,6 +346,8 @@ class RobotContainer {
 
         NamedCommands.registerCommand("pickup_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
+
+        rotationPid.enableContinuousInput(-180.0, 180.0)
 
         // NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
         // NamedCommands.registerCommand("align_second", alignReefSelect(drivebase, visionSubsystem, "align_second_left"));
