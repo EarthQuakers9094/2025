@@ -127,9 +127,9 @@ object Constants {
     object Drivebase {
         val MAX_TURNING_SPEEDS = 4.5 * 0.9
         val MAX_SPEED = 4.0
-        val ROTATION_PID_TELEOP = PIDConstants(1.7, 0.0, 0.0)
+        val ROTATION_PID_TELEOP = PIDConstants(2.4, 0.0, 0.5)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
-         val TRANSLATION_PID_TELEOP = PIDConstants(4.0, 0.0, 0.01)
+         val TRANSLATION_PID_TELEOP = PIDConstants(2.3, 0.0, 0.2)
         val REEF_TRANSLATION_PID_TELEOP = PIDConstants(2.0, 0.0, 0.008)
 
     }
@@ -210,6 +210,12 @@ object Constants {
         val Barge = Pose(
             Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
             Rotation2d.fromDegrees(-290.00),
+            "barge"
+        );
+
+        val Barge2 = Pose(
+            Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
+            Rotation2d.fromDegrees(-260.00),
             "barge"
         );
         

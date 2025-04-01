@@ -541,8 +541,8 @@ class RobotContainer {
              driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
              driverRightStick.button(2).whileTrue(pathPlannerToReef(Inches.of(0.0)/*, {getSelectedTag()}*/,drivebase, false))
 
-            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.1))
-            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.1))
+            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.15))
+            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.15))
 
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
