@@ -125,8 +125,8 @@ object Constants {
     }
 
     object Drivebase {
-        val MAX_TURNING_SPEEDS = 4.5
-        val MAX_SPEED = 5.0
+        val MAX_TURNING_SPEEDS = 4.5 * 0.9
+        val MAX_SPEED = 4.0
         val ROTATION_PID_TELEOP = PIDConstants(1.7, 0.0, 0.0)
         //val LATERAL_PID_TELEOP = PIDConstants(2.5, 0.0, 0.0)
          val TRANSLATION_PID_TELEOP = PIDConstants(4.0, 0.0, 0.01)

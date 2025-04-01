@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
 import edu.wpi.first.wpilibj2.command.RepeatCommand
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import fieldLayout
 import frc.robot.utils.PIDController
 import getClosestPickupTag
@@ -472,8 +473,13 @@ class RobotContainer {
             // }))
         }
         if (DriverStation.isTest()) {
-            //drivebase.defaultCommand = driveFieldOrientedAnglularVelocity // Overrides drive command above!
-
+            driverLeftStick.button(1).onTrue(InstantCommand({drivebase.drive(Translation2d(1.0, 0.0), 0.0, false)}, drivebase)
+                .andThen(WaitCommand(1.0))
+                .andThen(InstantCommand({drivebase.drive(Translation2d(0.0, 1.0), 0.0, false)}))) // Overrides drive command above!
+            driverRightStick.button(1).whileTrue(
+                InstantCommand({drivebase.drive(Translation2d(0.5 * Constants.Drivebase.MAX_SPEED, 0.0), 0.0, false)}, drivebase)
+                    .andThen(WaitCommand(1.0))
+                    .andThen(InstantCommand({drivebase.drive(Translation2d(0.0, 0.0), 0.0, false)}, drivebase)))
             // driverXbox.b().whileTrue(drivebase.sysIdAngleMotorCommand())
             // driverXbox.x().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
             // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2))
@@ -535,8 +541,8 @@ class RobotContainer {
              driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
              driverRightStick.button(2).whileTrue(pathPlannerToReef(Inches.of(0.0)/*, {getSelectedTag()}*/,drivebase, false))
 
-            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.25))
-            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.25))
+            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.1))
+            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.1))
 
 //            driverLeftStick.button(2).onTrue(InstantCommand { })
 
