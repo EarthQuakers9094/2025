@@ -23,13 +23,48 @@ import kotlin.math.cos
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import frc.robot.utils.PIDController
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 
 val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
 
+class PidToPosition(private val pose: Pose2d, private val swerveSubsystem: SwerveSubsystem): Command() {
+    val xpid = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
+    val ypid = PIDController(Constants.Drivebase.TRANSLATION_PID_TELEOP)
+    val rpid = PIDController(Constants.Drivebase.ROTATION_PID_TELEOP)
 
+    init {
+        addRequirements(swerveSubsystem)
+
+        rpid.enableContinuousInput(-180.0, 180.0)
+    }
+
+    override fun execute() {
+        val loc = swerveSubsystem.pose;
+        val xi = xpid.calculate(loc.x, pose.x)
+
+        SmartDashboard.putNumber("drivebase current x", loc.x);
+        SmartDashboard.putNumber("drivebase desired x", pose.x);
+
+
+        val yi = ypid.calculate(loc.y, pose.y)
+
+        SmartDashboard.putNumber("drivebase current y", loc.y)
+        SmartDashboard.putNumber("drivebase desired y", pose.y)
+
+        val cr = if (loc.rotation.degrees < 0.0) {loc.rotation.degrees + 360.0} else {loc.rotation.degrees}
+        val dr = if (pose.rotation.degrees < 0.0) {pose.rotation.degrees + 360.0} else {pose.rotation.degrees}
+
+//        val ri = rpid.calculate(cr, dr)
+
+        SmartDashboard.putNumber("drivebase current r", cr)
+        SmartDashboard.putNumber("drivebase desired r", dr)
+
+        swerveSubsystem.drive(Translation2d(xi,yi), 0.0, true)
+    }
+}
 
 fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSubsystem, autoEnd: Boolean, back: Boolean): Command{
     return DeferredCommand({
@@ -49,7 +84,7 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
 
                 val yaw = rotation.z;
 
-                val fakeWidth = Constants.ROBOT_WIDTH - Inches.of(2.0/* + 0.5*/) - Inches.of(8.0)
+                val fakeWidth = Constants.ROBOT_WIDTH - Inches.of(3.0/* + 0.5*/) - Inches.of(8.0)
 
                 val xoffset: Distance = offset.times(-sin(yaw)) + fakeWidth.times(cos(yaw)/2.0)
                 val yoffset: Distance = offset.times(cos(yaw)) + fakeWidth.times(sin(yaw)/2.0)
@@ -58,18 +93,19 @@ fun pathPlannerToTag(offset: Distance, tag: () -> Int, swerveSubsystem: SwerveSu
                     xoffset + location.measureX,
                     yoffset + location.measureY);
 
+                val endPose = Pose2d(
+                    position,
+                    Rotation2d(yaw + if (back) {0.0} else {Math.PI}))
+
 
                 //SmartDashboard.putNumber("yoffset (inches)", yoffset.`in`(Inches))
-                val end = AutoBuilder.pathfindToPose(
-                    Pose2d(
-                        position,
-                        Rotation2d(yaw + if (back) {0.0} else {Math.PI})),
+                val end = AutoBuilder.pathfindToPose(endPose,
                     constraints);
 
                 if (autoEnd) {
                     end
                 } else {
-                    end.andThen(WaitCommand(360.0))
+                    end.andThen(PidToPosition(endPose, swerveSubsystem))
                 }
             }
         }

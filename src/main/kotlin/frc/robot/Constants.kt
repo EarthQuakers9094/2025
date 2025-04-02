@@ -34,7 +34,7 @@ object Constants {
         val MAX_VEL = 1.5;
         val MAX_ACELERATION = 2.5;
 
-        val MAX_HEIGHT = Meters.of(0.800) + Inches.of(1.0 - 0.125)//Meters.of(71.25 - 39.25)
+        val MAX_HEIGHT = Meters.of(0.816)//Meters.of(71.25 - 39.25)
 
         // TODO FIND THE RIGHT HEIGHTS val COLLISION_HEIGHT_LOW = Distance.ofBaseUnits(0.2, edu.wpi.first.units.Units.Meters)
         val COLLISION_HEIGHT_HIGH: Distance = Inches.of(53.0 - 39.25)
@@ -83,7 +83,7 @@ object Constants {
         const val MOTOR2 = 62;
         const val INTAKE: Double = -0.45
         const val INTAKE_ALGAE: Double = 11.0
-        const val OUTPUT_ALGAE: Double = -9.0
+        const val OUTPUT_ALGAE: Double = -12.0
         const val MOTOR = 61;
         const val OUTPUT_L1: Double = 0.3
         const val OUTPUT_L2NEW: Double = 0.6
@@ -208,10 +208,18 @@ object Constants {
         );
 
         val Barge = Pose(
-            Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),
-            Rotation2d.fromDegrees(-290.00),
+            Meters.of(0.0),
+//            Constants.Elevator.MAX_HEIGHT - Meters.of(0.66666),// - Inches.of(3.0),
+            Constants.Arm.SAFE_ANGLE - Rotation2d.fromDegrees(15.0),
             "barge"
         );
+        val BargePrep = Pose(
+            Meters.of(0.0),
+//            Constants.Elevator.MAX_HEIGHT - Meters.of(0.66666),// - Inches.of(3.0),
+            Constants.Arm.SAFE_ANGLE - Rotation2d.fromDegrees(15.0),
+            "bargeprep"
+        );
+
 
         val Barge2 = Pose(
             Constants.Elevator.MAX_HEIGHT,// - Inches.of(3.0),

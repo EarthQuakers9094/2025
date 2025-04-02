@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.402840909090909,
-        "y": 5.437815656565656
+        "x": 7.341856060606061,
+        "y": 5.559785353535354
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.244128787878787,
-        "y": 5.559785353535352
+        "x": 6.18314393939394,
+        "y": 5.68175505050505
       },
       "isLocked": false,
       "linkedName": "barge toss"
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.6528599605522665,
       "rotationDegrees": -116.39933716478424
     }
   ],

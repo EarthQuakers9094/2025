@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "get close center"
+            "pathName": "fake path center"
           }
         },
         {
@@ -96,18 +96,6 @@
           "type": "path",
           "data": {
             "pathName": "goto barge from second"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "flick_algae"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "backup barge"
           }
         }
       ]

@@ -240,7 +240,7 @@ class RobotContainer {
                 -rotationPid.calculate(drivebase.heading.degrees, faceAngle!! * 180.0/ Math.PI) / Constants.Drivebase.MAX_TURNING_SPEEDS
             } else {
                 val i = driverRotationLimiter.calculate(driverRightStick.getX());
-                i.pow(2) * i.sign * -1.2 * 0.95 * 0.75
+                i.pow(2) * i.sign * -1.2 * 0.95 * 0.75 * 0.93
             }
         }
         .deadband(OperatorConstants.DEADBAND)
@@ -334,8 +334,8 @@ class RobotContainer {
         NamedCommands.registerCommand("l3_algae", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3Algae))
         NamedCommands.registerCommand("l2_algae", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L2Algae))
 
-        NamedCommands.registerCommand("score_algae", ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem))
-        NamedCommands.registerCommand("flick_algae", FlickAlgae(intakeSubsystem, armSubsystem))
+        NamedCommands.registerCommand("score_algae", ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem, drivebase))
+        NamedCommands.registerCommand("flick_algae", FlickAlgae(intakeSubsystem, elevatorSubsystem, armSubsystem, drivebase))
 
 
         NamedCommands.registerCommand("devour_algae", DevourAlgaeCommand(intakeSubsystem, true))
@@ -597,7 +597,7 @@ class RobotContainer {
 
            operatorXbox.povRight().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
 
-           operatorXbox.povUp().onTrue(ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem))
+           operatorXbox.povUp().onTrue(ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem, drivebase))
 
            operatorXbox.leftTrigger(0.1).onTrue(launch_coral(intakeSubsystem,armSubsystem, elevatorSubsystem).andThen(BackupCommand(drivebase)))
            operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem,false))

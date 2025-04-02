@@ -125,7 +125,8 @@ class SwerveSubsystem : SubsystemBase {
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
-        swerveDrive.replaceSwerveModuleFeedforward(SimpleMotorFeedforward(0.0, 0.0))
+        swerveDrive.replaceSwerveModuleFeedforward(SimpleMotorFeedforward(5.0, 0.0))
+
         swerveDrive.setHeadingCorrection(false) // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setCosineCompensator(false) //!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
         swerveDrive.setAngularVelocityCompensation(

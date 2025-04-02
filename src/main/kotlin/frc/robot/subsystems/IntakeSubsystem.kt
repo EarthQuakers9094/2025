@@ -55,6 +55,7 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
   motor2 = SparkFlex(motor2_id, SparkLowLevel.MotorType.kBrushless)
   encoder = motor.encoder;
   motor2.configure(SparkFlexConfig()
+   .idleMode(SparkBaseConfig.IdleMode.kCoast)
    .apply(
     ClosedLoopConfig()
      .p(0.01)
