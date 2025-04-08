@@ -7,9 +7,11 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkFlexConfig
 import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.config.ClosedLoopConfig
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.motorcontrol.Spark
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 class IntakeSubsystem(private val intake: IntakeIO) : SubsystemBase() {
  fun setVoltage(power: Double) {
@@ -52,16 +54,28 @@ class IntakeNeoIO(motor_id: Int, motor2_id: Int):IntakeIO {
   motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
   motor2 = SparkFlex(motor2_id, SparkLowLevel.MotorType.kBrushless)
   encoder = motor.encoder;
-  motor2.configure(SparkFlexConfig().inverted(true)/* .idleMode(SparkBaseConfig.IdleMode.kBrake)*/,SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+  motor2.configure(SparkFlexConfig()
+   .idleMode(SparkBaseConfig.IdleMode.kCoast)
+   .apply(
+    ClosedLoopConfig()
+     .p(0.01)
+     .i(0.0)
+     .d(0.0))
+   .inverted(true),
+   SparkBase.ResetMode.kNoResetSafeParameters,
+   SparkBase.PersistMode.kPersistParameters)
  }
 
- override fun periodic() {}
+ override fun periodic() {
+  SmartDashboard.putNumber("algae voltage output", motor2.appliedOutput)
+
+ }
  override fun setVoltage(power: Double) {
   motor.set(power)
  }
 
  override fun setVoltageAlgae(power: Double) {
-  motor2.set(power)
+  motor2.setVoltage(power)
  }
 
  private val button = DigitalInput(9)

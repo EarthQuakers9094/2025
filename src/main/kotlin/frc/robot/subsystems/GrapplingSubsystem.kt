@@ -31,17 +31,12 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
         return arm.getAngle()
     }
 
-    fun setSetpoint(loc: Double) {
-        setpoint = loc;
-        arm.setSetpoint(loc)
-    }
     fun getSetpoint(): Double {
         return setpoint
-
     }
 
-    fun atLocation(): Boolean {
-        return (arm.getAngle() - setpoint).absoluteValue <= Constants.Grappling.TOLERANCE
+    fun hold() {
+
     }
 
     override fun simulationPeriodic() {
@@ -57,41 +52,43 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
     interface GrapplingIO {
         fun periodic();
-        fun setSetpoint(loc: Double);
         fun getAngle(): Double;
         fun setOutput(output: Double);
+        fun hold();
     }
 
-    class GrapplingNeoIO(motor_id: Int):GrapplingIO {
+    class GrapplingNeoIO(motor_id: Int, motor2_id: Int):GrapplingIO {
         var motor: SparkMax;
+        var motor2: SparkMax;
         var encoder: RelativeEncoder;
-        var absoluteEncoder: AbsoluteEncoder;
 
         init {
             motor = SparkMax(motor_id, SparkLowLevel.MotorType.kBrushless)
+            motor2 = SparkMax(motor2_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
             motor.configure(
                 SparkMaxConfig()
-                    .apply(
-                        ClosedLoopConfig().p(0.018).i(0.0).d(0.0))
-                    .idleMode(IdleMode.kBrake),
+                    .idleMode(IdleMode.kBrake)
+                    .apply(ClosedLoopConfig().p(0.0001).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
-            absoluteEncoder = motor.absoluteEncoder;
+            motor2.configure(
+                SparkMaxConfig()
+                    .idleMode(IdleMode.kBrake).follow(motor_id, true)
+                    .apply(ClosedLoopConfig().p(0.0001).i(0.0).d(0.0)),
+                ResetMode.kNoResetSafeParameters,
+                SparkBase.PersistMode.kPersistParameters)
 
-            encoder.setPosition(0.0) // abs encoder zeroed around thing starting position
+            encoder.setPosition(0.0)
 
             // encoder.setPosition(Constants.Arm.START_POSITION)
         }
 
         override fun periodic() {
-            // SmartDashboard.putNumber("abs arm angle",absoluteEncoder.position)
+             SmartDashboard.putNumber("climber position",encoder.position)
         }
 
-        override fun setSetpoint(loc: Double) {
-            motor.closedLoopController.setReference(loc, SparkBase.ControlType.kPosition)
-        }
 
         override fun getAngle(): Double {
             return encoder.position
@@ -99,6 +96,10 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
 
         override fun setOutput(output: Double) {
             motor.set(output)
+        }
+
+        override fun hold() {
+            motor.closedLoopController.setReference(getAngle(), SparkBase.ControlType.kPosition)
         }
     }
 
@@ -114,17 +115,16 @@ class GrapplingSubsystem(private val arm: GrapplingIO) : SubsystemBase() {
             simulation.update(0.02)
         }
 
-
-        override fun setSetpoint(loc: Double) {
-            setpoint = loc
-        }
-
         override fun getAngle(): Double {
             return simulation.angleRads * 180.0 / Math.PI
         }
 
         override fun setOutput(output: Double) {
             TODO("testing robot probaly never going to be implemented")
+        }
+
+        override fun hold() {
+            TODO("Not yet implemented")
         }
     }
 }

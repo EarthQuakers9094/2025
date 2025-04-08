@@ -11,22 +11,28 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "l4"
+                  "name": "align_left_9"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "align_left_9"
+                  "name": "l4"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -36,34 +42,16 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "9 backup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zero_pose"
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "9 to pickup"
+                  "pathName": "9 exact to pickup 2"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "align_pickup"
           }
         },
         {
@@ -79,22 +67,28 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "l4"
+                  "name": "align_left_8"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "align_left_8"
+                  "name": "l4"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -106,13 +100,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 backup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zero_pose"
+            "pathName": "8 to pickup exact"
           }
         }
       ]

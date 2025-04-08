@@ -6,23 +6,27 @@ import frc.robot.subsystems.IntakeSubsystem
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Commands
 import frc.robot.subsystems.ArmSubsystem
+import frc.robot.subsystems.ElevatorSubsystem
 import frc.robot.commands.LaunchType
 import frc.robot.commands.LaunchCoralCommand
+import edu.wpi.first.wpilibj.DriverStation
 
 enum class LaunchType {
     L4,
     L3,
     L2,
     L1,
+    L2NEW,
     Other
 }
 
-fun launch_coral(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem): Command {
+fun launch_coral(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsystem): Command {
     return Commands.select(
         mapOf(LaunchType.L4 to LaunchCoralL4CommandGroup(intakeSubsystem, armSubsystem),
             LaunchType.L3 to LaunchCoralCommand(intakeSubsystem, Constants.Intake.OUTPUT_L3),
               LaunchType.L2 to LaunchCoralCommand(intakeSubsystem, Constants.Intake.OUTPUT_L2),
               LaunchType.L1 to LaunchCoralCommand(intakeSubsystem, Constants.Intake.OUTPUT_L1),
+              LaunchType.L2NEW to LaunchCoralCommand(intakeSubsystem, Constants.Intake.OUTPUT_L2NEW),
               LaunchType.Other to LaunchCoralCommand(intakeSubsystem, Constants.Intake.OUTPUT_L4)),
     {
         val pose = armSubsystem.getPose()
@@ -31,10 +35,18 @@ fun launch_coral(intakeSubsystem: IntakeSubsystem, armSubsystem: ArmSubsystem): 
 //        } else {
 //            LaunchType.Other
 //        }
+
+        val height = elevatorSubsystem.getHeight();
+        val angle = armSubsystem.getAngle();
+        
+        DriverStation.reportWarning("launch position height: ${height}, angle: ${angle}", false)
+
         if (pose == Constants.Poses.L1.pose) {
             LaunchType.L1
         } else if (pose == Constants.Poses.L2.pose) {
             LaunchType.L2
+        } else if (pose == Constants.Poses.L2NEW.pose) {
+            LaunchType.L2NEW
         } else if (pose == Constants.Poses.L3.pose) {
             LaunchType.L3
         } else if (pose == Constants.Poses.L4.pose) {

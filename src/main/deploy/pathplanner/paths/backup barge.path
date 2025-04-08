@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7325221238938062,
-        "y": 0.6716814159292028
+        "x": 7.341856060606061,
+        "y": 5.559785353535354
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.319758661914997,
-        "y": 2.1448098432501217
+        "x": 6.772664141414142,
+        "y": 5.559785353535354
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "barge toss"
     },
     {
       "anchor": {
-        "x": 3.2965277777777784,
-        "y": 2.0125
+        "x": 6.091666666666666,
+        "y": 5.417487373737374
       },
       "prevControl": {
-        "x": 2.4275472472699997,
-        "y": 1.2296302331279487
+        "x": 6.732007575757575,
+        "y": 5.427651515151515
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,22 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "zero",
+      "waypointRelativePos": 0.2858255451713403,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "zero_pose"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 58.2405199151872
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 54.46232220802565
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

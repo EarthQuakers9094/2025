@@ -34,6 +34,18 @@
           "data": {
             "name": "launch_coral"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "10 backup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "zero_pose"
+          }
         }
       ]
     }

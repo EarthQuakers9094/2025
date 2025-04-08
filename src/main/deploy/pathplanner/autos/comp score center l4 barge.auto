@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Lower Far"
+            "pathName": "fake path center"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "align_right_10"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -30,89 +36,60 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "pickup_pose"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Lower Far to Pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "devour_coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Back to Lower Far"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "l4"
+                  "name": "devour_algae"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "backup and grab algae"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "launch_coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pickup_pose"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Lower Far to Pickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "devour_coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Pickup to Far Left"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "l4"
+                  "pathName": "go to barge"
                 }
               }
             ]
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "launch_coral"
+            "name": "score_algae"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "backup barge"
+                }
+              }
+            ]
           }
         }
       ]

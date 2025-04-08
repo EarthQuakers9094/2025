@@ -30,9 +30,7 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
     return Commands.select(mapOf(
             State.BelowToHigh to ElevatorTrackingAngle(armSubsystem,elevatorSubsystem,pose),
             State.HighToBelowUnsafe to SequentialCommandGroup(GotoLastSafeAngle(armSubsystem),ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose)),
-            State.BelowToHighUnsafe to SequentialCommandGroup(
-                ElevatorTrackingAngle(armSubsystem,elevatorSubsystem, Pose(pose.height, Constants.Arm.LOW_LAST_SAFE_ANGLE, pose.pose)), 
-                GotoAngle(armSubsystem, pose.angle/*Constants.Poses.CLIMB_POSE.angle*/)),
+            State.BelowToHighUnsafe to SequentialCommandGroup(ElevatorTrackingAngle(armSubsystem,elevatorSubsystem, Pose(pose.height, Constants.Arm.LOW_LAST_SAFE_ANGLE, pose.pose)), GotoAngle(armSubsystem, pose.angle)),
             State.HighToBelow to ArmTrackingHeight(armSubsystem,elevatorSubsystem,pose),
             State.SameToSame to GotoPoseSimple(armSubsystem,elevatorSubsystem, pose),
             State.BelowToBelowDangerous to Commands.sequence(GotoAngle(armSubsystem, pose.angle), GotoHeight(elevatorSubsystem, pose.height)),
@@ -47,7 +45,6 @@ fun gotoPoseCommand(armSubsystem: ArmSubsystem, elevatorSubsystem: ElevatorSubsy
 
                             if (pose.angle.degrees < -240) {
                                 State.BelowToHighUnsafe
-                                //TODO("BelowToHighUnsafe")
                             } else {
                                 State.BelowToHigh
                             }
@@ -121,8 +118,8 @@ class ArmTrackingHeight(private val armSubsystem: ArmSubsystem, private val elev
     }
 
     override fun execute() {
-        val percentTo = 1.0 - ((elevatorSubsystem.getHeight() - Constants.Elevator.COLLISION_HEIGHT_HIGH).`in`(Meter) /
-                (Constants.Poses.L4.height - Constants.Elevator.COLLISION_HEIGHT_HIGH).`in`(Meter)).coerceIn(0.0,1.0);
+        val percentTo = 1.0 - ((elevatorSubsystem.getHeight() - Constants.Elevator.COLLISION_HEIGHT_LOW).`in`(Meter) /
+                (Constants.Poses.L4.height - Constants.Elevator.COLLISION_HEIGHT_LOW).`in`(Meter)).coerceIn(0.0,1.0);
 
         if (percentTo >= 1.0) {
             armSubsystem.setSetpoint(pose.angle.degrees)

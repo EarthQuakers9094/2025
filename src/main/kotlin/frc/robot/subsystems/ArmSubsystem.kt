@@ -72,13 +72,17 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         return (arm.getAngle() - setpoint).absoluteValue <= Constants.Arm.TOLERANCE
     }
 
+    fun changeOffset(amount: Double) {
+        arm.changeOffset(amount)
+    }
+
     override fun simulationPeriodic() {
         arm.periodic()
     }
 
-    fun setoutput(output: Double) {
-        arm.setOutput(output)
-    }
+//    fun setoutput(output: Double) {
+//        arm.setOutput(output)
+//    }
 
     override fun periodic() {
         val ntime = Timer.getFPGATimestamp();
@@ -89,7 +93,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
 
         arm.setSetpoint(current_setpoint.position)
         SmartDashboard.putNumber("arm angle",arm.getAngle())
-//        SmartDashboard.putNumber("arm setpoint",current_setpoint.position)
+       SmartDashboard.putNumber("arm goal",current_setpoint.position)
 
 
         arm.periodic()
@@ -99,7 +103,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         fun periodic()
         fun setSetpoint(loc: Double)
         fun getAngle(): Double;
-        fun setOutput(output: Double);
+        fun changeOffset(amount: Double);
     }
 
     class ArmNeoIO(motor_id: Int):ArmIO {
@@ -146,9 +150,13 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
             return encoder.position
         }
 
-        override fun setOutput(output: Double) {
-            motor.set(output)
+        override fun changeOffset(amount: Double) {
+            encoder.position = encoder.position + amount
         }
+//
+//        override fun setOutput(output: Double) {
+//            motor.set(output)
+//        }
     }
 
     class ArmSimIO:ArmIO {
@@ -172,8 +180,8 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
             return simulation.angleRads * 180.0 / Math.PI
         }
 
-        override fun setOutput(output: Double) {
-            TODO("testing robot probaly never going to be implemented")
+        override fun changeOffset(amount: Double) {
+            TODO("Not yet implemented")
         }
     }
 }

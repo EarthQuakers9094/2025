@@ -45,6 +45,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
         elevator.setSetpoint(loc.`in`(Units.Meters).coerceIn(0.0, Constants.Elevator.MAX_HEIGHT.`in`(Units.Meters)))
     }
 
+
     fun atLocation(): Boolean {
         return (elevator.getHeight() - setpoint).absoluteValue <= Constants.Elevator.TOLERANCE
     }
@@ -99,7 +100,7 @@ class ElevatorSubsystem(private var elevator: ElevatorIO) : SubsystemBase() {
                     .apply(
                         EncoderConfig().positionConversionFactor(Constants.Elevator.CONVERSION_FACTOR))
                     .apply(
-                        ClosedLoopConfig().p(6.0).i(0.0).d(0.0)),
+                        ClosedLoopConfig().p(10.0).i(0.0).d(0.0)),
                 ResetMode.kNoResetSafeParameters,
                 SparkBase.PersistMode.kPersistParameters)
 
