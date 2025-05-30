@@ -1,0 +1,287 @@
+{
+  "url": null,
+  "commands": [
+    "adjust arm offset down",
+    "adjust arm offset up",
+    "auto align center",
+    "auto align left",
+    "auto align right",
+    "barge pose",
+    "brake",
+    "bring climber in",
+    "climb in fast",
+    "climb in slow",
+    "climb out slow",
+    "hold climber",
+    "intake algae",
+    "intake coral",
+    "l1",
+    "l2",
+    "l2 new",
+    "l2_algae",
+    "l3",
+    "l3_algae",
+    "l4",
+    "launch algae",
+    "launch coral",
+    "pickup pose",
+    "prepare for climb",
+    "processor pose",
+    "score algae",
+    "strafe left",
+    "strafe right",
+    "zero gyro",
+    "zero pose"
+  ],
+  "constants": {
+    "map": {
+      "arm": {
+        "map": {
+          "ABSOLUTE_ENCODER_CONVERSION_FACTOR": 108.0,
+          "ABSOLUTE_ENCODER_OFFSET": 0.197,
+          "CONVERSION_FACTOR": 6.75,
+          "LOW_LAST_SAFE_ANGLE": -245.0,
+          "MAX_ACELERATION": 3000.0,
+          "MAX_VEL": 4000.0,
+          "SAFE_ANGLE": -150.394,
+          "START_POSITION": -90.0,
+          "TOLERANCE": 2.0,
+          "motorId": 53.0
+        }
+      },
+      "driverbase": {
+        "map": {
+          "MAX_SPEED": 4.0,
+          "MAX_TURNING_SPEEDS": 4.05,
+          "REEF_TRANSLATION_PID_TELEOP": {
+            "map": {
+              "d": 0.008,
+              "i": 0.0,
+              "p": 2.0
+            }
+          },
+          "ROTATION_PID_TELEOP": {
+            "map": {
+              "d": 0.5,
+              "i": 0.0,
+              "p": 2.4
+            }
+          },
+          "TRANSLATION_PID_TELEOP": {
+            "map": {
+              "d": 0.2,
+              "i": 0.0,
+              "p": 2.3
+            }
+          }
+        }
+      },
+      "elevator": {
+        "map": {
+          "COLLISION_HEIGHT_HIGH": 13.75,
+          "COLLISION_HEIGHT_LOW": 8.75,
+          "CONVERSION_FACTOR": 0.015870624652444446,
+          "GEAR_CIRCUMFERENCE": 0.142835621872,
+          "MAX_ACELERATION": 2.5,
+          "MAX_HEIGHT": 0.816,
+          "MAX_VEL": 1.5,
+          "TOLERANCE": 0.03,
+          "motorId": 51.0,
+          "motorId2": 52
+        }
+      },
+      "field": {
+        "map": {
+          "LEFT_OFFSET": -5.25,
+          "RIGHT_OFFSET": 7.0
+        }
+      },
+      "grappling": {
+        "map": {
+          "ABSOLUTE_ENCODER_CONVERSION_FACTOR": 108.0,
+          "CONVERSION_FACTOR": 6.75,
+          "MAX_ACELERATION": 250.0,
+          "MAX_VEL": 250.0,
+          "SAFE_ANGLE": -122.385,
+          "TOLERANCE": 2.0,
+          "motor2Id": 8,
+          "motorId": 9
+        }
+      },
+      "intake": {
+        "map": {
+          "INTAKE": -0.45,
+          "INTAKE_ALGAE": 11.0,
+          "L1OUTPUT": 0.3,
+          "MOTOR": 61,
+          "MOTOR2": 62,
+          "OUTPUT_ALGAE": -12.0,
+          "OUTPUT_L1": 0.3,
+          "OUTPUT_L2": 0.4,
+          "OUTPUT_L2NEW": 0.6,
+          "OUTPUT_L3": 0.4,
+          "OUTPUT_L4": 0.8,
+          "STOP_CURRENT": 40.0
+        }
+      },
+      "loop_time": 0.13,
+      "operatorConstants": {
+        "map": {
+          "DEADBAND": {
+            "default": 0.03
+          },
+          "LEFT_X_DEADBAND": {
+            "default": 0.05
+          },
+          "LEFT_Y_DEADBAND": {
+            "default": 0.1
+          },
+          "RIGHT_X_DEADBAND": {
+            "default": 0.1
+          },
+          "TURN_CONSTANT": {
+            "default": 6.0
+          }
+        }
+      },
+      "poses": {
+        "map": {
+          "Barge": {
+            "map": {
+              "angle": -165.394,
+              "height": 0.0,
+              "pose": "barge"
+            }
+          },
+          "Barge2": {
+            "map": {
+              "angle": -260.0,
+              "height": 0.816,
+              "pose": "barge"
+            }
+          },
+          "BargePrep": {
+            "map": {
+              "angle": -165.394,
+              "height": 0.0,
+              "pose": "bargeprep"
+            }
+          },
+          "CLIMB_POSE": {
+            "map": {
+              "angle": -359.801,
+              "height": 0.295,
+              "pose": "climb_pose"
+            }
+          },
+          "FullExtend": {
+            "map": {
+              "angle": -160.394,
+              "height": 0.816,
+              "pose": "fullextend"
+            }
+          },
+          "L1": {
+            "map": {
+              "angle": 0.0,
+              "height": -77.021,
+              "pose": "l1"
+            }
+          },
+          "L2": {
+            "map": {
+              "angle": 0.0,
+              "height": -226.6,
+              "pose": "l2"
+            }
+          },
+          "L2Algae": {
+            "map": {
+              "angle": -131.0,
+              "height": 0.019049999999999997,
+              "pose": "l2algae"
+            }
+          },
+          "L2NEW": {
+            "map": {
+              "angle": -90.0,
+              "height": 0.096625,
+              "pose": "l1new"
+            }
+          },
+          "L3": {
+            "map": {
+              "angle": 0.272625,
+              "height": 0.0,
+              "pose": "l3"
+            }
+          },
+          "L3Algae": {
+            "map": {
+              "angle": -151.0,
+              "height": 0.264125,
+              "pose": "l3algae"
+            }
+          },
+          "L4": {
+            "map": {
+              "angle": -238.21428571428572,
+              "height": 0.816,
+              "pose": "l4"
+            }
+          },
+          "L4Back": {
+            "map": {
+              "angle": -265.0,
+              "height": 0.816,
+              "pose": "l4-back"
+            }
+          },
+          "Pickup": {
+            "map": {
+              "angle": -68.0,
+              "height": 0.122025,
+              "pose": "pickup"
+            }
+          },
+          "Processor": {
+            "map": {
+              "angle": 0.0,
+              "height": -65.0,
+              "pose": "processor"
+            }
+          },
+          "Zero": {
+            "map": {
+              "angle": -90.0,
+              "height": 0.0,
+              "pose": "zero"
+            }
+          }
+        }
+      },
+      "robot_mass": 57.9236984,
+      "robot_width": 33.0,
+      "vision": {
+        "map": {
+          "reefTags": [
+            [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "Int"
+          ]
+        }
+      }
+    }
+  },
+  "streams": [
+    "rotation",
+    "x",
+    "y"
+  ]
+}

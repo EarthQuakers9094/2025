@@ -1,0 +1,164 @@
+{
+  "command_to_bindings": {
+    "intake algae": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 6,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "intake coral": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 3,
+          "location": "Analog"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "l1": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 3,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l2": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 1,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l2 new": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 10,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l2_algae": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 8,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l3": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 2,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l3_algae": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 7,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "l4": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 4,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "launch algae": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 5,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "launch coral": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 2,
+          "location": "Analog"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "pickup pose": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 90,
+          "location": "Pov"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "score algae": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 0,
+          "location": "Pov"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "zero pose": [
+      {
+        "controller": 0,
+        "button": {
+          "button": 180,
+          "location": "Pov"
+        },
+        "during": "OnTrue"
+      }
+    ]
+  },
+  "stream_to_axis": {},
+  "controllers": [
+    {
+      "XBox": {
+        "sensitivity": 0.5
+      }
+    },
+    "NotBound",
+    "NotBound",
+    "NotBound",
+    "NotBound"
+  ],
+  "controller_names": [
+    "xbox",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "constants": null
+}

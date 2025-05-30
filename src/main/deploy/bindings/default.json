@@ -1,0 +1,19 @@
+{
+  "command_to_bindings": {},
+  "stream_to_axis": {},
+  "controllers": [
+    "NotBound",
+    "NotBound",
+    "NotBound",
+    "NotBound",
+    "NotBound"
+  ],
+  "controller_names": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "constants": null
+}

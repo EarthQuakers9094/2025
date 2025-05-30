@@ -1,5 +1,6 @@
 package frc.robot.subsystems
 
+import bindings.Bindings
 import com.revrobotics.RelativeEncoder
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkBase.ResetMode
@@ -23,18 +24,15 @@ import frc.robot.Constants
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 
-class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
+class ArmSubsystem(private val arm: ArmIO, private val bindings: Bindings<Constants>) : SubsystemBase() {
     private var setpoint = -90.0;
     private var pose = "zero";
 
-    private var profile = TrapezoidProfile(
-        TrapezoidProfile.Constraints(
-            Constants.Arm.MAX_VEL,
-            Constants.Arm.MAX_ACELERATION))
+    private var profile = bindings.constants.arm.profile()
 
     private var lastTime = Timer.getFPGATimestamp();
 
-    private var current_setpoint = TrapezoidProfile.State(Constants.Arm.START_POSITION,0.0);
+    private var current_setpoint = TrapezoidProfile.State(bindings.constants.arm.START_POSITION,0.0);
 
     fun getAngle(): Rotation2d {
         return Rotation2d.fromDegrees(arm.getAngle())
@@ -69,7 +67,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
     }
 
     fun atLocation(): Boolean {
-        return (arm.getAngle() - setpoint).absoluteValue <= Constants.Arm.TOLERANCE
+        return (arm.getAngle() - setpoint).absoluteValue <= bindings.constants.arm.TOLERANCE
     }
 
     fun changeOffset(amount: Double) {
@@ -114,6 +112,7 @@ class ArmSubsystem(private val arm: ArmIO) : SubsystemBase() {
         init {
             motor = SparkFlex(motor_id, SparkLowLevel.MotorType.kBrushless)
             encoder = motor.encoder;
+
             motor.configure(
                 SparkMaxConfig()
                     .apply(

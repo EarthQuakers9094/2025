@@ -77,7 +77,7 @@ class Robot : TimedRobot() {
     }
 
     override fun disabledPeriodic() {
-        if (disabledTimer!!.hasElapsed(Constants.DrivebaseConstants.WHEEL_LOCK_TIME)) {
+        if (disabledTimer!!.hasElapsed(m_robotContainer!!.bindings.constants.driveBaseConstants.WHEEL_LOCK_TIME)) {
             m_robotContainer!!.setMotorBrake(false)
             disabledTimer!!.stop()
         }

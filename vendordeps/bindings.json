@@ -1,0 +1,34 @@
+{
+    "fileName": "bindings.json",
+    "name": "Bindings",
+    "version": "0.0.8",
+    "frcYear": "2025",
+    "uuid": "1cf0fc89-ed11-42ea-a08c-0c6d38954e17",
+    "mavenUrls": [
+        "https://earthquakers9094.github.io/bindings_lib/bindings/repos"
+    ],
+    "jsonUrl": "https://earthquakers9094.github.io/bindings_lib/bindings/repos/bindings.json",
+    "javaDependencies": [
+        {
+            "groupId": "bindings",
+            "artifactId": "Bindings-java",
+            "version": "0.0.8"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": [],
+    "requires": [
+        {
+            "uuid": "1b42324f-17c6-4875-8e77-1c312bc8c786",
+            "errorMessage": "PathPlanner is required!",
+            "offlineFileName": "PathplannerLib-2025.2.7.json.json",
+            "onlineUrl": "https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLib.json"
+        },
+        {
+            "uuid": "111e20f7-815e-48f8-9dd6-e675ce75b266",
+            "errorMessage": "WPILibNewCommands is required!",
+            "offlineFileName": "WPILibNewCommands.json",
+            "onlineUrl": ""
+        }
+    ]
+}

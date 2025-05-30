@@ -1,0 +1,203 @@
+{
+  "command_to_bindings": {
+    "adjust arm offset down": [
+      {
+        "controller": 1,
+        "button": {
+          "button": 9,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "adjust arm offset up": [
+      {
+        "controller": 1,
+        "button": {
+          "button": 7,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "auto align center": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 2,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "auto align left": [
+      {
+        "controller": 1,
+        "button": {
+          "button": 1,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "auto align right": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 1,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "brake": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 3,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "bring climber in": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 7,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "climb in fast": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 9,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "climb in slow": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 10,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "climb out slow": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 8,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "hold climber": [
+      {
+        "controller": 1,
+        "button": {
+          "button": 10,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ],
+    "prepare for climb": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 12,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      },
+      {
+        "controller": 1,
+        "button": {
+          "button": 12,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "strafe left": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 5,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "strafe right": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 6,
+          "location": "Button"
+        },
+        "during": "WhileTrue"
+      }
+    ],
+    "zero gyro": [
+      {
+        "controller": 2,
+        "button": {
+          "button": 11,
+          "location": "Button"
+        },
+        "during": "OnTrue"
+      }
+    ]
+  },
+  "stream_to_axis": {
+    "rotation": [
+      2,
+      0
+    ],
+    "x": [
+      1,
+      0
+    ],
+    "y": [
+      1,
+      1
+    ]
+  },
+  "controllers": [
+    "NotBound",
+    {
+      "Generic": {
+        "buttons": 16,
+        "axises": 4,
+        "sensitivity": 0.5
+      }
+    },
+    {
+      "Generic": {
+        "buttons": 16,
+        "axises": 4,
+        "sensitivity": 0.5
+      }
+    },
+    "NotBound",
+    "NotBound"
+  ],
+  "controller_names": [
+    "",
+    "left",
+    "right",
+    "",
+    ""
+  ],
+  "constants": null
+}

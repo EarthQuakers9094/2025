@@ -37,10 +37,12 @@ import java.util.stream.Stream
 import org.photonvision.PhotonCamera
 import CameraAlignInfo
 import VisionSubsystem
+import bindings.Bindings
 import closestTag
 import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj.DriverStation.Alliance
+import edu.wpi.first.wpilibj2.command.FunctionalCommand
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
 import edu.wpi.first.wpilibj2.command.RepeatCommand
@@ -61,42 +63,13 @@ import kotlin.jvm.optionals.getOrNull
  */
 class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    val driverLeftStick: CommandJoystick = CommandJoystick(0)
-    val driverRightStick: CommandJoystick = CommandJoystick(1)
-    val operatorXbox: CommandXboxController = CommandXboxController(2)
+    // val driverLeftStick: CommandJoystick = CommandJoystick(0)
+    // val driverRightStick: CommandJoystick = CommandJoystick(1)
+    // val operatorXbox: CommandXboxController = CommandXboxController(2)
 
     var frame = 0
 
     var lastScaleFactor = 0.0;
-
-    var lastUpdatedScaleFactor = -1;
-
-     fun getScaleFactor(): Double {
-        if (lastUpdatedScaleFactor == frame) {
-            return lastScaleFactor
-        }
-        val pov = driverRightStick.getHID().getPOV()
-        // SmartDashboard.putNumber("squared input magnitude", driverLeftStick.getX().pow(2.0) + driverLeftStick.getY().pow(2.0))
-        // val angle = atan2(driveLeftStick.getY(), driverLeftStick.getX()) % (Math.PI/2.0);
-        val factor = /*sin((angle - Math.PI/4.0).absoluteValue + Math.PI/4.0) * */
-        if (pov == 0) {
-            (1.0)//.pow((1/3))
-        } else if (pov == 180) {
-            (1.0/Constants.Drivebase.MAX_SPEED)
-        } else {
-            3.0/4.0
-        } * if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
-            -1.0
-        } else {
-            1.0
-        };
-
-        lastScaleFactor = factor
-        lastUpdatedScaleFactor = frame
-
-        SmartDashboard.putNumber("driving scale factor", factor)
-        return factor
-    }
 
     // The robot's subsystems and commands are defined here...
     val drivebase = SwerveSubsystem(
@@ -167,10 +140,15 @@ class RobotContainer {
 
     var lastUpdatedInputs = -1;
 
+    val yInput: bindings.Stream;
+    val xInput: bindings.Stream;
+    val rInput: bindings.Stream;
+
+
     fun getIntputY(): Double {
         if (lastUpdatedInputs != frame) {
-            iy = driverLeftStick.getY()
-            ix = driverLeftStick.getX()
+            iy = yInput.getValue();
+            ix = xInput.getValue();
             val hypot = min(iy.pow(2.0) + ix.pow(2.0), 1.0)
             val angle = atan2(iy, ix)
             iy = abs(sin(angle) * hypot) * iy.sign
@@ -181,13 +159,12 @@ class RobotContainer {
     }
     fun getIntputX(): Double {
         if (lastUpdatedInputs != frame) {
-            iy = driverLeftStick.getY()
-            ix = driverLeftStick.getX()
+            iy = yInput.getValue()
+            ix = xInput.getValue()
             val hypot = min((iy.pow(2.0) + ix.pow(2.0)), 1.0)
             val angle = atan2(iy, ix)
             ix = abs(cos(angle) * hypot) * ix.sign
         }
-
 
         return ix
     }
@@ -221,14 +198,14 @@ class RobotContainer {
         {
             val y = getIntputY()//driverLeftStick.getY()
             SmartDashboard.putNumber("joystick y", y)
-            val yi = y * /*y.sign */getScaleFactor();
+            val yi = y;
             driverYLimiter.calculate(abs(yi)) * yi.sign
 //            yi * 0.5
         },
         {
             val x = getIntputX()//driverLeftStick.getX()
             SmartDashboard.putNumber("joystick x", x)
-            val xi = x * /*x.sign * */getScaleFactor();
+            val xi = x;
             driverXLimiter.calculate(abs(xi)) * xi.sign
 //            xi * 0.5
         }
@@ -239,7 +216,7 @@ class RobotContainer {
                 SmartDashboard.putNumber("current drivebase angle", drivebase.heading.degrees)
                 -rotationPid.calculate(drivebase.heading.degrees, faceAngle!! * 180.0/ Math.PI) / Constants.Drivebase.MAX_TURNING_SPEEDS
             } else {
-                val i = driverRotationLimiter.calculate(driverRightStick.getX());
+                val i = driverRotationLimiter.calculate(rInput.getValue());
                 i.pow(2) * i.sign * -1.2 * 0.95 * 0.75 * 0.93
             }
         }
@@ -269,6 +246,8 @@ class RobotContainer {
     // // left stick controls translation
     // // right stick controls the angular velocity of the robot
     var driveFieldOrientedAnglularVelocity: Command = drivebase.driveFieldOriented(driveAngularVelocity)
+
+    val bindings: Bindings<Constants>;
 
     // var driveSetpointGen: Command = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle)
 
@@ -344,23 +323,67 @@ class RobotContainer {
 
         NamedCommands.registerCommand("l3", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L3))
         NamedCommands.registerCommand("zero_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
+        NamedCommands.registerCommand("zero pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Zero))
+
         NamedCommands.registerCommand("barge_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Barge))
+        NamedCommands.registerCommand("barge pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Barge))
+
 
 
         NamedCommands.registerCommand("pickup_pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))
+        NamedCommands.registerCommand("pickup pose", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.Pickup))
+
         NamedCommands.registerCommand("l4", gotoPoseCommand(armSubsystem,elevatorSubsystem,Constants.Poses.L4))
+
+        NamedCommands.registerCommand("adjust arm offset up", InstantCommand({armSubsystem.changeOffset(360.0/42.0/2.0)}))
+        NamedCommands.registerCommand("adjust arm offset down", InstantCommand({armSubsystem.changeOffset(-360.0/42.0/2.0)}))
+
+        NamedCommands.registerCommand("zero gyro", Commands.runOnce({ drivebase.zeroGyro() }))
+
+        NamedCommands.registerCommand("climb in fast", MoveGrappleCommand(grappleSubsystem, -0.65))
+        NamedCommands.registerCommand("climb in slow", MoveGrappleCommand(grappleSubsystem, -0.25))
+        NamedCommands.registerCommand("climb out slow", MoveGrappleCommand(grappleSubsystem, 0.25))
+
+        NamedCommands.registerCommand("hold climber", InstantCommand({ grappleSubsystem.hold() }))
+
+        NamedCommands.registerCommand("bring climber in", RetractClimber(grappleSubsystem, 5.0))
+
+        NamedCommands.registerCommand("prepare for climb",ParallelCommandGroup(
+            gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
+                .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
+            MoveOutClimberCommand(grappleSubsystem)
+        ));
+
+        NamedCommands.registerCommand("auto align right", pathPlannerToReef(Constants.Field.RIGHT_OFFSET, drivebase, false))
+        NamedCommands.registerCommand("auto align left", pathPlannerToReef(Constants.Field.LEFT_OFFSET, drivebase, false))
+        NamedCommands.registerCommand("auto align center", pathPlannerToReef(Inches.of(0.0), drivebase, false))
+        NamedCommands.registerCommand("strafe right", RobotRelativeStrafeCommand(drivebase, -0.15))
+        NamedCommands.registerCommand("strafe left", RobotRelativeStrafeCommand(drivebase, -0.15))
+
+        NamedCommands.registerCommand("brake",
+            FunctionalCommand({
+                setMotorBrake(true)
+            },
+            {},
+            {
+                setMotorBrake(false)
+            },
+            {
+              false
+            }
+        )
+        )
+
+        NamedCommands.registerCommand("l2 new", gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2NEW))
+        NamedCommands.registerCommand("processor pose", gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
+        NamedCommands.registerCommand("score algae", ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem, drivebase))
+        NamedCommands.registerCommand("launch coral", launch_coral(intakeSubsystem,armSubsystem, elevatorSubsystem).andThen(BackupCommand(drivebase)))
+        NamedCommands.registerCommand("intake coral", DevourCoralCommand(intakeSubsystem,false))
+        NamedCommands.registerCommand("intake algae", DevourAlgaeCommand(intakeSubsystem, false))
+        NamedCommands.registerCommand("launch algae", LaunchAlgaeCommand(intakeSubsystem))
 
         rotationPid.enableContinuousInput(-180.0, 180.0)
 
-        // NamedCommands.registerCommand("align_first", alignReefSelect(drivebase, visionSubsystem, "align_first_left"));
-        // NamedCommands.registerCommand("align_second", alignReefSelect(drivebase, visionSubsystem, "align_second_left"));
-        // NamedCommands.registerCommand("align_third", alignReefSelect(drivebase, visionSubsystem, "align_third_left"));
-        // NamedCommands.registerCommand("align_fourth", alignReefSelect(drivebase, visionSubsystem, "align_fourth_left"));
-
-//         NamedCommands.registerCommand("align_pickup", ParallelCommandGroup(
-//             gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup),
-//             pathPlannerToPickup(Inches.of(0.0), drivebase, true)
-//         ))
 
         fun teamSelect(red: Int, blue: Int): Int {
             val alliance = DriverStation.getAlliance()
@@ -391,6 +414,13 @@ class RobotContainer {
              NamedCommands.registerCommand("align_right_${redtag}", pathPlannerToReef(Constants.Field.RIGHT_OFFSET, tag, drivebase, true))
              NamedCommands.registerCommand("align_left_${redtag}", pathPlannerToReef(Constants.Field.LEFT_OFFSET, tag, drivebase, true))
         }
+
+        bindings = Bindings(null, null, Constants());
+
+        yInput = bindings.streams.get("y")!!;
+        xInput = bindings.streams.get("x")!!;
+        rInput = bindings.streams.get("rotation")!!;
+
         //NamedCommands.registerCommand("align_left_${10}", AlignReef(drivebase, visionSubsystem, Inches.of(6.5 - 0.5) , {10}, true))
 
         drivebase.setupPathPlanner()
@@ -410,45 +440,6 @@ class RobotContainer {
 
     }
 
-    private fun getSelectedTag(): Int {
-        val alliance = DriverStation.getAlliance()
-
-        val redteam = if (alliance.isPresent) {
-            alliance.get() == Alliance.Red
-        } else {
-            true
-        };
-
-        fun teamSelect(red: Int, blue: Int): Int {
-            return if (redteam) {
-                red
-            } else {
-                blue
-            }
-
-        }
-
-        if (driverLeftStick.getHID().getPOV() == 0) {
-            return teamSelect(10, 21)
-        }
-        if (driverLeftStick.getHID().getPOV() == 180) {
-            return teamSelect(7, 18)
-        }
-        if (driverLeftStick.getHID().getRawButton(5)) {
-            return teamSelect(11, 20)
-        }
-        if (driverLeftStick.getHID().getRawButton(6)) {
-            return teamSelect(9, 22)
-        }
-        if (driverLeftStick.getHID().getRawButton(3)) {
-            return teamSelect(6,19)
-        }
-        if (driverLeftStick.getHID().getRawButton(4)) {
-            return teamSelect(8, 17)
-        }
-        return -1
-    }
-
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
      * [Trigger.Trigger] constructor with an arbitrary predicate, or via the
@@ -457,214 +448,11 @@ class RobotContainer {
      * controllers or [Flight joysticks][edu.wpi.first.wpilibj2.command.button.CommandJoystick].
      */
     private fun configureBindings() {
-        // (Condition) ? Return-On-True : Return-on-False
-        // drivebase.defaultCommand =
-        //     if (!RobotBase.isSimulation()) driveFieldOrientedDirectAngle else driveFieldOrientedDirectAngleSim
-
-        if (RobotBase.isSimulation()) {
-            // driverXbox.start().onTrue(Commands.runOnce({
-            //     drivebase.resetOdometry(
-            //         Pose2d(
-            //             3.0,
-            //             3.0,
-            //             Rotation2d()
-            //         )
-            //     )
-            // }))
-        }
-        if (DriverStation.isTest()) {
-            driverLeftStick.button(1).onTrue(InstantCommand({drivebase.drive(Translation2d(1.0, 0.0), 0.0, false)}, drivebase)
-                .andThen(WaitCommand(1.0))
-                .andThen(InstantCommand({drivebase.drive(Translation2d(0.0, 1.0), 0.0, false)}))) // Overrides drive command above!
-            driverRightStick.button(1).whileTrue(
-                InstantCommand({drivebase.drive(Translation2d(0.5 * Constants.Drivebase.MAX_SPEED, 0.0), 0.0, false)}, drivebase)
-                    .andThen(WaitCommand(1.0))
-                    .andThen(InstantCommand({drivebase.drive(Translation2d(0.0, 0.0), 0.0, false)}, drivebase)))
-            // driverXbox.b().whileTrue(drivebase.sysIdAngleMotorCommand())
-            // driverXbox.x().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-            // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2))
-            // driverXbox.start().onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            // driverXbox.back().whileTrue(drivebase.cen`terModulesCommand())
-            // driverXbox.leftBumper().onTrue(Commands.none())
-            // driverXbox.rightBumper().onTrue(Commands.none())
-        } else {
-            driverLeftStick.button(7).onTrue(InstantCommand({armSubsystem.changeOffset(360.0/42.0/2.0)}))
-            driverLeftStick.button(9).onTrue(InstantCommand({armSubsystem.changeOffset(-360.0/42.0/2.0)}))
 
 
-            driverRightStick.button(11).onTrue((Commands.runOnce({ drivebase.zeroGyro() })))
-            driverRightStick.button(9).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.65))
-            driverRightStick.button(10).whileTrue(MoveGrappleCommand(grappleSubsystem, -0.25))
-            driverRightStick.button(8).whileTrue(MoveGrappleCommand(grappleSubsystem, 0.25))
-
-            driverLeftStick.button(10).onTrue(InstantCommand({ grappleSubsystem.hold() }))
-
-            driverRightStick.button(7).onTrue(RetractClimber(grappleSubsystem, 5.0))
-
-            driverRightStick.button(12).onTrue(
-                ParallelCommandGroup(
-                    gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
-                        .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
-                    MoveOutClimberCommand(grappleSubsystem)
-                ))
-
-            driverLeftStick.button(12).onTrue(
-                ParallelCommandGroup(
-                    gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.CLIMB_POSE)
-                    .andThen(GotoHeight(elevatorSubsystem, Meters.of(0.170))),
-                    MoveOutClimberCommand(grappleSubsystem)
-                    ))
-
-            driverRightStick.button(3).whileTrue(
-                RepeatCommand(InstantCommand({
-                    val tag = closestTag(drivebase)
-                    val location = fieldLayout.getTagPose(tag).getOrNull()
-                    faceAngle = location?.rotation?.z
-                })).finallyDo({ a ->
-                    faceAngle = null;
-                })
-            )
-
-
-
-            //driverXbox.x().onTrue(Commands.runOnce({ drivebase.addFakeVisionReading() }))
-            // driverXbox.b().whileTrue(T
-            //     drivebase.driveToPose(
-            //         Pose2d(Translation2d(4.0, 4.0), Rotation2d.fromDegrees(0.0))
-            //     )
-            // )
-            //driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2.0))
-            // driverXbox.start().whileTrue(Commands.none())
-            // driverXbox.back().whileTrue(Commands.none())
-            //driverXbox.start().whileTrue(Commands.runOnce({ drivebase.lock() }, drivebase).repeatedly())
-             driverRightStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.RIGHT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
-             driverLeftStick.button(1).whileTrue(pathPlannerToReef(Constants.Field.LEFT_OFFSET/*, {getSelectedTag()}*/, drivebase, false))
-             driverRightStick.button(2).whileTrue(pathPlannerToReef(Inches.of(0.0)/*, {getSelectedTag()}*/,drivebase, false))
-
-            driverRightStick.button(6).whileTrue(RobotRelativeStrafeCommand(drivebase, -0.15))
-            driverRightStick.button(5).whileTrue(RobotRelativeStrafeCommand(drivebase, 0.15))
-
-//            driverLeftStick.button(2).onTrue(InstantCommand { })
-
-//            driverLeftStick.button(2).whileTrue(
-//
-//            )
-            driverRightStick.button(2).whileTrue(
-                RepeatCommand(InstantCommand({
-                    val tag = getClosestPickupTag(drivebase)
-                    val location = fieldLayout.getTagPose(tag).getOrNull()
-                    faceAngle = location?.rotation?.z
-                })).finallyDo({ a ->
-                    faceAngle = null;
-                })
-            )
-
-//            driverLeftStick.button(7).onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
-
-            driverRightStick.button(3).onTrue(InstantCommand({
-                setMotorBrake(true)
-            }))
-            driverRightStick.button(3).onFalse(InstantCommand({
-                setMotorBrake(false)
-            }))
-
-            operatorXbox.rightStick().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2NEW))
-
-            // operatorXbox.y().whileTrue(MoveArmCommand(armSubsystem,2.0))
-            // operatorXbox.a().whileTrue(MoveArmCommand(armSubsystem,-2.0))
-
-            // operatorXbox.b().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().plus(Meters.of(0.05)))}))
-            // operatorXbox.x().whileTrue(InstantCommand({elevatorSubsystem.setSetpoint(elevatorSubsystem.getHeight().minus(Meters.of(0.05)))}))
-            operatorXbox.start().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2Algae))
-            operatorXbox.back().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3Algae))
-           operatorXbox.y().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L4))
-           operatorXbox.b().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L3))
-           operatorXbox.a().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L2))
-           operatorXbox.x().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.L1))
-           operatorXbox.povDown().onTrue(
-            /*Commands.select(
-                mapOf(
-                    false to ParallelCommandGroup(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero), BackupCommand(drivebase)),
-                    */gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Zero)/*
-                ),  
-                {
-                    armSubsystem.getPose() == Constants.Poses.Barge.pose
-                }
-                )*/
-            )
-           operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Processor))
-           //operatorXbox.povLeft().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.FullExtend))
-
-           operatorXbox.povRight().onTrue(gotoPoseCommand(armSubsystem, elevatorSubsystem, Constants.Poses.Pickup))
-
-           operatorXbox.povUp().onTrue(ScoreAlgae(intakeSubsystem, armSubsystem, elevatorSubsystem, drivebase))
-
-           operatorXbox.leftTrigger(0.1).onTrue(launch_coral(intakeSubsystem,armSubsystem, elevatorSubsystem).andThen(BackupCommand(drivebase)))
-           operatorXbox.rightTrigger(0.1)./*onTrue*/whileTrue(DevourCoralCommand(intakeSubsystem,false))
-           operatorXbox.rightBumper()./*onTrue*/whileTrue(DevourAlgaeCommand(intakeSubsystem, false))
-
-           operatorXbox.leftBumper().onTrue(LaunchAlgaeCommand(intakeSubsystem))
-
-        //    operatorXbox.povLeft().onTrue(FlickAlgae(armSubsystem))
-
-//
-//            operatorXbox.rightBumper().whileTrue(LaunchCoralCommand(intakeSubsystem))
-//
-        }
-
-        // fun applyTeam(speed: Double):Double {
-        //     if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Blue)) {
-        //         return -speed;
-        //     } else {
-        //         return speed;
-        //     }
-        // }
-
-//        fun upMax(speed: Double):Double {
-//            val sign = speed.sign;
-//            return sign * Math.min(Math.abs(speed) - 0.1,1.0);
-//        }
-
-        // val leftY =
-        //         {
-                    
-        //             -MathUtil.applyDeadband(
-        //                 applyTeam(driverLeftStick.getY()),
-        //                 Constants.OperatorConstants.LEFT_Y_DEADBAND
-        //             )
-        //         }
-
-
-        // val leftX: () -> Double =
-        //         {
-        //             -MathUtil.applyDeadband(
-        //                 applyTeam(driverLeftStick.getX()),
-        //                 Constants.OperatorConstants.LEFT_X_DEADBAND
-        //             )
-                    
-        //         };
-
-        // val omega = {
-        //     MathUtil.applyDeadband(
-        //         driverRightStick.getX(),
-        //         Constants.OperatorConstants.LEFT_X_DEADBAND
-        //     )
-        // }
-
-        // val driveMode = { true }
-
-        // val simClosedFieldRel =
-        //     TeleopDrive(
-        //         drivebase,
-        //         leftY,
-        //         leftX,
-        //         omega,
-        //         driveMode,
-        //     )
 
         drivebase.defaultCommand = driveFieldOrientedAnglularVelocity;
 
-        // drivebase.defaultCommand = simClosedFieldRel
     }
 
     val autonomousCommand: Command
